@@ -1,6 +1,11 @@
 ﻿var Spiro;
 (function (Spiro) {
+    /// <reference path="typings/angularjs/angular.d.ts" />
+    /// <reference path="typings/underscore/underscore.d.ts" />
+    /// <reference path="spiro.models.ts" />
+    /// <reference path="spiro.angular.viewmodels.ts" />
     (function (Angular) {
+        /* Declare app level module */
         Angular.app = angular.module('app', ['ngResource']);
 
         Angular.app.config(function ($routeProvider) {
@@ -73,6 +78,7 @@
             };
         });
 
+        // TODO investigate using transformations to transform results
         Angular.app.service("RepresentationLoader", function ($http, $q) {
             function getUrl(model) {
                 var url = model.url();
@@ -267,9 +273,11 @@
             };
         });
 
+        // TODO rename
         Angular.app.service("Handlers", function ($routeParams, $location, $q, $cacheFactory, RepresentationLoader, Context, ViewModelFactory) {
             var handlers = this;
 
+            // tested
             this.handleCollectionResult = function ($scope) {
                 Context.getCollection().then(function (list) {
                     $scope.collection = ViewModelFactory.collectionViewModel(list);
@@ -279,6 +287,7 @@
                 });
             };
 
+            // tested
             this.handleCollection = function ($scope) {
                 Context.getObject($routeParams.dt, $routeParams.id).then(function (object) {
                     var collectionDetails = object.collectionMember($routeParams.collection).getDetails();
@@ -291,6 +300,7 @@
                 });
             };
 
+            // tested
             this.handleActionDialog = function ($scope) {
                 Context.getObject($routeParams.sid || $routeParams.dt, $routeParams.id).then(function (object) {
                     var actionTarget = object.actionMember($routeParams.action).getDetails();
@@ -305,6 +315,7 @@
                 });
             };
 
+            // tested
             this.handleActionResult = function ($scope) {
                 Context.getObject($routeParams.sid || $routeParams.dt, $routeParams.id).then(function (object) {
                     var action = object.actionMember($routeParams.action);
@@ -325,9 +336,11 @@
                     if (error) {
                         setError(error);
                     }
+                    // otherwise just action with parms
                 });
             };
 
+            // tested
             this.handleProperty = function ($scope) {
                 Context.getObject($routeParams.dt, $routeParams.id).then(function (object) {
                     var propertyDetails = object.propertyMember($routeParams.property).getDetails();
@@ -342,6 +355,7 @@
                 });
             };
 
+            //tested
             this.handleCollectionItem = function ($scope) {
                 var collectionItemTypeKey = $routeParams.collectionItem.split("/");
                 var collectionItemType = collectionItemTypeKey[0];
@@ -354,6 +368,7 @@
                 });
             };
 
+            // tested
             this.handleServices = function ($scope) {
                 Context.getServices().then(function (services) {
                     $scope.services = ViewModelFactory.servicesViewModel(services);
@@ -364,6 +379,7 @@
                 });
             };
 
+            // tested
             this.handleService = function ($scope) {
                 Context.getObject($routeParams.sid).then(function (service) {
                     $scope.object = ViewModelFactory.serviceViewModel(service);
@@ -372,6 +388,7 @@
                 });
             };
 
+            // tested
             this.handleResult = function ($scope) {
                 var result = $routeParams.resultObject.split("-");
                 var dt = result[0];
@@ -386,6 +403,7 @@
                 });
             };
 
+            // tested
             this.handleError = function ($scope) {
                 var error = Context.getError();
                 if (error) {
@@ -395,6 +413,7 @@
                 }
             };
 
+            // tested
             this.handleAppBar = function ($scope) {
                 $scope.appBar = {};
 
@@ -416,11 +435,13 @@
                     Context.getObject($routeParams.dt, $routeParams.id).then(function (object) {
                         $scope.appBar.hideEdit = !(object) || $routeParams.editMode || false;
 
+                        // rework to use viewmodel code
                         $scope.appBar.doEdit = "#" + $location.path() + "?editMode=true";
                     });
                 }
             };
 
+            //tested
             this.handleObject = function ($scope) {
                 Context.getObject($routeParams.dt, $routeParams.id).then(function (object) {
                     Context.setNestedObject(null);
@@ -433,6 +454,7 @@
                 });
             };
 
+            // helper functions
             function setNestedObject(object, $scope) {
                 $scope.result = ViewModelFactory.domainObjectViewModel(object);
                 $scope.nestedTemplate = svrPath + "Content/partials/nestedObject.html";
@@ -449,6 +471,7 @@
                 Context.setError(errorRep);
             }
 
+            // expose for testing
             this.setResult = function (result, dvm, show) {
                 if (result.result().isNull()) {
                     if (dvm) {
@@ -463,6 +486,8 @@
                 if (result.resultType() === "object") {
                     var resultObject = result.result().object();
 
+                    // set the nested object here and then update the url. That should reload the page but pick up this object
+                    // so we don't hit the server again.
                     Context.setNestedObject(resultObject);
 
                     resultParm = "resultObject=" + resultObject.domainType() + "-" + resultObject.instanceId();
@@ -533,9 +558,11 @@
                 });
 
                 RepresentationLoader.populate(update, true, new Spiro.DomainObjectRepresentation()).then(function (updatedObject) {
+                    // This is a kludge because updated object has no self link.
                     var rawLinks = (object).get("links");
                     (updatedObject).set("links", rawLinks);
 
+                    // remove pre-changed object from cache
                     $cacheFactory.get('$http').remove(updatedObject.url());
 
                     Context.setObject(updatedObject);
@@ -548,4 +575,4 @@
     })(Spiro.Angular || (Spiro.Angular = {}));
     var Angular = Spiro.Angular;
 })(Spiro || (Spiro = {}));
-//@ sourceMappingURL=spiro.angular.app.js.map
+//# sourceMappingURL=spiro.angular.app.js.map

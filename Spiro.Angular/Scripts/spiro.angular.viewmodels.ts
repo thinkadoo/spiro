@@ -204,7 +204,7 @@ module Spiro.Angular {
         title: string;
         message: string;
         close: string; 
-        isQuery: bool; 
+        isQuery: boolean; 
 
         parameters: ParameterViewModel[];
 

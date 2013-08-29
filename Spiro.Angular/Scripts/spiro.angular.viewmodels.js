@@ -1,5 +1,7 @@
 var Spiro;
 (function (Spiro) {
+    /// <reference path="spiro.models.ts" />
+    /// <reference path="spiro.angular.app.ts" />
     (function (Angular) {
         function hashCode(toHash) {
             var hash = 0, i, char;
@@ -40,6 +42,8 @@ var Spiro;
             return "bg-color-" + getColourMapValues(type)["backgroundColor"];
         }
 
+        // TODO rewrite all the parm handling code into a window manager class
+        // state from $routeParams driven by events
         function getOtherParms($routeParams, excepts) {
             function include(parm) {
                 return $routeParams[parm] && !_.any(excepts, function (except) {
@@ -294,9 +298,12 @@ var Spiro;
                 var collectionViewModel = new CollectionViewModel();
                 var links = listRep.value().models;
 
+                //collectionViewModel.title = listRep.extensions().friendlyName;
                 collectionViewModel.size = links.length;
                 collectionViewModel.pluralName = "Objects";
 
+                //collectionViewModel.href = toCollectionUrl(collectionRep.selfLink().href(), $routeParams);
+                //collectionViewModel.color = toColorFromType(listRep.extensions().elementType);
                 var i = 0;
                 collectionViewModel.items = _.map(links, function (link) {
                     return ItemViewModel.create(link, $location.path(), i++, $routeParams);
@@ -401,4 +408,4 @@ var Spiro;
     })(Spiro.Angular || (Spiro.Angular = {}));
     var Angular = Spiro.Angular;
 })(Spiro || (Spiro = {}));
-//@ sourceMappingURL=spiro.angular.viewmodels.js.map
+//# sourceMappingURL=spiro.angular.viewmodels.js.map

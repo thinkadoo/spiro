@@ -6,7 +6,29 @@ var __extends = this.__extends || function (d, b) {
 };
 var Spiro;
 (function (Spiro) {
+    //Copyright 2013 Naked Objects Group Ltd
+    //Licensed under the Apache License, Version 2.0(the "License");
+    //you may not use this file except in compliance with the License.
+    //You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+    //Unless required by applicable law or agreed to in writing, software
+    //distributed under the License is distributed on an "AS IS" BASIS,
+    //WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    //See the License for the specific language governing permissions and
+    //limitations under the License.
+    // ABOUT THIS FILE:
+    // spiro.modern defines the controllers and routing responsible for the interactive behaviour of the Spiro Modern UI.
+    // It is built on the Backbone.js framework.
+    // Note that we have named our extensions to Backbone.View  xxxController, as this is what they really are.  We have
+    // factored out the view rendering responsibilities into spiro.modern.presentations, and the default implementation
+    // spiro.modern.presentation.handlebars.
+    /// <reference path="typings/backbone/backbone.d.ts" />
+    /// <reference path="typings/backbone/backbone.mine.d.ts" />
+    /// <reference path="spiro.models.ts" />
+    /// <reference path="spiro.models.helpers.ts" />
+    /// <reference path="spiro.backbone.helpers.ts" />
+    /// <reference path="spiro.modern.presentations.ts" />
     (function (Modern) {
+        // bind in a caching implementation
         Spiro.sync = function (method, model, options) {
             var wrapped = Backbone.cachingSync(Backbone.sync);
             wrapped(method, model, options);
@@ -256,7 +278,6 @@ var Spiro;
                 var _this = this;
                 _super.call(this, options);
                 this.model = model;
-                this.options = options;
                 _.bindAll(this, 'render');
                 _.each(['change', 'reset', 'draw'], function (evt) {
                     return _this.model.once(evt, _this.render);
@@ -270,6 +291,7 @@ var Spiro;
                 var resultType = this.model.resultType();
 
                 if (resultType === "object") {
+                    // todo cache more transparently
                     var resultObject = result.object();
 
                     if (resultObject) {
@@ -303,7 +325,6 @@ var Spiro;
                 var _this = this;
                 _super.call(this, options);
                 this.model = model;
-                this.options = options;
                 this.presentation = Modern.presentationFactory.CreatePresentation(this.model, {});
 
                 _.bindAll(this, 'render', 'renderWithError', 'show', 'go', 'cancel');
@@ -344,6 +365,11 @@ var Spiro;
             };
 
             ActionController.prototype.navigate = function () {
+                //if (!this.options.doNotNavigate) {
+                //    var helper = new FragmentHelper(Backbone.history.getFragment());
+                //    helper.addDialog(this.model.actionId());
+                //    app.navigate(helper.currentValue());
+                //}
             };
 
             ActionController.prototype.renderWithError = function (error) {
@@ -365,7 +391,6 @@ var Spiro;
                 var _this = this;
                 _super.call(this, options);
                 this.model = model;
-                this.options = options;
 
                 this.listOrCollection = model;
                 this.listPresentation = Modern.presentationFactory.CreatePresentation(this.model, { list: true });
@@ -393,6 +418,7 @@ var Spiro;
                 this.rows.push(model);
 
                 if (this.rows.length === this.listOrCollection.value().models.length) {
+                    // this will draw the header
                     this.presentation.draw(this.rows);
                 }
             };
@@ -438,7 +464,6 @@ var Spiro;
                 var _this = this;
                 _super.call(this, options);
                 this.model = model;
-                this.options = options;
 
                 this.presentation = Modern.presentationFactory.CreatePresentation(this.model, { nest: true });
 
@@ -472,6 +497,13 @@ var Spiro;
             };
 
             NestedDomainObjectController.prototype.navigate = function () {
+                //if (!this.options.doNotNavigate) {
+                //    if (this.model.instanceId()) { // to avoid transients etc
+                //        var helper = new FragmentHelper(Backbone.history.getFragment());
+                //        helper.addNested(this.objectUrlFragment());
+                //        app.navigate(helper.currentValue());
+                //    }
+                //}
             };
 
             NestedDomainObjectController.prototype.render = function () {
@@ -488,7 +520,6 @@ var Spiro;
                 var _this = this;
                 _super.call(this, options);
                 this.model = model;
-                this.options = options;
                 this.viewPresentation = Modern.presentationFactory.CreatePresentation(this.model, options);
 
                 _.bindAll(this, 'render', 'renderWithError', 'editSuccess', 'action', 'edit', 'link', 'collectionEvt', 'save', 'cancel', 'autocomplete');
@@ -522,6 +553,7 @@ var Spiro;
             };
 
             DomainObjectController.prototype.autocomplete = function (parm) {
+                // invoke the matching action
                 var actionResult = Spiro.Helpers.createActionInvoke(this.model, parm.id + "AutoComplete");
                 actionResult.setParameter("name", new Spiro.Value(parm.val));
                 actionResult.once("change", parm.callback);
@@ -573,6 +605,7 @@ var Spiro;
 
             DomainObjectController.prototype.objectUrlFragment = function () {
                 if (this.model.persistLink()) {
+                    // transient
                     return "objects/" + this.model.extensions().domainType;
                 }
 
@@ -614,7 +647,6 @@ var Spiro;
                 var _this = this;
                 _super.call(this, options);
                 this.model = model;
-                this.options = options;
                 this.presentation = Modern.presentationFactory.CreatePresentation(this.model, {});
 
                 _.bindAll(this, 'render', 'link');
@@ -649,7 +681,6 @@ var Spiro;
                 var _this = this;
                 _super.call(this, options);
                 this.model = model;
-                this.options = options;
                 _.bindAll(this, 'render');
                 _.each(['change', 'reset', 'draw'], function (evt) {
                     return _this.model.on(evt, _this.render);
@@ -674,4 +705,4 @@ var Spiro;
     })(Spiro.Modern || (Spiro.Modern = {}));
     var Modern = Spiro.Modern;
 })(Spiro || (Spiro = {}));
-//@ sourceMappingURL=spiro.modern.js.map
+//# sourceMappingURL=spiro.modern.js.map

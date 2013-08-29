@@ -60,7 +60,7 @@ module Spiro.Modern {
             }
         }
 
-        hasParms(): bool {
+        hasParms(): boolean {
             for (var p in this.parmMap) {
                 return true;
             }
@@ -270,7 +270,7 @@ module Spiro.Modern {
 
     class ResultController extends Backbone.View {
 
-        constructor(public model: Spiro.ActionResultRepresentation, private options: ModernOptions) {
+        constructor(public model: Spiro.ActionResultRepresentation,  options: ModernOptions) {
             super(options);
             _.bindAll(this, 'render');
             _.each(['change', 'reset', 'draw'], (evt: string) => this.model.once(evt, this.render));
@@ -314,7 +314,7 @@ module Spiro.Modern {
 
         presentation: Presentation;
 
-        constructor(public model: Spiro.ActionRepresentation, private options: ModernOptions) {
+        constructor(public model: Spiro.ActionRepresentation,  options: ModernOptions) {
             super(options);
             this.presentation = presentationFactory.CreatePresentation(this.model, {});
 
@@ -388,7 +388,7 @@ module Spiro.Modern {
         constructor(model: Spiro.ListRepresentation, options: ModernOptions);
         constructor(model: Spiro.CollectionRepresentation, options: ModernOptions);
 
-        constructor(public model: Backbone.Model, private options: ModernOptions) {
+        constructor(public model: Backbone.Model,  options: ModernOptions) {
             super(options);
 
             this.listOrCollection = <ListOrCollection><ListRepresentation>model;
@@ -456,7 +456,7 @@ module Spiro.Modern {
 
         presentation: Presentation;
 
-        constructor(public model: Spiro.DomainObjectRepresentation, private options: ModernOptions) {
+        constructor(public model: Spiro.DomainObjectRepresentation,  options: ModernOptions) {
             super(options);
 
             this.presentation = presentationFactory.CreatePresentation(this.model, { nest: true });
@@ -515,7 +515,7 @@ module Spiro.Modern {
         propertyDetails: PropertyRepresentation[];
         propertyDetailsCount: number; 
 
-        constructor(public model: Spiro.DomainObjectRepresentation, private options: ModernOptions) {
+        constructor(public model: Spiro.DomainObjectRepresentation,  options: ModernOptions) {
             super(options);
             this.viewPresentation = presentationFactory.CreatePresentation(this.model, options);
 
@@ -639,7 +639,7 @@ module Spiro.Modern {
 
         presentation: Presentation;
 
-        constructor(public model: Spiro.DomainServicesRepresentation, private options: ModernOptions) {
+        constructor(public model: Spiro.DomainServicesRepresentation,  options: ModernOptions) {
             super(options);
             this.presentation = presentationFactory.CreatePresentation(this.model, {});
 
@@ -669,7 +669,7 @@ module Spiro.Modern {
 
     class HomeController extends Backbone.View {
 
-        constructor(public model: Spiro.HomePageRepresentation, private options: ModernOptions) {
+        constructor(public model: Spiro.HomePageRepresentation,  options: ModernOptions) {
             super(options);
             _.bindAll(this, 'render');
             _.each(['change', 'reset', 'draw'], (evt: string) => this.model.on(evt, this.render));

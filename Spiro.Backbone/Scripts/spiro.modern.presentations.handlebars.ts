@@ -17,7 +17,7 @@
 /// <reference path="typings/backbone/backbone.mine.d.ts" />
 /// <reference path="typings/handlebars/handlebars.d.ts" />
 /// <reference path="typings/modernizr/modernizr.d.ts" />
-/// <reference path="typings/underscore/underscore-typed.d.ts" />
+/// <reference path="typings/underscore/underscore.d.ts" />
 /// <reference path="spiro.models.ts" />
 /// <reference path="spiro.models.helpers.ts" />
 /// <reference path="spiro.modern.presentations.ts" />
@@ -101,7 +101,7 @@ module Spiro.Modern.HandlebarsTemplating {
         return (pm.extensions().format === "date-time") ? title = formatDate(title) : title;
     }
 
-    function getFieldInput(element: JQuery, isScalar: bool): Value {
+    function getFieldInput(element: JQuery, isScalar: boolean): Value {
         var input = element.find(':input');
         var hiddenInput = element.find(':input[type=hidden]');
         var inputAsCheckbox = element.find(':input[type=checkbox]');
@@ -273,7 +273,7 @@ module Spiro.Modern.HandlebarsTemplating {
             }
         }
 
-        commonDraw(isRef: bool, template: any) {
+        commonDraw(isRef: boolean, template: any) {
             var title = getTitle(this.model);
 
             var context = {
@@ -648,7 +648,7 @@ module Spiro.Modern.HandlebarsTemplating {
             var items = this.model.value().models;
             var itemsElement = this.element.find(".items");
 
-            _.each(items, (link: Link, i?: number) => {
+            _.each(items, (link: Link, i: number) => {
                 var cip = new ListItemPresentation(link, i, itemsElement);
                 cip.on("link", (id) => this.trigger("link", id));
                 cip.draw();
@@ -886,7 +886,7 @@ module Spiro.Modern.HandlebarsTemplating {
 
         element: JQuery;
 
-        constructor(public model: Spiro.PropertyMember, public propertyId: string, private isRow: bool, private parentElement: JQuery) {
+        constructor(public model: Spiro.PropertyMember, public propertyId: string, private isRow: boolean, private parentElement: JQuery) {
             super();
         }
 
@@ -933,7 +933,7 @@ module Spiro.Modern.HandlebarsTemplating {
             this.editProperties.push(pp);            
         }
 
-        appendProperties(parentElement: JQuery, errors?: ErrorValueMap, isEdit?: bool) {
+        appendProperties(parentElement: JQuery, errors?: ErrorValueMap, isEdit?: boolean) {
             var propertiesElement = parentElement.find(".properties");
             var hasProperties = false;
             this.editProperties = [];
@@ -1236,7 +1236,7 @@ module Spiro.Modern.HandlebarsTemplating {
 
         draw(): void {
             this.element = $(".properties-pane");
-            _.each(this.model.value().models, (link: Link, i?: number) => {
+            _.each(this.model.value().models, (link: Link, i: number) => {
                 var sp = new ServiceLinkPresentation(link, i, this.element);
                 sp.on("link", (id) => this.trigger("link", id));
                 sp.draw();

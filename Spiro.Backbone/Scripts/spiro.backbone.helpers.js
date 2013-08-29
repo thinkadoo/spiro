@@ -1,5 +1,19 @@
 ﻿var Spiro;
 (function (Spiro) {
+    //Copyright 2013 Naked Objects Group Ltd
+    //Licensed under the Apache License, Version 2.0(the "License");
+    //you may not use this file except in compliance with the License.
+    //You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+    //Unless required by applicable law or agreed to in writing, software
+    //distributed under the License is distributed on an "AS IS" BASIS,
+    //WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    //See the License for the specific language governing permissions and
+    //limitations under the License.
+    /// <reference path="typings/jquery/jquery.d.ts" />
+    /// <reference path="typings/backbone/backbone.d.ts" />
+    /// <reference path="spiro.models.ts" />
+    //declare var _: any;
+    // helpers for common tasks with spiro model
     (function (Helpers) {
         function createActionInvoke(domainObject, actionName, method) {
             var action = domainObject.actionMembers()[actionName];
@@ -43,4 +57,4 @@
     })(Spiro.Helpers || (Spiro.Helpers = {}));
     var Helpers = Spiro.Helpers;
 })(Spiro || (Spiro = {}));
-//@ sourceMappingURL=spiro.backbone.helpers.js.map
+//# sourceMappingURL=spiro.backbone.helpers.js.map

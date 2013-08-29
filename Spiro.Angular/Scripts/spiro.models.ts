@@ -14,7 +14,7 @@
 // following links to other resources.
 
 /// <reference path="typings/jquery/jquery.d.ts" />
-/// <reference path="typings/underscore/underscore-typed.d.ts" />
+/// <reference path="typings/underscore/underscore.d.ts" />
 /// <reference path="spiro.models.shims.ts" />
 
 
@@ -39,14 +39,14 @@ module Spiro {
         friendlyName: string;
         description: string;
         returnType: string;
-        optional: bool;
-        hasParams: bool;
+        optional: boolean;
+        hasParams: boolean;
         elementType: string;
         domainType: string;
         pluralName: string;
         format: string;
         memberOrder: number;
-        isService: bool;
+        isService: boolean;
     }
 
     export interface OptionalCapabilities {
@@ -145,11 +145,11 @@ module Spiro {
             }
         }
 
-        isReference(): bool {
+        isReference(): boolean {
             return this.wrapped instanceof Link;
         }
 
-        isNull(): bool {
+        isNull(): boolean {
             return this.wrapped == null;
         }
 
@@ -235,11 +235,11 @@ module Spiro {
             return null;
         }
 
-        isNull(): bool {
+        isNull(): boolean {
             return this.wrapped == null;
         }
 
-        isVoid(): bool {
+        isVoid(): boolean {
             return (this.resultType == "void");
         }
     }
@@ -336,7 +336,7 @@ module Spiro {
     }
 
     export class AddToRemoveFromMap extends ArgumentMap implements HateoasModel {
-        constructor(private collectionResource: CollectionRepresentation, map: Object, add: bool) {
+        constructor(private collectionResource: CollectionRepresentation, map: Object, add: boolean) {
             super(map, collectionResource, collectionResource.instanceId());
 
             var link = add ? collectionResource.addToLink() : collectionResource.removeFromLink();
@@ -512,7 +512,7 @@ module Spiro {
         }
 
         // helper
-        isScalar(): bool {
+        isScalar(): boolean {
             return isScalarType(this.extensions().returnType);
         }
     }
@@ -729,7 +729,7 @@ module Spiro {
         }
 
         // helper 
-        isScalar(): bool {
+        isScalar(): boolean {
             return isScalarType(this.extensions().returnType);
         }
     }
@@ -759,7 +759,7 @@ module Spiro {
             return this.wrapped.disabledReason;
         }
 
-        isScalar(): bool {
+        isScalar(): boolean {
             return isScalarType(this.extensions().returnType);
         }
 

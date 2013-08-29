@@ -1,5 +1,5 @@
 ﻿/// <reference path="typings/angularjs/angular.d.ts" />
-/// <reference path="typings/underscore/underscore-typed.d.ts" />
+/// <reference path="typings/underscore/underscore.d.ts" />
 /// <reference path="spiro.models.ts" />
 /// <reference path="spiro.angular.viewmodels.ts" />
 
@@ -32,8 +32,8 @@ module Spiro.Angular {
 
    
 
-    export interface RLInterface {
-        populate: (m: HateoasModel, ignoreCache?: bool, r?: HateoasModel) => ng.IPromise;
+    export interface RLInterface<T> {
+        populate: (m: HateoasModel, ignoreCache?: boolean, r?: HateoasModel) => ng.IPromise<T>;
     }
 
     export interface VMFInterface {
@@ -139,7 +139,7 @@ module Spiro.Angular {
             return data;
         }
 
-        this.populate = function (model: HateoasModel, ignoreCache?: bool, expected?: HateoasModel) {
+        this.populate = function (model: HateoasModel, ignoreCache?: boolean, expected?: HateoasModel) {
 
             var response = expected || model;
             var useCache = !ignoreCache;
@@ -178,13 +178,13 @@ module Spiro.Angular {
     });
 
     export interface ContextInterface {
-        getHome: () => ng.IPromise;
-        getServices: () => ng.IPromise;
-        getObject: (type: string, id?: string) => ng.IPromise;
+        getHome: () => ng.IPromise<HomePageRepresentation>;
+        getServices: () => ng.IPromise<DomainServicesRepresentation>;
+        getObject: (type: string, id?: string) => ng.IPromise<DomainObjectRepresentation>;
         setObject: (object: DomainObjectRepresentation) => void;
-        getNestedObject: (type: string, id: string) => ng.IPromise;
+        getNestedObject: (type: string, id: string) => ng.IPromise<DomainObjectRepresentation>;
         setNestedObject: (object: DomainObjectRepresentation) => void;
-        getCollection: () => ng.IPromise;
+        getCollection: () => ng.IPromise<ListRepresentation>;
         setCollection: (list: ListRepresentation) => void;
         getError: () => ErrorRepresentation;
         setError: (object: ErrorRepresentation) => void;

@@ -1,3 +1,8 @@
+/// <reference path="spiro.models.ts"/>
+/// <reference path="typings/jquery/jquery.d.ts" />
+/// <reference path="typings/backbone/backbone.d.ts"/>
+/// <reference path="typings/underscore/underscore.d.ts" />
+/// <reference path="typings/qunit/qunit.d.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -76,6 +81,7 @@ var SpiroModelTests;
 
     var home;
 
+    // 5.0
     asyncTest("Home Page Resource", function () {
         home = new Spiro.HomePageRepresentation();
         var test = new TestView(home);
@@ -89,6 +95,7 @@ var SpiroModelTests;
         home.fetch();
     });
 
+    // 5.0
     asyncTest("Home Self  Resource", function () {
         var self = new Spiro.HomePageRepresentation();
         var test = new TestView(self);
@@ -103,6 +110,7 @@ var SpiroModelTests;
         self.fetch();
     });
 
+    // 6.0
     asyncTest("User Resource", function () {
         var user = new Spiro.UserRepresentation();
         var test = new TestView(user);
@@ -131,6 +139,7 @@ var SpiroModelTests;
         user.fetch();
     });
 
+    // 7.0
     asyncTest("Domain Services Resource", function () {
         var domainServices = new Spiro.DomainServicesRepresentation();
         var test = new TestView(domainServices);
@@ -171,6 +180,7 @@ var SpiroModelTests;
         domainServices.fetch();
     });
 
+    // 8.0
     asyncTest("Version Resource", function () {
         var version = new Spiro.VersionRepresentation();
         var test = new TestView(version);
@@ -205,6 +215,7 @@ var SpiroModelTests;
         version.fetch();
     });
 
+    // 14.0
     asyncTest("DomainObject Resource", function () {
         var obj = new Spiro.DomainObjectRepresentation();
         var test = new TestView(obj);
@@ -374,6 +385,7 @@ var SpiroModelTests;
 
             persistMap.setMember("OrderDate", new Spiro.Value(getTodayDate()));
 
+            //persistMap.setMember("OrderPlacedBy", new Spiro.Link({ "href": "http://mvc.nakedobjects.net:1081/RestDemo/objects/AdventureWorksModel.Employee/165" }));
             persistMap.setMember("ShipMethod", new Spiro.Value({ "href": "http://mvc.nakedobjects.net:1081/RestDemo/objects/AdventureWorksModel.ShipMethod/4" }));
 
             persistMap.save();
@@ -386,6 +398,7 @@ var SpiroModelTests;
         invoke.fetch();
     });
 
+    // 14.4.1
     asyncTest("DomainObject Properties Resource", function () {
         var obj = new Spiro.DomainObjectRepresentation();
         var test = new TestView(obj);
@@ -440,6 +453,7 @@ var SpiroModelTests;
         obj.fetch();
     });
 
+    // 14.4.2
     asyncTest("DomainObject Collections Resource", function () {
         var obj = new Spiro.DomainObjectRepresentation();
         var test = new TestView(obj);
@@ -476,6 +490,7 @@ var SpiroModelTests;
         obj.fetch();
     });
 
+    // 14.4.3
     asyncTest("DomainObject Actions Resource", function () {
         var obj = new Spiro.DomainObjectRepresentation();
         var test = new TestView(obj);
@@ -599,6 +614,7 @@ var SpiroModelTests;
         obj.fetch();
     });
 
+    // 16
     asyncTest("Property Resources", function () {
         var obj = new Spiro.DomainObjectRepresentation();
         var test = new TestView(obj);
@@ -678,6 +694,9 @@ var SpiroModelTests;
                     equal(pm.extensions().memberOrder, data.mo, "memberOrder");
                     equal(pm.extensions().optional, data.opt, "optional");
                     equal(pm.extensions().returnType, data.rt, "returnType");
+                    //if (--k == 0) {
+                    //    start();
+                    //}
                 };
 
                 details.fetch();
@@ -692,6 +711,7 @@ var SpiroModelTests;
         obj.fetch();
     });
 
+    // 17
     asyncTest("Collection Resources", function () {
         var obj = new Spiro.DomainObjectRepresentation();
         var test = new TestView(obj);
@@ -718,6 +738,7 @@ var SpiroModelTests;
 
                     equal(cm.value().models.length, 0, "value count");
 
+                    //equal(cm.value(), [], "value");
                     var self = cm.getSelf();
                     equal(self.url(), "http://mvc.nakedobjects.net:1081/RestDemo/objects/AdventureWorksModel.WorkOrder/2287/collections/" + cm.instanceId(), "self resource link");
 
@@ -749,6 +770,7 @@ var SpiroModelTests;
         obj.fetch();
     });
 
+    // 18
     asyncTest("Action Resources", function () {
         var obj = new Spiro.DomainObjectRepresentation();
         var test = new TestView(obj);
@@ -817,12 +839,16 @@ var SpiroModelTests;
                     equal(am.extensions().hasParams, true, "hasParams");
                     equal(am.extensions().returnType, "AdventureWorksModel.WorkOrderRouting", "returnType");
 
+                    //if (--k == 0) {
+                    //    start();
+                    //}
                     start();
                 };
 
                 details.fetch();
             }
             ;
+            //setTimeout(() => start(), 20000);
         };
 
         obj.hateoasUrl = "http://mvc.nakedobjects.net:1081/RestDemo/objects/AdventureWorksModel.WorkOrder/2287";
@@ -1243,4 +1269,4 @@ var SpiroModelTests;
         invoke.fetch();
     });
 })(SpiroModelTests || (SpiroModelTests = {}));
-//@ sourceMappingURL=spiro.models.test.js.map
+//# sourceMappingURL=spiro.models.test.js.map

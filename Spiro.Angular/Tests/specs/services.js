@@ -1,4 +1,9 @@
+/// <reference path="../../Scripts/typings/jasmine/jasmine.d.ts" />
+/// <reference path="../../Scripts/typings/angularjs/angular.d.ts" />
+/// <reference path="../../Scripts/typings/angularjs/angular-mocks.d.ts" />
+/// <reference path="../../Scripts/spiro.angular.app.ts" />
 describe('Services', function () {
+    // helpers
     function spyOnPromise(tgt, func, mock) {
         var mp = {};
 
@@ -32,6 +37,7 @@ describe('Services', function () {
         return mp;
     }
 
+    // TODO sure this could be recursive - fix once tests are running
     function spyOnPromiseFail(tgt, func, mock) {
         var mp = {};
 
@@ -1257,6 +1263,7 @@ describe('Services', function () {
 
             describe('when currentHome is set', function () {
                 beforeEach(inject(function ($rootScope) {
+                    // currentHome set already
                     result = null;
 
                     runs(function () {
@@ -1312,6 +1319,7 @@ describe('Services', function () {
 
             describe('when currentServices is set', function () {
                 beforeEach(inject(function ($rootScope) {
+                    // currentServices set already
                     result = null;
 
                     runs(function () {
@@ -1668,4 +1676,4 @@ describe('Services', function () {
         });
     });
 });
-//@ sourceMappingURL=services.js.map
+//# sourceMappingURL=services.js.map

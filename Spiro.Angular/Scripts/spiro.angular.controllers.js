@@ -1,5 +1,10 @@
 ﻿var Spiro;
 (function (Spiro) {
+    /// <reference path="typings/angularjs/angular.d.ts" />
+    /// <reference path="spiro.models.ts" />
+    /// <reference path="spiro.angular.viewmodels.ts" />
+    /// <reference path="spiro.angular.app.ts" />
+    // tested
     (function (Angular) {
         Angular.app.controller('ServicesController', function ($scope, Handlers) {
             Handlers.handleServices($scope);
@@ -50,4 +55,4 @@
     })(Spiro.Angular || (Spiro.Angular = {}));
     var Angular = Spiro.Angular;
 })(Spiro || (Spiro = {}));
-//@ sourceMappingURL=spiro.angular.controllers.js.map
+//# sourceMappingURL=spiro.angular.controllers.js.map

@@ -1,11 +1,27 @@
-﻿var __extends = this.__extends || function (d, b) {
+﻿//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//See the License for the specific language governing permissions and
+//limitations under the License.
+var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+// ABOUT THIS FILE:
+// spiro.models defines a set of classes that correspond directly to the JSON representations returned by Restful Objects
+// resources.  These classes provide convenient methods for navigating the contents of those representations, and for
+// following links to other resources.
+/// <reference path="typings/jquery/jquery.d.ts" />
+/// <reference path="typings/underscore/underscore.d.ts" />
+/// <reference path="typings/backbone/backbone.d.ts" />
+// Backbone version of shims
 var Spiro;
 (function (Spiro) {
+    // option helpers
+    //export interface Options {
+    //    success?: (originalModel, resp, iOptions) => void;
+    //    error?: (originalModel, resp, iOptions) => void;
+    //}
     Spiro.sync = function (method, model, options) {
         Backbone.sync(method, model, options);
     };
@@ -19,6 +35,7 @@ var Spiro;
     })(Backbone.Model);
     Spiro.ModelShim = ModelShim;
 
+    // base class for all representations that can be directly loaded from the server
     var HateoasModelBaseShim = (function (_super) {
         __extends(HateoasModelBaseShim, _super);
         function HateoasModelBaseShim(object) {
@@ -62,6 +79,7 @@ var Spiro;
             } else if (this.method === "POST") {
                 return _super.prototype.save.call(this, null, options);
             } else if (this.method === "PUT") {
+                // set id so not new ?
                 return _super.prototype.save.call(this, null, options);
             } else if (this.method === "DELETE") {
                 this.appendUrlSuffix();
@@ -122,4 +140,4 @@ var Spiro;
     })(Backbone.Collection);
     Spiro.CollectionShim = CollectionShim;
 })(Spiro || (Spiro = {}));
-//@ sourceMappingURL=spiro.models.shims.js.map
+//# sourceMappingURL=spiro.models.shims.js.map

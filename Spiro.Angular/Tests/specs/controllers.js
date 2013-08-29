@@ -1,3 +1,7 @@
+/// <reference path="../../Scripts/typings/jasmine/jasmine.d.ts" />
+/// <reference path="../../Scripts/typings/angularjs/angular.d.ts" />
+/// <reference path="../../Scripts/typings/angularjs/angular-mocks.d.ts" />
+/// <reference path="../../Scripts/spiro.angular.app.ts" />
 describe('Controllers', function () {
     var $scope, ctrl;
 
@@ -250,4 +254,4 @@ describe('Controllers', function () {
         });
     });
 });
-//@ sourceMappingURL=controllers.js.map
+//# sourceMappingURL=controllers.js.map

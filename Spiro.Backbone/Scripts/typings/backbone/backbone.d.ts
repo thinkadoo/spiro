@@ -86,14 +86,17 @@ declare module Backbone {
         sync(...arg: any[]): JQueryXHR;
     }
 
-    class Model extends ModelBase {
+    interface OptionalDefaults {
+        defaults?(): any;
+    }
+
+    class Model extends ModelBase implements OptionalDefaults {
 
         static extend(properties: any, classProperties?: any): any; // do not use, prefer TypeScript's extend functionality
 
         attributes: any;
         changed: any[];
         cid: string;
-        defaults: any;
         id: any;
         idAttribute: string;
         validationError: any;
@@ -151,9 +154,8 @@ declare module Backbone {
 
         fetch(options?: CollectionFetchOptions): JQueryXHR;
 
-        comparator(element: Model): number;
-        comparator(element: Model): string;
-        comparator(compare: Model, to?: Model): number;
+        comparator(element: Model): any;
+        comparator(compare: Model, to?: Model): any;
 
         add(model: Model, options?: AddOptions);
         add(models: Model[], options?: AddOptions);
@@ -236,11 +238,13 @@ declare module Backbone {
         zip(...model: Model[]): Model[];
     }
 
-    class Router extends Events {
+    interface OptionalRoutes {
+        routes?(): any;
+    }
+
+    class Router extends Events implements OptionalRoutes {
 
         static extend(properties: any, classProperties?: any): any; // do not use, prefer TypeScript's extend functionality
-
-        routes: any;
 
         constructor(options?: RouterOptions);
         initialize(options?: RouterOptions);
@@ -284,7 +288,11 @@ declare module Backbone {
         attributes?: any[];
     }
 
-    class View extends Events {
+    interface OptionalEvents {
+        events?(): any;
+    }
+
+    class View extends Events implements OptionalEvents {
 
         static extend(properties: any, classProperties?: any): any;  // do not use, prefer TypeScript's extend functionality
 
@@ -300,7 +308,7 @@ declare module Backbone {
         cid: string;
         className: string;
         tagName: string;
-        events: any;
+        options: any;
 
         el: any;
         $el: JQuery;

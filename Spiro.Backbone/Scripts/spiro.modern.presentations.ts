@@ -38,12 +38,12 @@ module Spiro.Modern {
     }
 
     export interface ModernOptions extends Backbone.ViewOptions {
-        nest?: bool;
-        row?: bool;
-        table?: bool;
-        list?: bool;
-        edit?: bool;
-        doNotNavigate?: bool;
+        nest?: boolean;
+        row?: boolean;
+        table?: boolean;
+        list?: boolean;
+        edit?: boolean;
+        doNotNavigate?: boolean;
         actingController?: Backbone.View; // todo remove 
         controllerEvent?: (controller: Backbone.View) => void;
     }

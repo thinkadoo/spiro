@@ -1,1 +1,1 @@
-//@ sourceMappingURL=scenariotests.js.map
+//# sourceMappingURL=scenariotests.js.map

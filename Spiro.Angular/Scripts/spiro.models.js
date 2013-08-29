@@ -1,15 +1,32 @@
-﻿var __extends = this.__extends || function (d, b) {
+﻿//Copyright 2013 Naked Objects Group Ltd
+//Licensed under the Apache License, Version 2.0(the "License");
+//you may not use this file except in compliance with the License.
+//You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+//Unless required by applicable law or agreed to in writing, software
+//distributed under the License is distributed on an "AS IS" BASIS,
+//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//See the License for the specific language governing permissions and
+//limitations under the License.
+var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+// ABOUT THIS FILE:
+// spiro.models defines a set of classes that correspond directly to the JSON representations returned by Restful Objects
+// resources.  These classes provide convenient methods for navigating the contents of those representations, and for
+// following links to other resources.
+/// <reference path="typings/jquery/jquery.d.ts" />
+/// <reference path="typings/underscore/underscore.d.ts" />
+/// <reference path="spiro.models.shims.ts" />
 var Spiro;
 (function (Spiro) {
     function isScalarType(typeName) {
         return typeName === "string" || typeName === "number" || typeName === "boolean" || typeName === "integer";
     }
 
+    // rel helper class
     var Rel = (function () {
         function Rel(asString) {
             this.asString = asString;
@@ -21,6 +38,7 @@ var Spiro;
             var postFix;
 
             if (this.asString.substring(0, 3) === "urn") {
+                // namespaced
                 this.ns = this.asString.substring(0, this.asString.indexOf("/") + 1);
                 postFix = this.asString.substring(this.asString.indexOf("/") + 1);
             } else {
@@ -39,6 +57,7 @@ var Spiro;
     })();
     Spiro.Rel = Rel;
 
+    // Media type helper class
     var MediaType = (function () {
         function MediaType(asString) {
             this.asString = asString;
@@ -67,6 +86,7 @@ var Spiro;
     })();
     Spiro.MediaType = MediaType;
 
+    // helper class for values
     var Value = (function () {
         function Value(raw) {
             if (raw instanceof Link) {
@@ -129,6 +149,7 @@ var Spiro;
     })();
     Spiro.Value = Value;
 
+    // helper class for results
     var Result = (function () {
         function Result(wrapped, resultType) {
             this.wrapped = wrapped;
@@ -166,6 +187,7 @@ var Spiro;
     })();
     Spiro.Result = Result;
 
+    // base class for nested representations
     var NestedRepresentation = (function () {
         function NestedRepresentation(wrapped) {
             this.wrapped = wrapped;
@@ -181,6 +203,7 @@ var Spiro;
     })();
     Spiro.NestedRepresentation = NestedRepresentation;
 
+    // base class for all representations that can be directly loaded from the server
     var HateoasModelBase = (function (_super) {
         __extends(HateoasModelBase, _super);
         function HateoasModelBase(object) {
@@ -237,6 +260,8 @@ var Spiro;
             }
         }
         UpdateMap.prototype.onChange = function () {
+            // if the update map changes as a result of server changes (eg title changes) update the
+            // associated domain object
             this.domainObject.setFromUpdateMap(this);
         };
 
@@ -272,6 +297,8 @@ var Spiro;
             link.copyToHateoasModel(this);
         }
         AddToRemoveFromMap.prototype.onChange = function () {
+            // if the update map changes as a result of server changes (eg title changes) update the
+            // associated property
             this.collectionResource.setFromMap(this);
         };
 
@@ -297,6 +324,8 @@ var Spiro;
             this.setValue(propertyResource.value());
         }
         ModifyMap.prototype.onChange = function () {
+            // if the update map changes as a result of server changes (eg title changes) update the
+            // associated property
             this.propertyResource.setFromModifyMap(this);
         };
 
@@ -325,8 +354,11 @@ var Spiro;
     })(Spiro.ArgumentMap);
     Spiro.ClearMap = ClearMap;
 
+    // helper - collection of Links
     var Links = (function (_super) {
         __extends(Links, _super);
+        // cannot use constructor to initialise as model property is not yet set and so will
+        // not create members of correct type
         function Links() {
             var _this = this;
             _super.call(this);
@@ -346,6 +378,7 @@ var Spiro;
             return ll;
         };
 
+        // returns first link of rel
         Links.prototype.getLinkByRel = function (rel) {
             return _.find(this.models, function (i) {
                 return i.rel().uniqueValue === rel.uniqueValue;
@@ -359,6 +392,7 @@ var Spiro;
     })(Spiro.CollectionShim);
     Spiro.Links = Links;
 
+    // REPRESENTATIONS
     var ResourceRepresentation = (function (_super) {
         __extends(ResourceRepresentation, _super);
         function ResourceRepresentation(object) {
@@ -376,19 +410,23 @@ var Spiro;
     })(HateoasModelBase);
     Spiro.ResourceRepresentation = ResourceRepresentation;
 
+    // matches a action invoke resource 19.0 representation
     var ActionResultRepresentation = (function (_super) {
         __extends(ActionResultRepresentation, _super);
         function ActionResultRepresentation(object) {
             _super.call(this, object);
         }
+        // links
         ActionResultRepresentation.prototype.selfLink = function () {
             return this.links().linkByRel("self");
         };
 
+        // link representations
         ActionResultRepresentation.prototype.getSelf = function () {
             return this.selfLink().getTarget();
         };
 
+        // properties
         ActionResultRepresentation.prototype.resultType = function () {
             return this.get("resultType");
         };
@@ -397,6 +435,7 @@ var Spiro;
             return new Result(this.get("result"), this.resultType());
         };
 
+        // helper
         ActionResultRepresentation.prototype.setParameter = function (name, value) {
             value.set(this.attributes, name);
         };
@@ -404,12 +443,15 @@ var Spiro;
     })(ResourceRepresentation);
     Spiro.ActionResultRepresentation = ActionResultRepresentation;
 
+    // matches an action representation 18.0
+    // matches 18.2.1
     var Parameter = (function (_super) {
         __extends(Parameter, _super);
         function Parameter(wrapped, parent) {
             _super.call(this, wrapped);
             this.parent = parent;
         }
+        // properties
         Parameter.prototype.choices = function () {
             if (this.wrapped.choices) {
                 return _.map(this.wrapped.choices, function (item) {
@@ -423,6 +465,7 @@ var Spiro;
             return new Value(this.wrapped.default);
         };
 
+        // helper
         Parameter.prototype.isScalar = function () {
             return isScalarType(this.extensions().returnType);
         };
@@ -435,6 +478,7 @@ var Spiro;
         function ActionRepresentation() {
             _super.apply(this, arguments);
         }
+        // links
         ActionRepresentation.prototype.selfLink = function () {
             return this.links().linkByRel("self");
         };
@@ -447,6 +491,7 @@ var Spiro;
             return this.links().linkByRel("urn:org.restfulobjects:rels/invoke");
         };
 
+        // linked representations
         ActionRepresentation.prototype.getSelf = function () {
             return this.selfLink().getTarget();
         };
@@ -459,6 +504,7 @@ var Spiro;
             return this.invokeLink().getTarget();
         };
 
+        // properties
         ActionRepresentation.prototype.actionId = function () {
             return this.get("id");
         };
@@ -488,11 +534,13 @@ var Spiro;
     })(ResourceRepresentation);
     Spiro.ActionRepresentation = ActionRepresentation;
 
+    // matches a collection representation 17.0
     var CollectionRepresentation = (function (_super) {
         __extends(CollectionRepresentation, _super);
         function CollectionRepresentation() {
             _super.apply(this, arguments);
         }
+        // links
         CollectionRepresentation.prototype.selfLink = function () {
             return this.links().linkByRel("self");
         };
@@ -509,6 +557,7 @@ var Spiro;
             return this.links().linkByRel("urn:org.restfulobjects:rels/remove-from");
         };
 
+        // linked representations
         CollectionRepresentation.prototype.getSelf = function () {
             return this.selfLink().getTarget();
         };
@@ -543,6 +592,7 @@ var Spiro;
             return null;
         };
 
+        // properties
         CollectionRepresentation.prototype.instanceId = function () {
             return this.get("id");
         };
@@ -558,11 +608,13 @@ var Spiro;
     })(ResourceRepresentation);
     Spiro.CollectionRepresentation = CollectionRepresentation;
 
+    // matches a property representation 16.0
     var PropertyRepresentation = (function (_super) {
         __extends(PropertyRepresentation, _super);
         function PropertyRepresentation() {
             _super.apply(this, arguments);
         }
+        // links
         PropertyRepresentation.prototype.modifyLink = function () {
             return this.links().linkByRel("urn:org.restfulobjects:rels/modify");
         };
@@ -583,6 +635,7 @@ var Spiro;
             return this.modifyLink().arguments();
         };
 
+        // linked representations
         PropertyRepresentation.prototype.getSelf = function () {
             return this.selfLink().getTarget();
         };
@@ -609,6 +662,7 @@ var Spiro;
             return null;
         };
 
+        // properties
         PropertyRepresentation.prototype.instanceId = function () {
             return this.get("id");
         };
@@ -631,6 +685,7 @@ var Spiro;
             return this.get("disabledReason");
         };
 
+        // helper
         PropertyRepresentation.prototype.isScalar = function () {
             return isScalarType(this.extensions().returnType);
         };
@@ -638,6 +693,8 @@ var Spiro;
     })(ResourceRepresentation);
     Spiro.PropertyRepresentation = PropertyRepresentation;
 
+    // matches a domain object representation 14.0
+    // base class for 14.4.1/2/3
     var Member = (function (_super) {
         __extends(Member, _super);
         function Member(wrapped, parent) {
@@ -683,6 +740,7 @@ var Spiro;
     })(NestedRepresentation);
     Spiro.Member = Member;
 
+    // matches 14.4.1
     var PropertyMember = (function (_super) {
         __extends(PropertyMember, _super);
         function PropertyMember(wrapped, parent) {
@@ -703,6 +761,7 @@ var Spiro;
     })(Member);
     Spiro.PropertyMember = PropertyMember;
 
+    // matches 14.4.2
     var CollectionMember = (function (_super) {
         __extends(CollectionMember, _super);
         function CollectionMember(wrapped, parent) {
@@ -732,6 +791,7 @@ var Spiro;
     })(Member);
     Spiro.CollectionMember = CollectionMember;
 
+    // matches 14.4.3
     var ActionMember = (function (_super) {
         __extends(ActionMember, _super);
         function ActionMember(wrapped, parent) {
@@ -862,6 +922,7 @@ var Spiro;
             return this.persistLink().arguments();
         };
 
+        // linked representations
         DomainObjectRepresentation.prototype.getSelf = function () {
             return this.selfLink().getTarget();
         };
@@ -880,10 +941,12 @@ var Spiro;
                 m.update(map.attributes["members"][member]);
             }
 
+            // to trigger an update on the domainobject
             this.set(map.attributes);
         };
 
         DomainObjectRepresentation.prototype.setFromPersistMap = function (map) {
+            // to trigger an update on the domainobject
             this.set(map.attributes);
             this.resetMemberMaps();
         };
@@ -895,6 +958,7 @@ var Spiro;
     })(ResourceRepresentation);
     Spiro.DomainObjectRepresentation = DomainObjectRepresentation;
 
+    // matches scalar representation 12.0
     var ScalarValueRepresentation = (function (_super) {
         __extends(ScalarValueRepresentation, _super);
         function ScalarValueRepresentation(wrapped) {
@@ -907,19 +971,23 @@ var Spiro;
     })(NestedRepresentation);
     Spiro.ScalarValueRepresentation = ScalarValueRepresentation;
 
+    // matches List Representation 11.0
     var ListRepresentation = (function (_super) {
         __extends(ListRepresentation, _super);
         function ListRepresentation(object) {
             _super.call(this, object);
         }
+        // links
         ListRepresentation.prototype.selfLink = function () {
             return this.links().linkByRel("self");
         };
 
+        // linked representations
         ListRepresentation.prototype.getSelf = function () {
             return this.selfLink().getTarget();
         };
 
+        // list of links to services
         ListRepresentation.prototype.value = function () {
             return Links.WrapLinks(this.get("value"));
         };
@@ -927,11 +995,13 @@ var Spiro;
     })(ResourceRepresentation);
     Spiro.ListRepresentation = ListRepresentation;
 
+    // matches the error representation 10.0
     var ErrorRepresentation = (function (_super) {
         __extends(ErrorRepresentation, _super);
         function ErrorRepresentation(object) {
             _super.call(this, object);
         }
+        // scalar properties
         ErrorRepresentation.prototype.message = function () {
             return this.get("message");
         };
@@ -948,6 +1018,7 @@ var Spiro;
     })(ResourceRepresentation);
     Spiro.ErrorRepresentation = ErrorRepresentation;
 
+    // matches Objects of Type Resource 9.0
     var PersistMap = (function (_super) {
         __extends(PersistMap, _super);
         function PersistMap(domainObject, map) {
@@ -970,11 +1041,13 @@ var Spiro;
     })(Spiro.ArgumentMap);
     Spiro.PersistMap = PersistMap;
 
+    // matches the version representation 8.0
     var VersionRepresentation = (function (_super) {
         __extends(VersionRepresentation, _super);
         function VersionRepresentation() {
             _super.call(this);
         }
+        // links
         VersionRepresentation.prototype.selfLink = function () {
             return this.links().linkByRel("self");
         };
@@ -983,6 +1056,7 @@ var Spiro;
             return this.links().linkByRel("up");
         };
 
+        // linked representations
         VersionRepresentation.prototype.getSelf = function () {
             return this.selfLink().getTarget();
         };
@@ -991,6 +1065,7 @@ var Spiro;
             return this.upLink().getTarget();
         };
 
+        // scalar properties
         VersionRepresentation.prototype.specVersion = function () {
             return this.get("specVersion");
         };
@@ -1006,15 +1081,18 @@ var Spiro;
     })(ResourceRepresentation);
     Spiro.VersionRepresentation = VersionRepresentation;
 
+    // matches Domain Services Representation 7.0
     var DomainServicesRepresentation = (function (_super) {
         __extends(DomainServicesRepresentation, _super);
         function DomainServicesRepresentation() {
             _super.apply(this, arguments);
         }
+        // links
         DomainServicesRepresentation.prototype.upLink = function () {
             return this.links().linkByRel("up");
         };
 
+        // linked representations
         DomainServicesRepresentation.prototype.getSelf = function () {
             return this.selfLink().getTarget();
         };
@@ -1026,11 +1104,13 @@ var Spiro;
     })(ListRepresentation);
     Spiro.DomainServicesRepresentation = DomainServicesRepresentation;
 
+    // matches the user representation 6.0
     var UserRepresentation = (function (_super) {
         __extends(UserRepresentation, _super);
         function UserRepresentation() {
             _super.apply(this, arguments);
         }
+        // links
         UserRepresentation.prototype.selfLink = function () {
             return this.links().linkByRel("self");
         };
@@ -1039,6 +1119,7 @@ var Spiro;
             return this.links().linkByRel("up");
         };
 
+        // linked representations
         UserRepresentation.prototype.getSelf = function () {
             return this.selfLink().getTarget();
         };
@@ -1047,6 +1128,7 @@ var Spiro;
             return this.upLink().getTarget();
         };
 
+        // scalar properties
         UserRepresentation.prototype.userName = function () {
             return this.get("userName");
         };
@@ -1063,12 +1145,14 @@ var Spiro;
     })(ResourceRepresentation);
     Spiro.UserRepresentation = UserRepresentation;
 
+    // matches the home page representation  5.0
     var HomePageRepresentation = (function (_super) {
         __extends(HomePageRepresentation, _super);
         function HomePageRepresentation() {
             _super.call(this);
             this.hateoasUrl = appPath;
         }
+        // links
         HomePageRepresentation.prototype.serviceLink = function () {
             return this.links().linkByRel("urn:org.restfulobjects:rels/services");
         };
@@ -1085,6 +1169,7 @@ var Spiro;
             return this.links().linkByRel("urn:org.restfulobjects:rels/version");
         };
 
+        // linked representations
         HomePageRepresentation.prototype.getSelf = function () {
             return this.selfLink().getTarget();
         };
@@ -1094,6 +1179,7 @@ var Spiro;
         };
 
         HomePageRepresentation.prototype.getDomainServices = function () {
+            // cannot use getTarget here as that will just return a ListRepresentation
             var domainServices = new DomainServicesRepresentation();
             this.serviceLink().copyToHateoasModel(domainServices);
             return domainServices;
@@ -1106,6 +1192,7 @@ var Spiro;
     })(ResourceRepresentation);
     Spiro.HomePageRepresentation = HomePageRepresentation;
 
+    // matches the Link representation 2.7
     var Link = (function (_super) {
         __extends(Link, _super);
         function Link(object) {
@@ -1158,6 +1245,7 @@ var Spiro;
             return target;
         };
 
+        // get the object that this link points to
         Link.prototype.getTarget = function () {
             var target = this.getHateoasTarget(this.type().representationType);
             this.copyToHateoasModel(target);
@@ -1167,4 +1255,4 @@ var Spiro;
     })(Spiro.ModelShim);
     Spiro.Link = Link;
 })(Spiro || (Spiro = {}));
-//@ sourceMappingURL=spiro.models.js.map
+//# sourceMappingURL=spiro.models.js.map
