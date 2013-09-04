@@ -208,13 +208,21 @@
 
     <MSBuild Projects="Spiro.Test.Runner\Spiro.Test.Runner.csproj" Targets="Build" Properties="Targets=Clean;Configuration=%(Configuration.Identity)" />
 
-    <Exec Command='"$(MSTestPath)\MSTest.exe" /testcontainer:"Spiro.Test.Runner\bin\%(Configuration.Identity)\Spiro.Test.Runner.dll" /resultsfile:$(TestResultsPath)\RestfulObjects.Spiro.Test.Runner.trx' />
+    <Exec Command='"$(MSTestPath)\MSTest.exe" /testcontainer:"Spiro.Test.Runner\bin\%(Configuration.Identity)\Spiro.Test.Runner.dll" /resultsfile:$(TestResultsPath)\Spiro.Test.Runner.trx' />
   
     <Exec Command='karma start' />
   
   </Target>
 
-	<Target Name="Release" DependsOnTargets="Package;Test">
+  <Target Name="EndToEndTest" DependsOnTargets="Build;DeploySpiroApp">
+
+    <MSBuild Projects="Spiro.Angular.Selenium.Test\Spiro.Angular.Selenium.Test.csproj" Targets="Build" Properties="Targets=Clean;Configuration=%(Configuration.Identity)" />
+
+    <Exec Command='"$(MSTestPath)\MSTest.exe" /testcontainer:"Spiro.Angular.Selenium.Test\bin\%(Configuration.Identity)\Spiro.Angular.Selenium.Test.dll" /resultsfile:$(TestResultsPath)\Spiro.Angular.Selenium.Test.trx' />
+
+  </Target>
+
+	<Target Name="Release" DependsOnTargets="Package;Test;EndToEndTest">
 
 		<ItemGroup>
 			
