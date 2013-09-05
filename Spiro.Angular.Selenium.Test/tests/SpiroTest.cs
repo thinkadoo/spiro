@@ -18,6 +18,48 @@ using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Support.UI;
 
 namespace NakedObjects.Web.UnitTests.Selenium {
+
+    public class SafeWebDriverWait : IWait<IWebDriver> {
+
+        private readonly WebDriverWait wait;
+     
+        public SafeWebDriverWait(IWebDriver driver, TimeSpan timeout) {
+            
+            wait = new WebDriverWait(driver, timeout);
+        }
+
+        public void IgnoreExceptionTypes(params Type[] exceptionTypes) {
+           wait.IgnoreExceptionTypes(exceptionTypes);
+        }
+
+        public TResult Until<TResult>(Func<IWebDriver, TResult> condition) {
+            return wait.Until(d => {
+                try {
+                    return condition(d);
+                }
+                catch (NoSuchElementException) {}
+                return default(TResult);
+            });
+        }
+
+        public TimeSpan Timeout {
+            get { return wait.Timeout; }
+            set { wait.Timeout = value; }
+        }
+
+        public TimeSpan PollingInterval {
+            get { return wait.PollingInterval; }
+            set { wait.PollingInterval = value; }
+        }
+
+        public string Message {
+            get { return wait.Message; }
+            set { wait.Message = value; }
+        }
+    }
+
+
+
     [TestClass]
     public abstract class SpiroTest {
         #region overhead
@@ -33,7 +75,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
         //protected const string backup = "AdventureWorksInitialState";
 
         protected IWebDriver br;
-        protected WebDriverWait wait;
+        protected SafeWebDriverWait wait;
 
         [ClassInitialize]
         public static void InitialiseClass(TestContext context) {
@@ -56,12 +98,12 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
         protected void InitFirefoxDriver() {
             br = new FirefoxDriver();
-            wait = new WebDriverWait(br, TimeSpan.FromSeconds(10));
+            wait = new SafeWebDriverWait(br, TimeSpan.FromSeconds(10));
         }
 
         protected void InitIeDriver() {
             br = new InternetExplorerDriver();
-            wait = new WebDriverWait(br, TimeSpan.FromSeconds(10));
+            wait = new SafeWebDriverWait(br, TimeSpan.FromSeconds(10));
         }
 
         protected void InitChromeDriver() {
@@ -70,7 +112,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             var crOptions = new ChromeOptions();
             crOptions.AddArgument(@"--user-data-dir=" + cacheDir);
             br = new ChromeDriver(crOptions);
-            wait = new WebDriverWait(br, TimeSpan.FromSeconds(10));
+            wait = new SafeWebDriverWait(br, TimeSpan.FromSeconds(10));
 
             // test workaround for chromedriver problem https://groups.google.com/forum/#!topic/selenium-users/nJ0NF1UJ3WU
             Thread.Sleep(5000);
@@ -81,8 +123,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
         #region Helpers
 
         protected virtual void GoToServiceFromHomePage(string serviceName) {
-            var wait = new WebDriverWait(br, TimeSpan.FromSeconds(10));
-
+            
             wait.Until(d => d.FindElements(By.ClassName("service")).Count == 12);
             ReadOnlyCollection<IWebElement> services = br.FindElements(By.ClassName("service"));
             IWebElement service = services.FirstOrDefault(s => s.Text == serviceName);
