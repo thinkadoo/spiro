@@ -129,9 +129,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             IWebElement service = services.FirstOrDefault(s => s.Text == serviceName);
             if (service != null) {
                 service.Click();
-                const string titleSelector = "div.object-view > div.header > div.title";
-                wait.Until(d => d.FindElement(By.CssSelector(titleSelector)));
-                wait.Until(d => !string.IsNullOrWhiteSpace(d.FindElement(By.CssSelector(titleSelector)).Text));
+                wait.Until(d => d.FindElements(By.CssSelector(".actions-pane .actions")).Count > 0);
             }
             else {
                 throw new ObjectNotFoundException(string.Format("service not found {0}", serviceName));
