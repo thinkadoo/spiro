@@ -2,13 +2,20 @@
 // All Rights Reserved. This code released under the terms of the 
 // Microsoft Public License (MS-PL) ( http://opensource.org/licenses/ms-pl.html) 
 
+using System;
+using System.Collections.ObjectModel;
+using System.Data;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NakedObjects.Xat.Database;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.IE;
+using OpenQA.Selenium.Support.UI;
 
 namespace NakedObjects.Web.UnitTests.Selenium {
     [TestClass]
@@ -26,6 +33,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
         //protected const string backup = "AdventureWorksInitialState";
 
         protected IWebDriver br;
+        protected WebDriverWait wait;
 
         [ClassInitialize]
         public static void InitialiseClass(TestContext context) {
@@ -46,21 +54,47 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             }
         }
 
-        protected IWebDriver InitChromeDriver() {
+        protected void InitFirefoxDriver() {
+            br = new FirefoxDriver();
+            wait = new WebDriverWait(br, TimeSpan.FromSeconds(10));
+        }
+
+        protected void InitIeDriver() {
+            br = new InternetExplorerDriver();
+            wait = new WebDriverWait(br, TimeSpan.FromSeconds(10));
+        }
+
+        protected void InitChromeDriver() {
             const string cacheDir = @"C:\SeleniumTestFolder";
 
             var crOptions = new ChromeOptions();
             crOptions.AddArgument(@"--user-data-dir=" + cacheDir);
-            var cd = new ChromeDriver(crOptions);
+            br = new ChromeDriver(crOptions);
+            wait = new WebDriverWait(br, TimeSpan.FromSeconds(10));
 
             // test workaround for chromedriver problem https://groups.google.com/forum/#!topic/selenium-users/nJ0NF1UJ3WU
             Thread.Sleep(5000);
-            return cd;
         }
 
         #endregion
 
         #region Helpers
+
+        protected virtual void GoToServiceFromHomePage(string serviceName) {
+            var wait = new WebDriverWait(br, TimeSpan.FromSeconds(10));
+
+            wait.Until(d => d.FindElements(By.ClassName("service")).Count == 12);
+            ReadOnlyCollection<IWebElement> services = br.FindElements(By.ClassName("service"));
+            IWebElement service = services.FirstOrDefault(s => s.Text == serviceName);
+            if (service != null) {
+                service.Click();
+                const string titleSelector = "div.object-view > div.header > div.title";
+                wait.Until(d => !string.IsNullOrWhiteSpace(d.FindElement(By.CssSelector(titleSelector)).Text));
+            }
+            else {
+                throw new ObjectNotFoundException(string.Format("service not found {0}", serviceName));
+            }
+        }
 
         protected void Login() {
             Thread.Sleep(2000);

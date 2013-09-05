@@ -8,33 +8,7 @@ using OpenQA.Selenium;
 
 namespace NakedObjects.Web.UnitTests.Selenium {
     [TestClass]
-    public abstract class HomePageTests : SpiroTest {
-        [TestMethod]
-        public virtual void HomePage() {
-            bool found = wait.Until(d => d.FindElements(By.ClassName("service")).Count == 12);
-            Assert.IsTrue(found, "Services not found on home page");
-        }
-
-        [TestMethod]
-        public virtual void Services() {
-            wait.Until(d => d.FindElements(By.ClassName("service")).Count == 12);
-
-            ReadOnlyCollection<IWebElement> services = br.FindElements(By.ClassName("service"));
-
-            Assert.AreEqual("Customers", services[0].Text);
-            Assert.AreEqual("Orders", services[1].Text);
-            Assert.AreEqual("Products", services[2].Text);
-            Assert.AreEqual("Employees", services[3].Text);
-            Assert.AreEqual("Sales", services[4].Text);
-            Assert.AreEqual("Special Offers", services[5].Text);
-            Assert.AreEqual("Contacts", services[6].Text);
-            Assert.AreEqual("Vendors", services[7].Text);
-            Assert.AreEqual("Purchase Orders", services[8].Text);
-            Assert.AreEqual("Work Orders", services[9].Text);
-            Assert.AreEqual("Orders", services[10].Text);
-            Assert.AreEqual("Customers", services[11].Text);
-        }
-
+    public abstract class ServicePageTests : SpiroTest {
         [TestMethod]
         public virtual void MenuBar() {
             wait.Until(d => d.FindElements(By.ClassName("app-bar")).Count == 1);
@@ -48,16 +22,55 @@ namespace NakedObjects.Web.UnitTests.Selenium {
         }
 
         [TestMethod]
-        public virtual void GoToService() {
-            GoToServiceFromHomePage("Customers");
-            Assert.AreEqual("Customers", br.FindElement(By.CssSelector("div.object-view > div.header > div.title")).Text);
+        public virtual void Actions() {
+            wait.Until(d => d.FindElements(By.ClassName("action")).Count == 11);
+            ReadOnlyCollection<IWebElement> actions = br.FindElements(By.ClassName("action"));
+
+            Assert.AreEqual("Find Customer By Account Number", actions[0].Text);
+            Assert.AreEqual("Customer Dashboard", actions[1].Text);
+            Assert.AreEqual("Throw Domain Exception", actions[2].Text);
+            Assert.AreEqual("Find Individual Customer By Name", actions[3].Text);
+            Assert.AreEqual("Create New Individual Customer", actions[4].Text);
+            Assert.AreEqual("Random Individual", actions[5].Text);
+            Assert.AreEqual("Query Individuals", actions[6].Text);
+            Assert.AreEqual("Find Store By Name", actions[7].Text);
+            Assert.AreEqual("Create New Store Customer", actions[8].Text);
+            Assert.AreEqual("Random Store", actions[9].Text);
+            Assert.AreEqual("Query Stores", actions[10].Text);
+        }
+
+        [TestMethod]
+        public virtual void DialogAction() {
+            wait.Until(d => d.FindElements(By.ClassName("action")).Count == 11);
+            ReadOnlyCollection<IWebElement> actions = br.FindElements(By.ClassName("action"));
+
+            // click on action to open dialog 
+            actions[0].Click();
+
+            wait.Until(d => d.FindElement(By.ClassName("action-dialog")));
+            string title = br.FindElement(By.CssSelector("div.action-dialog > div.title")).Text;
+
+            Assert.AreEqual("Find Customer By Account Number", title);
+
+            // cancel dialog 
+            br.FindElement(By.CssSelector("div.action-dialog  .cancel")).Click();
+
+            wait.Until(d => {
+                try {
+                    br.FindElement(By.ClassName("action-dialog"));
+                    return false;
+                }
+                catch (NoSuchElementException) {
+                    return true;
+                }
+            });
         }
     }
 
-    #region browsers specific subclasses 
+    #region browsers specific subclasses
 
     [TestClass]
-    public class HomePageTestsIe : HomePageTests {
+    public class ServicePageTestsIe : ServicePageTests {
         [ClassInitialize]
         public new static void InitialiseClass(TestContext context) {
             FilePath(@"drivers.IEDriverServer.exe");
@@ -68,6 +81,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
         public virtual void InitializeTest() {
             InitIeDriver();
             br.Navigate().GoToUrl(url);
+            GoToServiceFromHomePage("Customers");
         }
 
         [TestCleanup]
@@ -77,7 +91,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
     }
 
     [TestClass]
-    public class HomePageTestsFirefox : HomePageTests {
+    public class ServicePageTestsFirefox : ServicePageTests {
         [ClassInitialize]
         public new static void InitialiseClass(TestContext context) {
             SpiroTest.InitialiseClass(context);
@@ -87,6 +101,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
         public virtual void InitializeTest() {
             InitFirefoxDriver();
             br.Navigate().GoToUrl(url);
+            GoToServiceFromHomePage("Customers");
         }
 
         [TestCleanup]
@@ -96,7 +111,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
     }
 
     [TestClass]
-    public class HomePageTestsChrome : HomePageTests {
+    public class ServicePageTestsChrome : ServicePageTests {
         [ClassInitialize]
         public new static void InitialiseClass(TestContext context) {
             FilePath(@"drivers.chromedriver.exe");
@@ -106,7 +121,9 @@ namespace NakedObjects.Web.UnitTests.Selenium {
         [TestInitialize]
         public virtual void InitializeTest() {
             InitChromeDriver();
+
             br.Navigate().GoToUrl(url);
+            GoToServiceFromHomePage("Customers");
         }
 
         [TestCleanup]
