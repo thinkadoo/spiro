@@ -89,6 +89,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             if (service != null) {
                 service.Click();
                 const string titleSelector = "div.object-view > div.header > div.title";
+                wait.Until(d => d.FindElement(By.CssSelector(titleSelector)));
                 wait.Until(d => !string.IsNullOrWhiteSpace(d.FindElement(By.CssSelector(titleSelector)).Text));
             }
             else {
