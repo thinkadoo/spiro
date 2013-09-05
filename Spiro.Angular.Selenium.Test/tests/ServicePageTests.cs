@@ -2,6 +2,7 @@
 // All Rights Reserved. This code released under the terms of the 
 // Microsoft Public License (MS-PL) ( http://opensource.org/licenses/ms-pl.html) 
 
+using System;
 using System.Collections.ObjectModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
@@ -45,7 +46,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             ReadOnlyCollection<IWebElement> actions = br.FindElements(By.ClassName("action"));
 
             // click on action to open dialog 
-            actions[0].Click();
+            actions[0].Click(); // Find customer by account number
 
             wait.Until(d => d.FindElement(By.ClassName("action-dialog")));
             string title = br.FindElement(By.CssSelector("div.action-dialog > div.title")).Text;
@@ -65,6 +66,254 @@ namespace NakedObjects.Web.UnitTests.Selenium {
                 }
             });
         }
+
+        [TestMethod]
+        public virtual void DialogActionShow() {
+            wait.Until(d => d.FindElements(By.ClassName("action")).Count == 11);
+        
+
+            var showObject = new Action(() => {
+                // click on action to open dialog 
+                br.FindElements(By.ClassName("action"))[0].Click(); // Find customer by account number
+
+                wait.Until(d => d.FindElement(By.ClassName("action-dialog")));
+                string title = br.FindElement(By.CssSelector("div.action-dialog > div.title")).Text;
+
+                Assert.AreEqual("Find Customer By Account Number", title);
+
+                br.FindElement(By.CssSelector(".parameter-value > input")).SendKeys("AW00022262");
+
+                br.FindElement(By.ClassName("show")).Click();
+
+                wait.Until(d => d.FindElement(By.ClassName("nested-object")));
+            });
+
+            var cancelObject = new Action(() => {
+                // cancel object 
+                br.FindElement(By.CssSelector("div.nested-object .cancel")).Click();
+
+                wait.Until(d => {
+                    try {
+                        br.FindElement(By.ClassName("nested-object"));
+                        return false;
+                    }
+                    catch (NoSuchElementException) {
+                        return true;
+                    }
+                });
+            });
+
+            var cancelDialog = new Action(() => {
+                br.FindElement(By.CssSelector("div.action-dialog  .cancel")).Click();
+
+                wait.Until(d => {
+                    try {
+                        br.FindElement(By.ClassName("action-dialog"));
+                        return false;
+                    }
+                    catch (NoSuchElementException) {
+                        return true;
+                    }
+                });
+            });
+
+            showObject();
+            cancelObject();
+            cancelDialog();
+
+            showObject();
+            cancelDialog();
+            cancelObject();
+        }
+
+        [TestMethod]
+        public virtual void DialogActionGo() {
+            wait.Until(d => d.FindElements(By.ClassName("action")).Count == 11);
+
+
+            // click on action to open dialog 
+            br.FindElements(By.ClassName("action"))[0].Click(); // Find customer by account number
+
+            wait.Until(d => d.FindElement(By.ClassName("action-dialog")));
+            string title = br.FindElement(By.CssSelector("div.action-dialog > div.title")).Text;
+
+            Assert.AreEqual("Find Customer By Account Number", title);
+
+            br.FindElement(By.CssSelector(".parameter-value > input")).SendKeys("AW00022262");
+
+            br.FindElement(By.ClassName("go")).Click();
+
+            wait.Until(d => d.FindElement(By.ClassName("nested-object")));
+
+            // dialog should be closed
+
+            wait.Until(d => {
+                try {
+                    br.FindElement(By.ClassName("action-dialog"));
+                    return false;
+                }
+                catch (NoSuchElementException) {
+                    return true;
+                }
+            });
+
+        }
+
+
+
+        [TestMethod]
+        public virtual void ObjectAction() {
+            wait.Until(d => d.FindElements(By.ClassName("action")).Count == 11);
+            ReadOnlyCollection<IWebElement> actions = br.FindElements(By.ClassName("action"));
+
+            // click on action to get object 
+            actions[9].Click(); // random store 
+
+            wait.Until(d => d.FindElement(By.ClassName("nested-object")));
+
+            // cancel object 
+            br.FindElement(By.CssSelector("div.nested-object .cancel")).Click();
+
+            wait.Until(d => {
+                try {
+                    br.FindElement(By.ClassName("nested-object"));
+                    return false;
+                }
+                catch (NoSuchElementException) {
+                    return true;
+                }
+            });
+        }
+
+        [TestMethod]
+        public virtual void ObjectActionExpand() {
+            wait.Until(d => d.FindElements(By.ClassName("action")).Count == 11);
+         
+            // click on action to get object 
+            br.FindElements(By.ClassName("action"))[9].Click(); // random store 
+
+            wait.Until(d => d.FindElement(By.ClassName("nested-object")));
+
+            // expand object
+            br.FindElement(By.CssSelector("div.nested-object .expand")).Click();
+
+            wait.Until(d => br.FindElement(By.ClassName("object-properties")));
+        }
+
+        [TestMethod]
+        public virtual void CollectionAction() {
+            br.Navigate().GoToUrl(url);
+            GoToServiceFromHomePage("Orders");
+
+            wait.Until(d => d.FindElements(By.ClassName("action")).Count == 6);
+            ReadOnlyCollection<IWebElement> actions = br.FindElements(By.ClassName("action"));
+
+            // click on action to get object 
+            actions[2].Click(); // highest value orders
+
+            wait.Until(d => d.FindElement(By.ClassName("list-view")));
+
+            // cancel collection 
+            br.FindElement(By.CssSelector("div.list-view .cancel")).Click();
+
+            wait.Until(d => {
+                try {
+                    br.FindElement(By.ClassName("list-view"));
+                    return false;
+                }
+                catch (NoSuchElementException) {
+                    return true;
+                }
+            });
+        }
+
+        [TestMethod]
+        public virtual void CollectionActionSelectItem() {
+            br.Navigate().GoToUrl(url);
+            GoToServiceFromHomePage("Orders");
+
+            var selectItem = new Action(() => {
+                wait.Until(d => d.FindElements(By.ClassName("action")).Count == 6);
+                ReadOnlyCollection<IWebElement> actions = br.FindElements(By.ClassName("action"));
+
+                // click on action to get object 
+                actions[2].Click(); // highest value orders
+
+                wait.Until(d => d.FindElement(By.ClassName("list-view")));
+
+                // select item
+                br.FindElement(By.CssSelector("div.list-item")).Click();
+
+                wait.Until(d => br.FindElement(By.ClassName("nested-object")));
+            });
+
+            // cancel object 
+
+            var cancelObject = new Action(() => {
+                br.FindElement(By.CssSelector("div.nested-object .cancel")).Click();
+                wait.Until(d => {
+                    try {
+                        br.FindElement(By.ClassName("nested-object"));
+                        return false;
+                    }
+                    catch (NoSuchElementException) {
+                        return true;
+                    }
+                });
+            });
+
+            // cancel collection 
+            var cancelCollection = new Action(() => {
+                br.FindElement(By.CssSelector("div.list-view .cancel")).Click();
+
+                wait.Until(d => {
+                    try {
+                        br.FindElement(By.ClassName("list-view"));
+                        return false;
+                    }
+                    catch (NoSuchElementException) {
+                        return true;
+                    }
+                });
+            });
+
+
+            selectItem();
+            cancelObject();
+            cancelCollection();
+
+            // repeat but first cancel collection 
+            selectItem();
+            cancelCollection();
+            cancelObject();
+
+        }
+
+        [TestMethod]
+        public virtual void CollectionActionSelectItemExpand() {
+            br.Navigate().GoToUrl(url);
+            GoToServiceFromHomePage("Orders");
+
+            wait.Until(d => d.FindElements(By.ClassName("action")).Count == 6);
+            ReadOnlyCollection<IWebElement> actions = br.FindElements(By.ClassName("action"));
+
+            // click on action to get object 
+            actions[2].Click(); // highest value orders
+
+            wait.Until(d => d.FindElement(By.ClassName("list-view")));
+
+            // select item
+            br.FindElement(By.CssSelector("div.list-item")).Click();
+
+            wait.Until(d => br.FindElement(By.ClassName("nested-object")));
+
+            // expand object
+            br.FindElement(By.CssSelector("div.nested-object .expand")).Click();
+
+            wait.Until(d => br.FindElement(By.ClassName("object-properties")));
+        }
+
+
     }
 
     #region browsers specific subclasses
