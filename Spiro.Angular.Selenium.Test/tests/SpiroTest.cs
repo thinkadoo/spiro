@@ -138,7 +138,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             ReadOnlyCollection<IWebElement> services = br.FindElements(By.ClassName("service"));
             IWebElement service = services.FirstOrDefault(s => s.Text == serviceName);
             if (service != null) {
-                service.Click();
+                Click(service);
                 wait.Until(d => d.FindElements(By.CssSelector(".actions-pane .actions")).Count > 0);
             }
             else {
