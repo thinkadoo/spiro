@@ -126,6 +126,21 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
         #region Helpers
 
+        protected void WaitUntilGone<TResult>(Func<IWebDriver, TResult> condition) {
+
+            wait.Until(d => {
+                try {
+                    condition(d);
+                    return false;
+                }
+                catch (NoSuchElementException) {
+                    return true;
+                }
+            });
+            
+        }
+
+
         protected virtual void Maximize() {
             const string script = "window.moveTo(0, 0); window.resizeTo(screen.availWidth, screen.availHeight);";
             ((IJavaScriptExecutor) br).ExecuteScript(script);

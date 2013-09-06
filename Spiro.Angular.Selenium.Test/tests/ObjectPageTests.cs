@@ -42,6 +42,58 @@ namespace NakedObjects.Web.UnitTests.Selenium {
         }
 
         [TestMethod]
+        public virtual void Properties() {
+            br.Navigate().GoToUrl(store555Url);
+
+            wait.Until(d => d.FindElements(By.ClassName("property")).Count == 8);
+            ReadOnlyCollection<IWebElement> properties = br.FindElements(By.ClassName("property"));
+
+            Assert.AreEqual("Store Name:\r\nTwin Cycles", properties[0].Text);
+            Assert.AreEqual("Demographics:\r\nAnnualSales: 800000 AnnualRevenue: 80000 BankName: International Security BusinessType: BM YearOpened: 1988 Specialty: Touring SquareFeet: 21000 Brands: AW Internet: T1 NumberEmployees: 11", properties[1].Text);
+            Assert.AreEqual("Sales Person:\r\nLynn Tsoflias", properties[2].Text);
+            Assert.AreEqual("Last Modified:\r\n2004-10-13T10:15:07.497Z", properties[3].Text);
+            Assert.AreEqual("Account Number:\r\nAW00000555", properties[4].Text);
+            Assert.AreEqual("Sales Territory:\r\nAustralia", properties[5].Text);
+            Assert.AreEqual("Addresses:\r\n1-Customer Addresses", properties[6].Text);
+            Assert.AreEqual("Contacts:\r\n1-Store Contacts", properties[7].Text);
+        }
+
+        [TestMethod]
+        public virtual void ClickReferenceProperty() {
+            br.Navigate().GoToUrl(store555Url);
+
+            wait.Until(d => d.FindElements(By.ClassName("property")).Count == 8);
+            ReadOnlyCollection<IWebElement> properties = br.FindElements(By.ClassName("property"));
+
+            Click(properties[2]);
+
+            wait.Until(d => d.FindElement(By.ClassName("nested-object")));
+
+            // cancel object 
+            Click(br.FindElement(By.CssSelector("div.nested-object .cancel")));
+
+            WaitUntilGone(d => d.FindElement(By.ClassName("nested-object")));
+        }
+
+        [TestMethod]
+        public virtual void ClickCollectionProperty() {
+            br.Navigate().GoToUrl(store555Url);
+
+            wait.Until(d => d.FindElements(By.ClassName("property")).Count == 8);
+            ReadOnlyCollection<IWebElement> properties = br.FindElements(By.ClassName("property"));
+
+            Click(properties[7]);
+
+            wait.Until(d => d.FindElement(By.ClassName("list-view")));
+
+            // cancel object 
+            Click(br.FindElement(By.CssSelector("div.list-view .cancel")));
+
+            WaitUntilGone(d => d.FindElement(By.ClassName("list-view")));
+        }
+
+
+        [TestMethod]
         public virtual void DialogAction() {
             br.Navigate().GoToUrl(store555Url);
 
@@ -59,15 +111,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             // cancel dialog 
             Click(br.FindElement(By.CssSelector("div.action-dialog  .cancel")));
 
-            wait.Until(d => {
-                try {
-                    br.FindElement(By.ClassName("action-dialog"));
-                    return false;
-                }
-                catch (NoSuchElementException) {
-                    return true;
-                }
-            });
+            WaitUntilGone(d => d.FindElement(By.ClassName("action-dialog")));
         }
 
         [TestMethod]
@@ -97,29 +141,13 @@ namespace NakedObjects.Web.UnitTests.Selenium {
                 // cancel object 
                 Click(br.FindElement(By.CssSelector("div.list-view .cancel")));
 
-                wait.Until(d => {
-                    try {
-                        br.FindElement(By.ClassName("list-view"));
-                        return false;
-                    }
-                    catch (NoSuchElementException) {
-                        return true;
-                    }
-                });
+                WaitUntilGone(d => d.FindElement(By.ClassName("list-view")));
             });
 
             var cancelDialog = new Action(() => {
                 Click(br.FindElement(By.CssSelector("div.action-dialog  .cancel")));
 
-                wait.Until(d => {
-                    try {
-                        br.FindElement(By.ClassName("action-dialog"));
-                        return false;
-                    }
-                    catch (NoSuchElementException) {
-                        return true;
-                    }
-                });
+                WaitUntilGone(d => d.FindElement(By.ClassName("action-dialog")));
             });
 
             showObject();
@@ -156,15 +184,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
             // dialog should be closed
 
-            wait.Until(d => {
-                try {
-                    br.FindElement(By.ClassName("action-dialog"));
-                    return false;
-                }
-                catch (NoSuchElementException) {
-                    return true;
-                }
-            });
+            WaitUntilGone(d => d.FindElement(By.ClassName("action-dialog")));
         }
 
 
@@ -184,15 +204,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             // cancel object 
             Click(br.FindElement(By.CssSelector("div.nested-object .cancel")));
 
-            wait.Until(d => {
-                try {
-                    br.FindElement(By.ClassName("nested-object"));
-                    return false;
-                }
-                catch (NoSuchElementException) {
-                    return true;
-                }
-            });
+            WaitUntilGone(d => d.FindElement(By.ClassName("nested-object")));
         }
 
         [TestMethod]
@@ -228,15 +240,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             // cancel collection 
             Click(br.FindElement(By.CssSelector("div.list-view .cancel")));
 
-            wait.Until(d => {
-                try {
-                    br.FindElement(By.ClassName("list-view"));
-                    return false;
-                }
-                catch (NoSuchElementException) {
-                    return true;
-                }
-            });
+            WaitUntilGone(d => d.FindElement(By.ClassName("list-view")));
         }
 
         [TestMethod]
@@ -262,30 +266,14 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
             var cancelObject = new Action(() => {
                 Click(br.FindElement(By.CssSelector("div.nested-object .cancel")));
-                wait.Until(d => {
-                    try {
-                        br.FindElement(By.ClassName("nested-object"));
-                        return false;
-                    }
-                    catch (NoSuchElementException) {
-                        return true;
-                    }
-                });
+                WaitUntilGone(d => d.FindElement(By.ClassName("nested-object")));
             });
 
             // cancel collection 
             var cancelCollection = new Action(() => {
                 Click(br.FindElement(By.CssSelector("div.list-view .cancel")));
 
-                wait.Until(d => {
-                    try {
-                        br.FindElement(By.ClassName("list-view"));
-                        return false;
-                    }
-                    catch (NoSuchElementException) {
-                        return true;
-                    }
-                });
+                WaitUntilGone(d => d.FindElement(By.ClassName("list-view")));
             });
 
 
