@@ -46,7 +46,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             ReadOnlyCollection<IWebElement> actions = br.FindElements(By.ClassName("action"));
 
             // click on action to open dialog 
-            actions[0].Click(); // Find customer by account number
+            Click(actions[0]); // Find customer by account number
 
             wait.Until(d => d.FindElement(By.ClassName("action-dialog")));
             string title = br.FindElement(By.CssSelector("div.action-dialog > div.title")).Text;
@@ -54,7 +54,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             Assert.AreEqual("Find Customer By Account Number", title);
 
             // cancel dialog 
-            br.FindElement(By.CssSelector("div.action-dialog  .cancel")).Click();
+            Click(br.FindElement(By.CssSelector("div.action-dialog  .cancel")));
 
             wait.Until(d => {
                 try {
@@ -74,7 +74,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
             var showObject = new Action(() => {
                 // click on action to open dialog 
-                br.FindElements(By.ClassName("action"))[0].Click(); // Find customer by account number
+                Click(br.FindElements(By.ClassName("action"))[0]); // Find customer by account number
 
                 wait.Until(d => d.FindElement(By.ClassName("action-dialog")));
                 string title = br.FindElement(By.CssSelector("div.action-dialog > div.title")).Text;
@@ -83,14 +83,14 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
                 br.FindElement(By.CssSelector(".parameter-value > input")).SendKeys("AW00022262");
 
-                br.FindElement(By.ClassName("show")).Click();
+                Click(br.FindElement(By.ClassName("show")));
 
                 wait.Until(d => d.FindElement(By.ClassName("nested-object")));
             });
 
             var cancelObject = new Action(() => {
                 // cancel object 
-                br.FindElement(By.CssSelector("div.nested-object .cancel")).Click();
+                Click(br.FindElement(By.CssSelector("div.nested-object .cancel")));
 
                 wait.Until(d => {
                     try {
@@ -104,7 +104,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             });
 
             var cancelDialog = new Action(() => {
-                br.FindElement(By.CssSelector("div.action-dialog  .cancel")).Click();
+                Click(br.FindElement(By.CssSelector("div.action-dialog  .cancel")));
 
                 wait.Until(d => {
                     try {
@@ -132,7 +132,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
 
             // click on action to open dialog 
-            br.FindElements(By.ClassName("action"))[0].Click(); // Find customer by account number
+            Click(br.FindElements(By.ClassName("action"))[0]); // Find customer by account number
 
             wait.Until(d => d.FindElement(By.ClassName("action-dialog")));
             string title = br.FindElement(By.CssSelector("div.action-dialog > div.title")).Text;
@@ -141,7 +141,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
             br.FindElement(By.CssSelector(".parameter-value > input")).SendKeys("AW00022262");
 
-            br.FindElement(By.ClassName("go")).Click();
+            Click( br.FindElement(By.ClassName("go")));
 
             wait.Until(d => d.FindElement(By.ClassName("nested-object")));
 
@@ -164,15 +164,18 @@ namespace NakedObjects.Web.UnitTests.Selenium {
         [TestMethod]
         public virtual void ObjectAction() {
             wait.Until(d => d.FindElements(By.ClassName("action")).Count == 11);
-            ReadOnlyCollection<IWebElement> actions = br.FindElements(By.ClassName("action"));
+        
+            var action = br.FindElements(By.ClassName("action"))[9]; 
+
+       
 
             // click on action to get object 
-            actions[9].Click(); // random store 
+            Click(action); // random store 
 
             wait.Until(d => d.FindElement(By.ClassName("nested-object")));
 
             // cancel object 
-            br.FindElement(By.CssSelector("div.nested-object .cancel")).Click();
+            Click(br.FindElement(By.CssSelector("div.nested-object .cancel")));
 
             wait.Until(d => {
                 try {
@@ -188,14 +191,18 @@ namespace NakedObjects.Web.UnitTests.Selenium {
         [TestMethod]
         public virtual void ObjectActionExpand() {
             wait.Until(d => d.FindElements(By.ClassName("action")).Count == 11);
-         
+            var action = br.FindElements(By.ClassName("action"))[9];
+
+            // chrome workaround 
+            ScrollTo(action);
+
             // click on action to get object 
-            br.FindElements(By.ClassName("action"))[9].Click(); // random store 
+            Click(action); // random store 
 
             wait.Until(d => d.FindElement(By.ClassName("nested-object")));
 
             // expand object
-            br.FindElement(By.CssSelector("div.nested-object .expand")).Click();
+            Click(br.FindElement(By.CssSelector("div.nested-object .expand")));
 
             wait.Until(d => br.FindElement(By.ClassName("object-properties")));
         }
@@ -209,12 +216,12 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             ReadOnlyCollection<IWebElement> actions = br.FindElements(By.ClassName("action"));
 
             // click on action to get object 
-            actions[2].Click(); // highest value orders
+            Click(actions[2]); // highest value orders
 
             wait.Until(d => d.FindElement(By.ClassName("list-view")));
 
             // cancel collection 
-            br.FindElement(By.CssSelector("div.list-view .cancel")).Click();
+            Click(br.FindElement(By.CssSelector("div.list-view .cancel")));
 
             wait.Until(d => {
                 try {
@@ -237,12 +244,12 @@ namespace NakedObjects.Web.UnitTests.Selenium {
                 ReadOnlyCollection<IWebElement> actions = br.FindElements(By.ClassName("action"));
 
                 // click on action to get object 
-                actions[2].Click(); // highest value orders
+                Click(actions[2]); // highest value orders
 
                 wait.Until(d => d.FindElement(By.ClassName("list-view")));
 
                 // select item
-                br.FindElement(By.CssSelector("div.list-item")).Click();
+                Click(br.FindElement(By.CssSelector("div.list-item")));
 
                 wait.Until(d => br.FindElement(By.ClassName("nested-object")));
             });
@@ -250,7 +257,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             // cancel object 
 
             var cancelObject = new Action(() => {
-                br.FindElement(By.CssSelector("div.nested-object .cancel")).Click();
+                Click(br.FindElement(By.CssSelector("div.nested-object .cancel")));
                 wait.Until(d => {
                     try {
                         br.FindElement(By.ClassName("nested-object"));
@@ -264,7 +271,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
             // cancel collection 
             var cancelCollection = new Action(() => {
-                br.FindElement(By.CssSelector("div.list-view .cancel")).Click();
+                Click(br.FindElement(By.CssSelector("div.list-view .cancel")));
 
                 wait.Until(d => {
                     try {
@@ -297,18 +304,20 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             wait.Until(d => d.FindElements(By.ClassName("action")).Count == 6);
             ReadOnlyCollection<IWebElement> actions = br.FindElements(By.ClassName("action"));
 
+
+
             // click on action to get object 
-            actions[2].Click(); // highest value orders
+            Click(actions[2]); // highest value orders
 
             wait.Until(d => d.FindElement(By.ClassName("list-view")));
 
             // select item
-            br.FindElement(By.CssSelector("div.list-item")).Click();
+            Click(br.FindElement(By.CssSelector("div.list-item")));
 
             wait.Until(d => br.FindElement(By.ClassName("nested-object")));
 
             // expand object
-            br.FindElement(By.CssSelector("div.nested-object .expand")).Click();
+            Click(br.FindElement(By.CssSelector("div.nested-object .expand")));
 
             wait.Until(d => br.FindElement(By.ClassName("object-properties")));
         }
@@ -378,6 +387,11 @@ namespace NakedObjects.Web.UnitTests.Selenium {
         [TestCleanup]
         public virtual void CleanupTest() {
             base.CleanUpTest();
+        }
+
+        protected override void ScrollTo(IWebElement element) {
+            string script = string.Format("window.scrollTo(0, {0})", element.Location.Y);
+            ((IJavaScriptExecutor)br).ExecuteScript(script);
         }
     }
 

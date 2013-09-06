@@ -122,6 +122,16 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
         #region Helpers
 
+        protected virtual void ScrollTo(IWebElement element) {
+           // only do stuff for chrome
+        }
+
+        protected virtual void Click(IWebElement element) {
+            ScrollTo(element);
+            element.Click();
+        }
+
+
         protected virtual void GoToServiceFromHomePage(string serviceName) {
             
             wait.Until(d => d.FindElements(By.ClassName("service")).Count == 12);
