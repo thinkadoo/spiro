@@ -116,7 +116,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
         protected override void ScrollTo(IWebElement element) {
             string script = string.Format("window.scrollTo(0, {0})", element.Location.Y);
-            ((IJavaScriptExecutor)br).ExecuteScript(script);
+            ((IJavaScriptExecutor) br).ExecuteScript(script);
         }
     }
 
