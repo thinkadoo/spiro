@@ -368,7 +368,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
         }
     }
 
-    [TestClass]
+    [TestClass, Ignore]
     public class ServicePageTestsChrome : ServicePageTests {
         [ClassInitialize]
         public new static void InitialiseClass(TestContext context) {
@@ -390,7 +390,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
         }
 
         protected override void ScrollTo(IWebElement element) {
-            string script = string.Format("window.scrollTo(0, {0})", element.Location.Y);
+            string script = string.Format("window.scrollTo({0}, {1});return true;", element.Location.X, element.Location.Y);
             ((IJavaScriptExecutor)br).ExecuteScript(script);
         }
     }
