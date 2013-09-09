@@ -176,8 +176,6 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             br.FindElements(By.CssSelector(".parameter-value > input"))[0].SendKeys("1/1/2003");
             br.FindElements(By.CssSelector(".parameter-value > input"))[1].SendKeys("1/12/2003");
 
-            Maximize();
-
             Click(br.FindElement(By.ClassName("go")));
 
             wait.Until(d => d.FindElement(By.ClassName("list-view")));
@@ -313,7 +311,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
     #region browsers specific subclasses
 
-    [TestClass]
+    [TestClass, Ignore]
     public class ObjectPageTestsIe : ObjectPageTests {
         [ClassInitialize]
         public new static void InitialiseClass(TestContext context) {

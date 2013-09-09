@@ -325,7 +325,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
     #region browsers specific subclasses
 
-    [TestClass]
+    [TestClass, Ignore]
     public class ServicePageTestsIe : ServicePageTests {
         [ClassInitialize]
         public new static void InitialiseClass(TestContext context) {
