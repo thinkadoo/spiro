@@ -41,8 +41,12 @@
             }
         });
 
-        Angular.app.controller('ObjectController', function ($scope, Handlers) {
-            Handlers.handleObject($scope);
+        Angular.app.controller('ObjectController', function ($scope, $routeParams, Handlers) {
+            if ($routeParams.editMode) {
+                Handlers.handleEditObject($scope);
+            } else {
+                Handlers.handleObject($scope);
+            }
         });
 
         Angular.app.controller('ErrorController', function ($scope, Handlers) {

@@ -772,8 +772,6 @@ describe('Services', function () {
 
                     $routeParams.dt = "test";
                     $routeParams.id = "1";
-
-                    Handlers.handleObject($scope);
                 }));
 
                 describe('not in edit mode', function () {
@@ -783,7 +781,7 @@ describe('Services', function () {
 
                     it('should update the scope', function () {
                         expect(getObject).toHaveBeenCalledWith("test", "1");
-                        expect(objectViewModel).toHaveBeenCalledWith(testObject, jasmine.any(Function));
+                        expect(objectViewModel).toHaveBeenCalledWith(testObject);
                         expect(setNestedObject).toHaveBeenCalledWith(null);
 
                         expect($scope.object).toEqual(testViewModel);
@@ -793,14 +791,26 @@ describe('Services', function () {
                 });
 
                 describe('in edit mode', function () {
-                    beforeEach(inject(function ($rootScope, $routeParams, Handlers) {
+                    var propertyMem = new Spiro.PropertyMember({}, testObject);
+                    var propertyRep = new Spiro.PropertyRepresentation();
+
+                    var populate;
+
+                    beforeEach(inject(function ($rootScope, $q, $routeParams, RepresentationLoader, Handlers) {
+                        spyOn(testObject, 'propertyMembers').andReturn([propertyMem]);
+                        spyOn(propertyMem, 'getDetails').andReturn(propertyRep);
+
+                        spyOnPromise($q, 'all', [propertyRep]);
+
+                        populate = spyOnPromise(RepresentationLoader, "populate", propertyRep);
+
                         $routeParams.editMode = "test";
-                        Handlers.handleObject($scope);
+                        Handlers.handleEditObject($scope);
                     }));
 
                     it('should update the scope', function () {
                         expect(getObject).toHaveBeenCalledWith("test", "1");
-                        expect(objectViewModel).toHaveBeenCalledWith(testObject, jasmine.any(Function));
+                        expect(objectViewModel).toHaveBeenCalledWith(testObject, [propertyRep], jasmine.any(Function));
                         expect(setNestedObject).toHaveBeenCalledWith(null);
 
                         expect($scope.object).toEqual(testViewModel);

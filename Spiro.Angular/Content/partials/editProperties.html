@@ -22,8 +22,17 @@
                 
                 <div ng-switch-when="false" class='property-value'>{{property.value}}</div>
 
-                <div ng-switch-when="true" class='property-value input-control text'>
-                    <input type='text' placeholder='{{property.value}}' ng-model="property.value" />
+                <div ng-switch-when="true" class='property-value input-control text' ng-switch="property.hasChoices">
+                    
+                    <input ng-switch-when="false" type='text' placeholder='{{property.value}}' ng-model="property.value" />
+                      
+                  <!--  <select ng-switch-when="true" >
+                        <option ng-repeat="choice in property.choices" value='{{choice.value}}'>{{choice.name}}</option>                  
+                    </select>-->
+                    
+                    <select ng-switch-when="true" ng-model="property.value" ng-options="c.value as c.name for c in property.choices">
+                    </select>
+                     
                     <div class='error'>{{property.message}}</div>
                 </div>
             </div>

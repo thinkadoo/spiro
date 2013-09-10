@@ -73,8 +73,8 @@
                 return Angular.ServiceViewModel.create(serviceRep, $routeParams);
             };
 
-            this.domainObjectViewModel = function (objectRep, save) {
-                return Angular.DomainObjectViewModel.create(objectRep, $routeParams, save);
+            this.domainObjectViewModel = function (objectRep, details, save) {
+                return Angular.DomainObjectViewModel.create(objectRep, $routeParams, details, save);
             };
         });
 
@@ -445,10 +445,30 @@
             this.handleObject = function ($scope) {
                 Context.getObject($routeParams.dt, $routeParams.id).then(function (object) {
                     Context.setNestedObject(null);
-                    $scope.actionTemplate = $routeParams.editMode ? "" : svrPath + "Content/partials/actions.html";
-                    $scope.propertiesTemplate = svrPath + ($routeParams.editMode ? "Content/partials/editProperties.html" : "Content/partials/viewProperties.html");
+                    $scope.actionTemplate = svrPath + "Content/partials/actions.html";
+                    $scope.propertiesTemplate = svrPath + "Content/partials/viewProperties.html";
 
-                    $scope.object = ViewModelFactory.domainObjectViewModel(object, _.partial(handlers.updateObject, $scope, object));
+                    $scope.object = ViewModelFactory.domainObjectViewModel(object);
+                }, function (error) {
+                    setError(error);
+                });
+            };
+
+            this.handleEditObject = function ($scope) {
+                Context.getObject($routeParams.dt, $routeParams.id).then(function (object) {
+                    var detailPromises = _.map(object.propertyMembers(), function (pm) {
+                        return RepresentationLoader.populate(pm.getDetails());
+                    });
+
+                    $q.all(detailPromises).then(function (details) {
+                        Context.setNestedObject(null);
+                        $scope.actionTemplate = "";
+                        $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
+
+                        $scope.object = ViewModelFactory.domainObjectViewModel(object, details, _.partial(handlers.updateObject, $scope, object));
+                    }, function (error) {
+                        setError(error);
+                    });
                 }, function (error) {
                     setError(error);
                 });

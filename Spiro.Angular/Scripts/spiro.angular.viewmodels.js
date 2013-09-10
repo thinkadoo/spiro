@@ -105,6 +105,20 @@ var Spiro;
             return (parentResults && parentResults.length > 2) ? "#/" + parentResults[1] + "/" + parentResults[2] + "?collectionItem=" + itemResults[2] + "/" + itemResults[3] + getOtherParms($routeParams, ["property", "collectionItem", "resultObject"]) : "";
         }
 
+        var ChoiceViewModel = (function () {
+            function ChoiceViewModel() {
+            }
+            ChoiceViewModel.create = function (value) {
+                var choiceViewModel = new ChoiceViewModel();
+
+                choiceViewModel.name = value.toString();
+                choiceViewModel.value = value.isReference() ? value.link().href() : value.toValueString();
+                return choiceViewModel;
+            };
+            return ChoiceViewModel;
+        })();
+        Angular.ChoiceViewModel = ChoiceViewModel;
+
         var ErrorViewModel = (function () {
             function ErrorViewModel() {
             }
@@ -237,7 +251,7 @@ var Spiro;
                 return new Spiro.Value({ href: this.reference });
             };
 
-            PropertyViewModel.create = function (propertyRep, id, $routeParams) {
+            PropertyViewModel.create = function (propertyRep, id, $routeParams, propertyDetails) {
                 var propertyViewModel = new PropertyViewModel();
                 propertyViewModel.title = propertyRep.extensions().friendlyName;
                 propertyViewModel.value = propertyRep.value().toString();
@@ -250,6 +264,13 @@ var Spiro;
                 propertyViewModel.color = toColorFromType(propertyRep.extensions().returnType);
                 propertyViewModel.id = id;
                 propertyViewModel.isEditable = !propertyRep.disabledReason();
+
+                if (propertyDetails) {
+                    propertyViewModel.choices = _.map(propertyDetails.choices(), function (v) {
+                        return ChoiceViewModel.create(v);
+                    });
+                    propertyViewModel.hasChoices = propertyViewModel.choices.length > 0;
+                }
 
                 return propertyViewModel;
             };
@@ -360,7 +381,7 @@ var Spiro;
             DomainObjectViewModel.prototype.doSave = function () {
             };
 
-            DomainObjectViewModel.prototype.update = function (objectRep, $routeParams) {
+            DomainObjectViewModel.prototype.update = function (objectRep, $routeParams, details) {
                 var properties = objectRep.propertyMembers();
                 var collections = objectRep.collectionMembers();
                 var actions = objectRep.actionMembers();
@@ -371,7 +392,9 @@ var Spiro;
                 this.message = "";
 
                 this.properties = _.map(properties, function (property, id) {
-                    return PropertyViewModel.create(property, id, $routeParams);
+                    return PropertyViewModel.create(property, id, $routeParams, _.find(details, function (d) {
+                        return d.instanceId() === id;
+                    }));
                 });
                 this.collections = _.map(collections, function (collection) {
                     return CollectionViewModel.create(collection, $routeParams);
@@ -381,7 +404,7 @@ var Spiro;
                 });
             };
 
-            DomainObjectViewModel.create = function (objectRep, $routeParams, save) {
+            DomainObjectViewModel.create = function (objectRep, $routeParams, details, save) {
                 var objectViewModel = new DomainObjectViewModel();
 
                 objectViewModel.href = toAppUrl(objectRep.getUrl());
@@ -398,7 +421,7 @@ var Spiro;
                 } : function () {
                 };
 
-                objectViewModel.update(objectRep, $routeParams);
+                objectViewModel.update(objectRep, $routeParams, details || []);
 
                 return objectViewModel;
             };

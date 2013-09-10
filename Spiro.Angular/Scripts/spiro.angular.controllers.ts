@@ -48,8 +48,13 @@ module Spiro.Angular {
         }
     });
 
-    app.controller('ObjectController', function ($scope, Handlers: HandlersInterface) {
-        Handlers.handleObject($scope);
+    app.controller('ObjectController', function ($scope, $routeParams, Handlers: HandlersInterface) {
+        if ($routeParams.editMode) {
+            Handlers.handleEditObject($scope);
+        }
+        else {
+            Handlers.handleObject($scope);
+        }
     });
 
     app.controller('ErrorController', function ($scope, Handlers: HandlersInterface) {

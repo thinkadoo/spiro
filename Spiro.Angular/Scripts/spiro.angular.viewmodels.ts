@@ -115,6 +115,19 @@ module Spiro.Angular {
         return (parentResults && parentResults.length > 2) ? "#/" + parentResults[1] + "/" + parentResults[2] + "?collectionItem=" + itemResults[2] + "/" + itemResults[3] + getOtherParms($routeParams, ["property", "collectionItem", "resultObject"])  : "";
     }
 
+    export class ChoiceViewModel {
+        name: string;
+        value: string;
+
+        static create(value: Value) {
+            var choiceViewModel = new ChoiceViewModel();
+
+            choiceViewModel.name = value.toString(); 
+            choiceViewModel.value = value.isReference() ? value.link().href() : value.toValueString();
+            return choiceViewModel;
+        } 
+    }
+
     export class ErrorViewModel {
 
         message: string;
@@ -249,6 +262,8 @@ module Spiro.Angular {
         message: string; 
         isEditable: boolean;
         reference: string; 
+        choices: ChoiceViewModel[]; 
+        hasChoices: boolean; 
 
         getValue() : Value {
             if (this.type === "scalar") {
@@ -258,8 +273,7 @@ module Spiro.Angular {
             return new Value({ href: this.reference });
         }
 
-
-        static create(propertyRep: PropertyMember, id : string, $routeParams) {
+        static create(propertyRep: PropertyMember, id : string, $routeParams, propertyDetails? : PropertyRepresentation) {
             var propertyViewModel = new PropertyViewModel();
             propertyViewModel.title = propertyRep.extensions().friendlyName;
             propertyViewModel.value = propertyRep.value().toString();
@@ -273,8 +287,16 @@ module Spiro.Angular {
             propertyViewModel.id = id;
             propertyViewModel.isEditable = !propertyRep.disabledReason(); 
 
+            if (propertyDetails) {
+                propertyViewModel.choices = _.map(propertyDetails.choices(), (v) => {
+                    return ChoiceViewModel.create(v);
+                });
+                propertyViewModel.hasChoices = propertyViewModel.choices.length > 0; 
+            }  
+
             return propertyViewModel;
         }
+
     } 
 
     export class CollectionViewModel {
@@ -396,7 +418,7 @@ module Spiro.Angular {
 
         doSave(): void {}
         
-        update(objectRep: DomainObjectRepresentation, $routeParams) {
+        update(objectRep: DomainObjectRepresentation, $routeParams, details? : PropertyRepresentation[]) {
             
             var properties = objectRep.propertyMembers();
             var collections = objectRep.collectionMembers();
@@ -407,14 +429,12 @@ module Spiro.Angular {
           
             this.message = ""; 
 
-            this.properties = _.map(properties, (property, id?) => { return PropertyViewModel.create(property, id, $routeParams); });
+            this.properties = _.map(properties, (property, id?) => { return PropertyViewModel.create(property, id, $routeParams, _.find(details, (d) => { return d.instanceId() === id } )); });
             this.collections = _.map(collections, (collection) => { return CollectionViewModel.create(collection, $routeParams); });
             this.actions = _.map(actions, (action) => { return ActionViewModel.create(action, $routeParams); });
-
         }
 
-
-        static create(objectRep: DomainObjectRepresentation, $routeParams, save? : (ovm : DomainObjectViewModel) => void) {
+        static create(objectRep: DomainObjectRepresentation, $routeParams, details? : PropertyRepresentation[],  save? : (ovm : DomainObjectViewModel) => void) {
             var objectViewModel = new DomainObjectViewModel();
             
             objectViewModel.href = toAppUrl(objectRep.getUrl());
@@ -428,7 +448,7 @@ module Spiro.Angular {
 
             objectViewModel.doSave = save ? () => save(objectViewModel) : () => { };
 
-            objectViewModel.update(objectRep, $routeParams); 
+            objectViewModel.update(objectRep, $routeParams, details || []); 
 
             return objectViewModel;
         }

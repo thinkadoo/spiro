@@ -49,7 +49,7 @@ module Spiro.Angular {
         collectionViewModel(collection: ListRepresentation): CollectionViewModel;
         servicesViewModel(servicesRep: DomainServicesRepresentation): ServicesViewModel;
         serviceViewModel(serviceRep: DomainObjectRepresentation): ServiceViewModel;
-        domainObjectViewModel(objectRep: DomainObjectRepresentation, save?: (ovm: DomainObjectViewModel) => void ): DomainObjectViewModel;
+        domainObjectViewModel(objectRep: DomainObjectRepresentation, details? : PropertyRepresentation[], save?: (ovm: DomainObjectViewModel) => void ): DomainObjectViewModel;
     }
 
     app.service('ViewModelFactory', function ($routeParams, $location) {
@@ -103,8 +103,8 @@ module Spiro.Angular {
             return ServiceViewModel.create(serviceRep, $routeParams);
         };
 
-        this.domainObjectViewModel = function (objectRep: DomainObjectRepresentation, save?: (ovm: DomainObjectViewModel) => void ) {
-            return DomainObjectViewModel.create(objectRep, $routeParams, save);
+        this.domainObjectViewModel = function (objectRep: DomainObjectRepresentation, details?: PropertyRepresentation[], save?: (ovm: DomainObjectViewModel) => void ) {
+            return DomainObjectViewModel.create(objectRep, $routeParams, details, save);
         };
     });
 
@@ -347,12 +347,13 @@ module Spiro.Angular {
         handleServices($scope): void;
         handleService($scope): void;
         handleResult($scope): void;
+        handleEditObject($scope): void;
         handleObject($scope): void;
         handleAppBar($scope): void;
     }
 
     // TODO rename 
-    app.service("Handlers", function ($routeParams, $location, $q, $cacheFactory, RepresentationLoader: RLInterface, Context: ContextInterface, ViewModelFactory: VMFInterface) {
+    app.service("Handlers", function ($routeParams, $location, $q: ng.IQService, $cacheFactory, RepresentationLoader: RLInterface, Context: ContextInterface, ViewModelFactory: VMFInterface) {
 
         var handlers = this;
 
@@ -549,15 +550,39 @@ module Spiro.Angular {
                 then(function (object: DomainObjectRepresentation) {
 
                     Context.setNestedObject(null);
-                    $scope.actionTemplate = $routeParams.editMode ? "" : svrPath + "Content/partials/actions.html";
-                    $scope.propertiesTemplate = svrPath + ($routeParams.editMode ? "Content/partials/editProperties.html" : "Content/partials/viewProperties.html");
+                    $scope.actionTemplate = svrPath + "Content/partials/actions.html";
+                    $scope.propertiesTemplate = svrPath + "Content/partials/viewProperties.html";
 
-                    $scope.object = ViewModelFactory.domainObjectViewModel(object, <(ovm: DomainObjectViewModel) => void > _.partial(handlers.updateObject, $scope, object));
+                    $scope.object = ViewModelFactory.domainObjectViewModel(object);
                 }, function (error) {
                     setError(error);
                 });
 
         };
+
+        // tested
+        this.handleEditObject = function ($scope) {
+
+            Context.getObject($routeParams.dt, $routeParams.id).
+                then(function (object: DomainObjectRepresentation) {
+                    var detailPromises = _.map(object.propertyMembers(), (pm: PropertyMember) => { return RepresentationLoader.populate(pm.getDetails()) });
+
+                    $q.all(detailPromises).then(function (details: PropertyRepresentation[]) {
+                        Context.setNestedObject(null);
+                        $scope.actionTemplate = "";
+                        $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
+
+                        $scope.object = ViewModelFactory.domainObjectViewModel(object, details, <(ovm: DomainObjectViewModel) => void > _.partial(handlers.updateObject, $scope, object));
+
+                    }, function (error) {
+                            setError(error);
+                        });
+                }, function (error) {
+                    setError(error);
+                });
+
+        };
+
 
         // helper functions 
 
