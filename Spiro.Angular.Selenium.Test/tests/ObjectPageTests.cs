@@ -20,8 +20,11 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             Assert.IsTrue(br.FindElement(By.ClassName("back")).Displayed);
             Assert.IsTrue(br.FindElement(By.ClassName("forward")).Displayed);
             Assert.IsFalse(br.FindElement(By.ClassName("refresh")).Displayed);
-            Assert.IsFalse(br.FindElement(By.ClassName("edit")).Displayed);
+           
             Assert.IsFalse(br.FindElement(By.ClassName("help")).Displayed);
+
+            wait.Until(d => d.FindElement(By.ClassName("edit")).Displayed);
+
         }
 
         [TestMethod]
@@ -307,6 +310,20 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
             wait.Until(d => br.FindElement(By.ClassName("object-properties")));
         }
+
+        [TestMethod]
+        public virtual void ObjectEdit() {
+            br.Navigate().GoToUrl(store555Url);
+
+            wait.Until(d => d.FindElements(By.ClassName("action")).Count == 8);
+
+            wait.Until(d => d.FindElement(By.ClassName("edit")).Displayed);
+
+            Click(br.FindElement(By.ClassName("edit")));
+
+            wait.Until(d => br.FindElement(By.ClassName("save")));
+        }
+
     }
 
     #region browsers specific subclasses
