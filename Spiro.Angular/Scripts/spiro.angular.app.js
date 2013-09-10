@@ -454,6 +454,7 @@
                 });
             };
 
+            // tested
             this.handleEditObject = function ($scope) {
                 Context.getObject($routeParams.dt, $routeParams.id).then(function (object) {
                     var detailPromises = _.map(object.propertyMembers(), function (pm) {

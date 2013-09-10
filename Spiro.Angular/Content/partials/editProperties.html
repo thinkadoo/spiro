@@ -12,9 +12,13 @@
                     <a href="{{property.href}}"><span></span>{{property.value}}</a>
                 </div>
 
-                <div ng-switch-when="true" class='property-value input-control text'>
+                <div ng-switch-when="true" class='property-value input-control text' ng-switch="property.hasChoices">
                     <input type='hidden' value='{{property.reference}}' ng-model="property.reference" />
-                    <input type='text' value='{{property.value}}' placeholder='{{property.value}}' ng-model="property.value" />
+                    
+                    <input ng-switch-when="false" type='text' value='{{property.value}}' placeholder='{{property.value}}' ng-model="property.value" />
+                    
+                    <select ng-switch-when="true" ng-model="property.reference" ng-options="c.value as c.name for c in property.choices"/>
+
                     <div class='error'>{{property.message}}</div>
                 </div>
             </div>
@@ -25,14 +29,9 @@
                 <div ng-switch-when="true" class='property-value input-control text' ng-switch="property.hasChoices">
                     
                     <input ng-switch-when="false" type='text' placeholder='{{property.value}}' ng-model="property.value" />
-                      
-                  <!--  <select ng-switch-when="true" >
-                        <option ng-repeat="choice in property.choices" value='{{choice.value}}'>{{choice.name}}</option>                  
-                    </select>-->
+                            
+                    <select ng-switch-when="true" ng-model="property.value" ng-options="c.value as c.name for c in property.choices"/>
                     
-                    <select ng-switch-when="true" ng-model="property.value" ng-options="c.value as c.name for c in property.choices">
-                    </select>
-                     
                     <div class='error'>{{property.message}}</div>
                 </div>
             </div>
