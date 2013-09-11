@@ -37,7 +37,7 @@ module Spiro.Angular {
     }
 
     export interface IUrlHelper {
-        action(): string;
+        action(dvm?: DialogViewModel): string;
         actionParms(): string[];
         getOtherParms(excepts?: string[]): string;
         toAppUrl(href: string, toClose?: string[]): string;
@@ -51,12 +51,15 @@ module Spiro.Angular {
 
         var helper = <IUrlHelper>this;
 
-        helper.action = function () {
-            return _.first($routeParams.action.split("-")); 
+        helper.action = function (dvm? : DialogViewModel) {
+
+            var pps = dvm && dvm.parameters.length > 0 ? _.reduce(dvm.parameters, (memo, parm) => { return memo + "/" + parm.getValue().toString(); }, "") : "";
+
+            return _.first($routeParams.action.split("/")) + encodeURIComponent(pps); 
         }
 
         helper.actionParms = function () {
-            return _.rest($routeParams.action.split("-"));
+            return _.rest($routeParams.action.split("/"));
         }
 
         helper.getOtherParms = function (excepts?: string[]) {
@@ -711,7 +714,7 @@ module Spiro.Angular {
                 Context.setNestedObject(resultObject);
 
                 resultParm = "resultObject=" + resultObject.domainType() + "-" + resultObject.instanceId();  // todo add some parm handling code 
-                actionParm = show ? "&action=" + UrlHelper.action() : "";
+                actionParm = show ? "&action=" + UrlHelper.action(dvm) : "";
             }
 
             if (result.resultType() === "list") {
@@ -719,10 +722,8 @@ module Spiro.Angular {
 
                 Context.setCollection(resultList);
 
-                var pps = dvm && dvm.parameters.length > 0  ? _.reduce(dvm.parameters, (memo, parm) => { return  memo + "-" + parm.getValue().toString(); }, "") : "";
-
-                resultParm = "resultCollection=" + UrlHelper.action() + pps;  // todo add some parm handling code 
-                actionParm = show ? "&action=" + UrlHelper.action() + pps : "";
+                resultParm = "resultCollection=" + UrlHelper.action(dvm);  
+                actionParm = show ? "&action=" + UrlHelper.action(dvm) : "";
             }
             $location.search(resultParm + actionParm);
         };

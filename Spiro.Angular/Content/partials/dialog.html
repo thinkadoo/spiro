@@ -15,7 +15,7 @@
                     
                         <input ng-switch-when="false" type='text' value='{{parameter.value}}' placeholder='{{parameter.dflt}}' ng-model="parameter.value" />
                     
-                        <select ng-switch-when="true" ng-model="parameter.reference" ng-options="c.value as c.name for c in parameter.choices" />
+                        <select ng-switch-when="true" ng-model="parameter.choice" ng-options="c as c.name for c in parameter.choices" />
                        
                     </div>
                 </div>

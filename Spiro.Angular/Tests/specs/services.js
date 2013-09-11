@@ -955,6 +955,8 @@ describe('Services', function () {
 
                 describe('with show flag', function () {
                     beforeEach(inject(function (Handlers) {
+                        testViewModel.parameters = [];
+
                         (Handlers).setResult(testActionResult, testViewModel, true);
                     }));
 
@@ -1005,7 +1007,7 @@ describe('Services', function () {
 
                     it('should set collection and search', function () {
                         expect(setCollection).toHaveBeenCalledWith(testList);
-                        expect(location.search()).toEqual({ resultCollection: 'anAction-1-2', action: 'anAction-1-2' });
+                        expect(location.search()).toEqual({ resultCollection: 'anAction/1/2', action: 'anAction/1/2' });
                     });
                 });
 

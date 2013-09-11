@@ -26,12 +26,16 @@
         Angular.app.service('UrlHelper', function ($routeParams) {
             var helper = this;
 
-            helper.action = function () {
-                return _.first($routeParams.action.split("-"));
+            helper.action = function (dvm) {
+                var pps = dvm && dvm.parameters.length > 0 ? _.reduce(dvm.parameters, function (memo, parm) {
+                    return memo + "/" + parm.getValue().toString();
+                }, "") : "";
+
+                return _.first($routeParams.action.split("/")) + encodeURIComponent(pps);
             };
 
             helper.actionParms = function () {
-                return _.rest($routeParams.action.split("-"));
+                return _.rest($routeParams.action.split("/"));
             };
 
             helper.getOtherParms = function (excepts) {
@@ -586,7 +590,7 @@
                     Context.setNestedObject(resultObject);
 
                     resultParm = "resultObject=" + resultObject.domainType() + "-" + resultObject.instanceId();
-                    actionParm = show ? "&action=" + UrlHelper.action() : "";
+                    actionParm = show ? "&action=" + UrlHelper.action(dvm) : "";
                 }
 
                 if (result.resultType() === "list") {
@@ -594,12 +598,8 @@
 
                     Context.setCollection(resultList);
 
-                    var pps = dvm && dvm.parameters.length > 0 ? _.reduce(dvm.parameters, function (memo, parm) {
-                        return memo + "-" + parm.getValue().toString();
-                    }, "") : "";
-
-                    resultParm = "resultCollection=" + UrlHelper.action() + pps;
-                    actionParm = show ? "&action=" + UrlHelper.action() + pps : "";
+                    resultParm = "resultCollection=" + UrlHelper.action(dvm);
+                    actionParm = show ? "&action=" + UrlHelper.action(dvm) : "";
                 }
                 $location.search(resultParm + actionParm);
             };

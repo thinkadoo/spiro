@@ -53,68 +53,7 @@ module Spiro.Angular {
     }
 
 
-    // TODO rewrite all the parm handling code into a window manager class 
-    // state from $routeParams driven by events 
-    //export function getOtherParms($routeParams, UrlHelper : IUrlHelper, excepts?: string[]) {
-
-    //    function include(parm) {
-    //        return $routeParams[parm] && !_.any(excepts, (except) => parm === except); 
-    //    }
-
-    //    function getParm(name: string) {
-    //        return include(name) ? "&" + name + "=" + $routeParams[name] : "";
-    //    }
-    
-    //    var actionParm = include("action") ? "&action=" + UrlHelper.action() : "";
-    //    var collectionParm = include("collection") ? "&collection=" + $routeParams.collection : "";
-    //    var collectionItemParm = include("collectionItem") ? "&collectionItem=" + $routeParams.collectionItem : "";
-    //    var propertyParm = include("property") ? "&property=" + $routeParams.property : "";
-    //    var resultObjectParm = include("resultObject") ? "&resultObject=" + $routeParams.resultObject : "";
-    //    var resultCollectionParm = include("resultCollection") ? "&resultCollection=" + $routeParams.resultCollection : "";
-
-    //    return actionParm + collectionParm + collectionItemParm + propertyParm + resultObjectParm + resultCollectionParm; 
-    //}
-
-    //// move to url helper ? 
-    //function toAppUrl(href : string, UrlHelper?, $routeParams?, toClose? : string[]) : string {
-    //    var urlRegex = /(objects|services)\/(.*)/;
-    //    var results = (urlRegex).exec(href);
-    //    var parms = ""; 
-
-    //    if (toClose) {
-    //        parms = getOtherParms($routeParams, UrlHelper, toClose); 
-    //        parms = parms ? "?" + parms.substr(1) : ""; 
-    //    }
-
-    //    return (results && results.length > 2) ? "#/" + results[1] + "/" + results[2]  + parms: "";
-    //}
-
-    
-    //function toActionUrl(href: string, $routeParams): string {
-    //    var urlRegex = /(services|objects)\/([\w|\.]+(\/[\w|\.]+)?)\/actions\/([\w|\.]+)/;
-    //    var results = (urlRegex).exec(href);
-    //    return (results && results.length > 3) ? "#/" + results[1] + "/" + results[2] + "?action=" + results[4] + getOtherParms($routeParams, ["action"]) : "";
-    //}
-
-    //function toPropertyUrl(href: string, $routeParams): string {
-    //    var urlRegex = /(objects)\/([\w|\.]+)\/([\w|\.]+)\/(properties)\/([\w|\.]+)/;
-    //    var results = (urlRegex).exec(href);   
-    //    return (results && results.length > 5) ? "#/" + results[1] + "/" + results[2] + "/" + results[3] + "?property=" + results[5] + getOtherParms($routeParams, ["property", "collectionItem", "resultObject"]) : "";
-    //}
-
-    //function toCollectionUrl(href: string, $routeParams): string {
-    //    var urlRegex = /(objects)\/([\w|\.]+)\/([\w|\.]+)\/(collections)\/([\w|\.]+)/;
-    //    var results = (urlRegex).exec(href); 
-    //    return (results && results.length > 5) ? "#/" + results[1] + "/" + results[2] + "/" + results[3] + "?collection=" + results[5] + getOtherParms($routeParams, ["collection", "resultCollection"])  : "";
-    //}
-
-    //function toItemUrl(href: string, itemHref: string, $routeParams): string {
-    //    var parentUrlRegex = /(services|objects)\/([\w|\.]+(\/[\w|\.|-]+)?)/;
-    //    var itemUrlRegex = /(objects)\/([\w|\.]+)\/([\w|\.|-]+)/;
-    //    var parentResults = (parentUrlRegex).exec(href);   
-    //    var itemResults = (itemUrlRegex).exec(itemHref);    
-    //    return (parentResults && parentResults.length > 2) ? "#/" + parentResults[1] + "/" + parentResults[2] + "?collectionItem=" + itemResults[2] + "/" + itemResults[3] + getOtherParms($routeParams, ["property", "collectionItem", "resultObject"])  : "";
-    //}
+    // TODO make these factories so can be injected ? 
 
     export class ChoiceViewModel {
         name: string;
@@ -186,6 +125,7 @@ module Spiro.Angular {
         hasChoices: boolean;
         type: string; 
         reference: string; 
+        choice: ChoiceViewModel; 
 
         clearMessage() {
             this.message = "";
@@ -194,6 +134,10 @@ module Spiro.Angular {
         getValue(): Value {
             if (this.type === "scalar") {
                 return new Value(this.value || "");
+            }
+
+            if (this.hasChoices) {
+                return new Value({ href: this.choice.value, title : this.choice.name });
             }
 
             return new Value({ href: this.reference });
@@ -216,6 +160,10 @@ module Spiro.Angular {
                 return ChoiceViewModel.create(v);
             });
             parmViewModel.hasChoices = parmViewModel.choices.length > 0;
+
+            if (parmViewModel.hasChoices && previousValue) {
+                parmViewModel.choice = _.find(parmViewModel.choices, (c) => c.name == previousValue); 
+            }
 
             return parmViewModel;
         }
