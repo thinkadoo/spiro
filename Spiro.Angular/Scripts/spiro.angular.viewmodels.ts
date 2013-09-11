@@ -55,65 +55,66 @@ module Spiro.Angular {
 
     // TODO rewrite all the parm handling code into a window manager class 
     // state from $routeParams driven by events 
-    export function getOtherParms($routeParams, excepts?: string[]) {
+    //export function getOtherParms($routeParams, UrlHelper : IUrlHelper, excepts?: string[]) {
 
-        function include(parm) {
-            return $routeParams[parm] && !_.any(excepts, (except) => parm === except); 
-        }
+    //    function include(parm) {
+    //        return $routeParams[parm] && !_.any(excepts, (except) => parm === except); 
+    //    }
 
-        function getParm(name: string) {
-            return include(name) ? "&" + name + "=" + $routeParams[name] : "";
-        }
+    //    function getParm(name: string) {
+    //        return include(name) ? "&" + name + "=" + $routeParams[name] : "";
+    //    }
     
-        var actionParm = include("action") ? "&action=" + $routeParams.action : "";
-        var collectionParm = include("collection") ? "&collection=" + $routeParams.collection : "";
-        var collectionItemParm = include("collectionItem") ? "&collectionItem=" + $routeParams.collectionItem : "";
-        var propertyParm = include("property") ? "&property=" + $routeParams.property : "";
-        var resultObjectParm = include("resultObject") ? "&resultObject=" + $routeParams.resultObject : "";
-        var resultCollectionParm = include("resultCollection") ? "&resultCollection=" + $routeParams.resultCollection : "";
+    //    var actionParm = include("action") ? "&action=" + UrlHelper.action() : "";
+    //    var collectionParm = include("collection") ? "&collection=" + $routeParams.collection : "";
+    //    var collectionItemParm = include("collectionItem") ? "&collectionItem=" + $routeParams.collectionItem : "";
+    //    var propertyParm = include("property") ? "&property=" + $routeParams.property : "";
+    //    var resultObjectParm = include("resultObject") ? "&resultObject=" + $routeParams.resultObject : "";
+    //    var resultCollectionParm = include("resultCollection") ? "&resultCollection=" + $routeParams.resultCollection : "";
 
-        return actionParm + collectionParm + collectionItemParm + propertyParm + resultObjectParm + resultCollectionParm; 
-    }
+    //    return actionParm + collectionParm + collectionItemParm + propertyParm + resultObjectParm + resultCollectionParm; 
+    //}
 
-    function toAppUrl(href : string, $routeParams?, toClose? : string[]) : string {
-        var urlRegex = /(objects|services)\/(.*)/;
-        var results = (urlRegex).exec(href);
-        var parms = ""; 
+    //// move to url helper ? 
+    //function toAppUrl(href : string, UrlHelper?, $routeParams?, toClose? : string[]) : string {
+    //    var urlRegex = /(objects|services)\/(.*)/;
+    //    var results = (urlRegex).exec(href);
+    //    var parms = ""; 
 
-        if (toClose) {
-            parms = getOtherParms($routeParams, toClose); 
-            parms = parms ? "?" + parms.substr(1) : ""; 
-        }
+    //    if (toClose) {
+    //        parms = getOtherParms($routeParams, UrlHelper, toClose); 
+    //        parms = parms ? "?" + parms.substr(1) : ""; 
+    //    }
 
-        return (results && results.length > 2) ? "#/" + results[1] + "/" + results[2]  + parms: "";
-    }
+    //    return (results && results.length > 2) ? "#/" + results[1] + "/" + results[2]  + parms: "";
+    //}
 
     
-    function toActionUrl(href: string, $routeParams): string {
-        var urlRegex = /(services|objects)\/([\w|\.]+(\/[\w|\.]+)?)\/actions\/([\w|\.]+)/;
-        var results = (urlRegex).exec(href);
-        return (results && results.length > 3) ? "#/" + results[1] + "/" + results[2] + "?action=" + results[4] + getOtherParms($routeParams, ["action"]) : "";
-    }
+    //function toActionUrl(href: string, $routeParams): string {
+    //    var urlRegex = /(services|objects)\/([\w|\.]+(\/[\w|\.]+)?)\/actions\/([\w|\.]+)/;
+    //    var results = (urlRegex).exec(href);
+    //    return (results && results.length > 3) ? "#/" + results[1] + "/" + results[2] + "?action=" + results[4] + getOtherParms($routeParams, ["action"]) : "";
+    //}
 
-    function toPropertyUrl(href: string, $routeParams): string {
-        var urlRegex = /(objects)\/([\w|\.]+)\/([\w|\.]+)\/(properties)\/([\w|\.]+)/;
-        var results = (urlRegex).exec(href);   
-        return (results && results.length > 5) ? "#/" + results[1] + "/" + results[2] + "/" + results[3] + "?property=" + results[5] + getOtherParms($routeParams, ["property", "collectionItem", "resultObject"]) : "";
-    }
+    //function toPropertyUrl(href: string, $routeParams): string {
+    //    var urlRegex = /(objects)\/([\w|\.]+)\/([\w|\.]+)\/(properties)\/([\w|\.]+)/;
+    //    var results = (urlRegex).exec(href);   
+    //    return (results && results.length > 5) ? "#/" + results[1] + "/" + results[2] + "/" + results[3] + "?property=" + results[5] + getOtherParms($routeParams, ["property", "collectionItem", "resultObject"]) : "";
+    //}
 
-    function toCollectionUrl(href: string, $routeParams): string {
-        var urlRegex = /(objects)\/([\w|\.]+)\/([\w|\.]+)\/(collections)\/([\w|\.]+)/;
-        var results = (urlRegex).exec(href); 
-        return (results && results.length > 5) ? "#/" + results[1] + "/" + results[2] + "/" + results[3] + "?collection=" + results[5] + getOtherParms($routeParams, ["collection", "resultCollection"])  : "";
-    }
+    //function toCollectionUrl(href: string, $routeParams): string {
+    //    var urlRegex = /(objects)\/([\w|\.]+)\/([\w|\.]+)\/(collections)\/([\w|\.]+)/;
+    //    var results = (urlRegex).exec(href); 
+    //    return (results && results.length > 5) ? "#/" + results[1] + "/" + results[2] + "/" + results[3] + "?collection=" + results[5] + getOtherParms($routeParams, ["collection", "resultCollection"])  : "";
+    //}
 
-    function toItemUrl(href: string, itemHref: string, $routeParams): string {
-        var parentUrlRegex = /(services|objects)\/([\w|\.]+(\/[\w|\.|-]+)?)/;
-        var itemUrlRegex = /(objects)\/([\w|\.]+)\/([\w|\.|-]+)/;
-        var parentResults = (parentUrlRegex).exec(href);   
-        var itemResults = (itemUrlRegex).exec(itemHref);    
-        return (parentResults && parentResults.length > 2) ? "#/" + parentResults[1] + "/" + parentResults[2] + "?collectionItem=" + itemResults[2] + "/" + itemResults[3] + getOtherParms($routeParams, ["property", "collectionItem", "resultObject"])  : "";
-    }
+    //function toItemUrl(href: string, itemHref: string, $routeParams): string {
+    //    var parentUrlRegex = /(services|objects)\/([\w|\.]+(\/[\w|\.|-]+)?)/;
+    //    var itemUrlRegex = /(objects)\/([\w|\.]+)\/([\w|\.|-]+)/;
+    //    var parentResults = (parentUrlRegex).exec(href);   
+    //    var itemResults = (itemUrlRegex).exec(itemHref);    
+    //    return (parentResults && parentResults.length > 2) ? "#/" + parentResults[1] + "/" + parentResults[2] + "?collectionItem=" + itemResults[2] + "/" + itemResults[3] + getOtherParms($routeParams, ["property", "collectionItem", "resultObject"])  : "";
+    //}
 
     export class ChoiceViewModel {
         name: string;
@@ -150,10 +151,10 @@ module Spiro.Angular {
         href: string;
         color: string; 
 
-        static create(linkRep: Link) {
+        static create(linkRep: Link, UrlHelper : IUrlHelper) {
             var linkViewModel = new LinkViewModel(); 
             linkViewModel.title = linkRep.title();
-            linkViewModel.href = toAppUrl(linkRep.href()); 
+            linkViewModel.href = UrlHelper.toAppUrl(linkRep.href()); 
             linkViewModel.color = toColorFromHref(linkRep.href());
             return linkViewModel;
         }
@@ -165,10 +166,10 @@ module Spiro.Angular {
         href: string;
         color: string;
 
-        static create(linkRep: Link, parentHref : string, index : number, $routeParams) {
+        static create(linkRep: Link, parentHref: string, index: number, UrlHelper: IUrlHelper) {
             var linkViewModel = new LinkViewModel();
             linkViewModel.title = linkRep.title();
-            linkViewModel.href = toItemUrl(parentHref, linkRep.href(), $routeParams);
+            linkViewModel.href = UrlHelper.toItemUrl(parentHref, linkRep.href());
             linkViewModel.color = toColorFromHref(linkRep.href());
             return linkViewModel;
         }
@@ -181,20 +182,41 @@ module Spiro.Angular {
         value: string; 
         message: string; 
         id: string; 
+        choices: ChoiceViewModel[]; 
+        hasChoices: boolean;
+        type: string; 
+        reference: string; 
 
         clearMessage() {
             this.message = "";
         }
 
-        static create(parmRep: Parameter, id : string) {
+        getValue(): Value {
+            if (this.type === "scalar") {
+                return new Value(this.value || "");
+            }
+
+            return new Value({ href: this.reference });
+        }
+
+        static create(parmRep: Parameter, id: string, previousValue : string) {
             var parmViewModel = new ParameterViewModel();
+
+            parmViewModel.type = parmRep.isScalar() ? "scalar" : "ref";
 
             parmViewModel.title = parmRep.extensions().friendlyName;
             parmViewModel.dflt = parmRep.default().toValueString();
-            parmViewModel.message = ""; 
-            parmViewModel.value = ""; 
-            parmViewModel.id = id; 
-          
+            parmViewModel.message = "";
+            parmViewModel.value = previousValue;
+            parmViewModel.id = id;
+
+            parmViewModel.reference = "";
+
+            parmViewModel.choices = _.map(parmRep.choices(), (v) => {
+                return ChoiceViewModel.create(v);
+            });
+            parmViewModel.hasChoices = parmViewModel.choices.length > 0;
+
             return parmViewModel;
         }
     } 
@@ -204,10 +226,10 @@ module Spiro.Angular {
         title: string;
         href: string;
 
-        static create(actionRep: ActionMember, $routeParams) {
+        static create(actionRep: ActionMember, UrlHelper : IUrlHelper) {
             var actionViewModel = new ActionViewModel();
             actionViewModel.title = actionRep.extensions().friendlyName;
-            actionViewModel.href = toActionUrl(actionRep.detailsLink().href(), $routeParams);
+            actionViewModel.href = UrlHelper.toActionUrl(actionRep.detailsLink().href());
             return actionViewModel;
         }
     } 
@@ -229,18 +251,20 @@ module Spiro.Angular {
             _.each(this.parameters, (parm) => parm.clearMessage());
         }
 
-        static create(actionRep: ActionRepresentation, $routeParams,  invoke: (dvm : DialogViewModel, show : boolean) => void ) {
+        static create(actionRep: ActionRepresentation, UrlHelper : IUrlHelper, invoke: (dvm : DialogViewModel, show : boolean) => void ) {
             var dialogViewModel = new DialogViewModel();
             var parameters = actionRep.parameters();
+            var parms = UrlHelper.actionParms(); 
 
             dialogViewModel.title = actionRep.extensions().friendlyName;
             dialogViewModel.isQuery = actionRep.invokeLink().method() === "GET";
 
             dialogViewModel.message = "";
 
-            dialogViewModel.close = toAppUrl(actionRep.upLink().href(), $routeParams, ["action"]); 
+            dialogViewModel.close = UrlHelper.toAppUrl(actionRep.upLink().href(), ["action"]); 
 
-            dialogViewModel.parameters = _.map(parameters, (parm, id?) => { return ParameterViewModel.create(parm, id); });
+            var i = 0; 
+            dialogViewModel.parameters = _.map(parameters, (parm, id?) => { return ParameterViewModel.create(parm, id, parms[i++]); });
 
             dialogViewModel.doShow = () => invoke(dialogViewModel, true); 
             dialogViewModel.doInvoke = () => invoke(dialogViewModel, false);  
@@ -273,14 +297,14 @@ module Spiro.Angular {
             return new Value({ href: this.reference });
         }
 
-        static create(propertyRep: PropertyMember, id : string, $routeParams, propertyDetails? : PropertyRepresentation) {
+        static create(propertyRep: PropertyMember, id : string, UrlHelper : IUrlHelper, propertyDetails? : PropertyRepresentation) {
             var propertyViewModel = new PropertyViewModel();
             propertyViewModel.title = propertyRep.extensions().friendlyName;
             propertyViewModel.value = propertyRep.value().toString();
             propertyViewModel.type = propertyRep.isScalar() ? "scalar" : "ref";
             propertyViewModel.returnType = propertyRep.extensions().returnType;
-            propertyViewModel.href = propertyRep.isScalar() ? "" : toPropertyUrl(propertyRep.detailsLink().href(), $routeParams);
-            propertyViewModel.target = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : toAppUrl(propertyRep.value().link().href());
+            propertyViewModel.href = propertyRep.isScalar() ? "" : UrlHelper.toPropertyUrl(propertyRep.detailsLink().href());
+            propertyViewModel.target = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : UrlHelper.toAppUrl(propertyRep.value().link().href());
             propertyViewModel.reference = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : propertyRep.value().link().href();
 
             propertyViewModel.color = toColorFromType(propertyRep.extensions().returnType); 
@@ -308,14 +332,14 @@ module Spiro.Angular {
         color: string; 
         items: LinkViewModel[]; 
         
-        static create(collectionRep: CollectionMember, $routeParams) {
+        static create(collectionRep: CollectionMember, UrlHelper : IUrlHelper) {
             var collectionViewModel = new CollectionViewModel();
           
             collectionViewModel.title = collectionRep.extensions().friendlyName;
             collectionViewModel.size = collectionRep.size();
             collectionViewModel.pluralName = collectionRep.extensions().pluralName;
             
-            collectionViewModel.href = toCollectionUrl(collectionRep.detailsLink().href(), $routeParams);
+            collectionViewModel.href = UrlHelper.toCollectionUrl(collectionRep.detailsLink().href());
             collectionViewModel.color = toColorFromType(collectionRep.extensions().elementType);
             
             collectionViewModel.items = [];
@@ -323,7 +347,7 @@ module Spiro.Angular {
             return collectionViewModel;
         }
 
-        static createFromDetails(collectionRep: CollectionRepresentation, $routeParams) {
+        static createFromDetails(collectionRep: CollectionRepresentation, UrlHelper: IUrlHelper) {
             var collectionViewModel = new CollectionViewModel();
             var links = collectionRep.value().models;
             
@@ -331,16 +355,16 @@ module Spiro.Angular {
             collectionViewModel.size = links.length;
             collectionViewModel.pluralName = collectionRep.extensions().pluralName;
 
-            collectionViewModel.href = toCollectionUrl(collectionRep.selfLink().href(), $routeParams);
+            collectionViewModel.href = UrlHelper.toCollectionUrl(collectionRep.selfLink().href());
             collectionViewModel.color = toColorFromType(collectionRep.extensions().elementType);
 
             var i = 0; 
-            collectionViewModel.items = _.map(links, (link) => { return ItemViewModel.create(link, collectionViewModel.href, i++, $routeParams); });
+            collectionViewModel.items = _.map(links, (link) => { return ItemViewModel.create(link, collectionViewModel.href, i++, UrlHelper); });
 
             return collectionViewModel;
         }
 
-        static createFromList(listRep:ListRepresentation, $routeParams, $location) {
+        static createFromList(listRep: ListRepresentation, UrlHelper: IUrlHelper, $location) {
             var collectionViewModel = new CollectionViewModel();
             var links = listRep.value().models;
 
@@ -352,7 +376,7 @@ module Spiro.Angular {
             //collectionViewModel.color = toColorFromType(listRep.extensions().elementType);
 
             var i = 0;
-            collectionViewModel.items = _.map(links, (link) => { return ItemViewModel.create(link, $location.path(), i++, $routeParams); });
+            collectionViewModel.items = _.map(links, (link) => { return ItemViewModel.create(link, $location.path(), i++, UrlHelper); });
 
             return collectionViewModel;
         }
@@ -365,12 +389,12 @@ module Spiro.Angular {
         color: string; 
         items: LinkViewModel[]; 
             
-        static create(servicesRep: DomainServicesRepresentation) {
+        static create(servicesRep: DomainServicesRepresentation, UrlHelper : IUrlHelper) {
             var servicesViewModel = new ServicesViewModel(); 
             var links = servicesRep.value().models;
             servicesViewModel.title = "Services";
             servicesViewModel.color = "bg-color-darkBlue";
-            servicesViewModel.items = _.map(links, (link) => { return LinkViewModel.create(link); });
+            servicesViewModel.items = _.map(links, (link) => { return LinkViewModel.create(link, UrlHelper); });
             return servicesViewModel;
         }
     } 
@@ -386,16 +410,16 @@ module Spiro.Angular {
         closeNestedObject: string; 
         closeCollection: string; 
 
-        static create(serviceRep: DomainObjectRepresentation, $routeParams) {
+        static create(serviceRep: DomainObjectRepresentation, UrlHelper : IUrlHelper) {
             var serviceViewModel = new ServiceViewModel();
             var actions = serviceRep.actionMembers();
             serviceViewModel.serviceId = serviceRep.serviceId();
             serviceViewModel.title = serviceRep.title();
-            serviceViewModel.actions = _.map(actions, (action) => { return ActionViewModel.create(action, $routeParams); });
+            serviceViewModel.actions = _.map(actions, (action) => { return ActionViewModel.create(action, UrlHelper); });
             serviceViewModel.color = toColorFromType(serviceRep.serviceId());
-            serviceViewModel.href = toAppUrl(serviceRep.getUrl()); 
-            serviceViewModel.closeNestedObject = toAppUrl(serviceRep.getUrl(), $routeParams, ["property", "collectionItem", "resultObject"]); 
-            serviceViewModel.closeCollection = toAppUrl(serviceRep.getUrl(), $routeParams, ["collection", "resultCollection"]); 
+            serviceViewModel.href = UrlHelper.toAppUrl(serviceRep.getUrl()); 
+            serviceViewModel.closeNestedObject = UrlHelper.toAppUrl(serviceRep.getUrl(), ["property", "collectionItem", "resultObject"]); 
+            serviceViewModel.closeCollection = UrlHelper.toAppUrl(serviceRep.getUrl(), ["collection", "resultCollection"]); 
 
             return serviceViewModel;
         }
@@ -434,21 +458,21 @@ module Spiro.Angular {
             this.actions = _.map(actions, (action) => { return ActionViewModel.create(action, $routeParams); });
         }
 
-        static create(objectRep: DomainObjectRepresentation, $routeParams, details? : PropertyRepresentation[],  save? : (ovm : DomainObjectViewModel) => void) {
+        static create(objectRep: DomainObjectRepresentation, UrlHelper : IUrlHelper, details? : PropertyRepresentation[],  save? : (ovm : DomainObjectViewModel) => void) {
             var objectViewModel = new DomainObjectViewModel();
             
-            objectViewModel.href = toAppUrl(objectRep.getUrl());
+            objectViewModel.href = UrlHelper.toAppUrl(objectRep.getUrl());
 
-            objectViewModel.closeNestedObject = toAppUrl(objectRep.getUrl(), $routeParams, ["property", "collectionItem", "resultObject"]);
-            objectViewModel.closeCollection = toAppUrl(objectRep.getUrl(), $routeParams, ["collection", "resultCollection"]);
+            objectViewModel.closeNestedObject = UrlHelper.toAppUrl(objectRep.getUrl(), ["property", "collectionItem", "resultObject"]);
+            objectViewModel.closeCollection = UrlHelper.toAppUrl(objectRep.getUrl(), ["collection", "resultCollection"]);
 
-            objectViewModel.cancelEdit = toAppUrl(objectRep.getUrl());
+            objectViewModel.cancelEdit = UrlHelper.toAppUrl(objectRep.getUrl());
 
             objectViewModel.color = toColorFromType(objectRep.domainType());
 
             objectViewModel.doSave = save ? () => save(objectViewModel) : () => { };
 
-            objectViewModel.update(objectRep, $routeParams, details || []); 
+            objectViewModel.update(objectRep, details || []); 
 
             return objectViewModel;
         }

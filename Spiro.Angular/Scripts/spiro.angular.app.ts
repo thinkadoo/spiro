@@ -36,11 +36,95 @@ module Spiro.Angular {
         populate: (m: HateoasModel, ignoreCache?: boolean, r?: HateoasModel) => ng.IPromise<T>;
     }
 
+    export interface IUrlHelper {
+        action(): string;
+        actionParms(): string[];
+        getOtherParms(excepts?: string[]): string;
+        toAppUrl(href: string, toClose?: string[]): string;
+        toActionUrl(href: string): string;
+        toPropertyUrl(href: string): string;
+        toCollectionUrl(href: string): string;
+        toItemUrl(href: string, itemHref: string): string;
+    }
+
+    app.service('UrlHelper', function ($routeParams) {
+
+        var helper = <IUrlHelper>this;
+
+        helper.action = function () {
+            return _.first($routeParams.action.split("-")); 
+        }
+
+        helper.actionParms = function () {
+            return _.rest($routeParams.action.split("-"));
+        }
+
+        helper.getOtherParms = function (excepts?: string[]) {
+
+            function include(parm) {
+                return $routeParams[parm] && !_.any(excepts, (except) => parm === except);
+            }
+
+            function getParm(name: string) {
+                return include(name) ? "&" + name + "=" + $routeParams[name] : "";
+            }
+
+            var actionParm = include("action") ? "&action=" + helper.action() : "";
+            var collectionParm = include("collection") ? "&collection=" + $routeParams.collection : "";
+            var collectionItemParm = include("collectionItem") ? "&collectionItem=" + $routeParams.collectionItem : "";
+            var propertyParm = include("property") ? "&property=" + $routeParams.property : "";
+            var resultObjectParm = include("resultObject") ? "&resultObject=" + $routeParams.resultObject : "";
+            var resultCollectionParm = include("resultCollection") ? "&resultCollection=" + $routeParams.resultCollection : "";
+
+            return actionParm + collectionParm + collectionItemParm + propertyParm + resultObjectParm + resultCollectionParm;
+        }
+
+        helper.toAppUrl = function (href: string, toClose?: string[]): string {
+            var urlRegex = /(objects|services)\/(.*)/;
+            var results = (urlRegex).exec(href);
+            var parms = "";
+
+            if (toClose) {
+                parms = helper.getOtherParms(toClose);
+                parms = parms ? "?" + parms.substr(1) : "";
+            }
+
+            return (results && results.length > 2) ? "#/" + results[1] + "/" + results[2] + parms : "";
+        }
+
+
+        helper.toActionUrl = function (href: string): string {
+            var urlRegex = /(services|objects)\/([\w|\.]+(\/[\w|\.]+)?)\/actions\/([\w|\.]+)/;
+            var results = (urlRegex).exec(href);
+            return (results && results.length > 3) ? "#/" + results[1] + "/" + results[2] + "?action=" + results[4] + helper.getOtherParms(["action"]) : "";
+        }
+
+        helper.toPropertyUrl = function(href: string): string {
+            var urlRegex = /(objects)\/([\w|\.]+)\/([\w|\.]+)\/(properties)\/([\w|\.]+)/;
+            var results = (urlRegex).exec(href);
+            return (results && results.length > 5) ? "#/" + results[1] + "/" + results[2] + "/" + results[3] + "?property=" + results[5] + helper.getOtherParms(["property", "collectionItem", "resultObject"]) : "";
+        }
+
+        helper.toCollectionUrl = function(href: string): string {
+            var urlRegex = /(objects)\/([\w|\.]+)\/([\w|\.]+)\/(collections)\/([\w|\.]+)/;
+            var results = (urlRegex).exec(href);
+            return (results && results.length > 5) ? "#/" + results[1] + "/" + results[2] + "/" + results[3] + "?collection=" + results[5] + helper.getOtherParms(["collection", "resultCollection"]) : "";
+        }
+
+        helper.toItemUrl = function (href: string, itemHref: string): string {
+            var parentUrlRegex = /(services|objects)\/([\w|\.]+(\/[\w|\.|-]+)?)/;
+            var itemUrlRegex = /(objects)\/([\w|\.]+)\/([\w|\.|-]+)/;
+            var parentResults = (parentUrlRegex).exec(href);
+            var itemResults = (itemUrlRegex).exec(itemHref);
+            return (parentResults && parentResults.length > 2) ? "#/" + parentResults[1] + "/" + parentResults[2] + "?collectionItem=" + itemResults[2] + "/" + itemResults[3] + helper.getOtherParms(["property", "collectionItem", "resultObject"]) : "";
+        }
+    });
+
     export interface VMFInterface {
         errorViewModel(errorRep: ErrorRepresentation): ErrorViewModel;
         linkViewModel(linkRep: Link): LinkViewModel;
         itemViewModel(linkRep: Link, parentHref: string, index: number): ItemViewModel;
-        parameterViewModel(parmRep: Parameter, id: string): ParameterViewModel;
+        parameterViewModel(parmRep: Parameter, id: string, previousValue : string): ParameterViewModel;
         actionViewModel(actionRep: ActionMember): ActionViewModel;
         dialogViewModel(actionRep: ActionRepresentation, invoke: (dvm: DialogViewModel, show: boolean) => void ): DialogViewModel;
         propertyViewModel(propertyRep: PropertyMember, id: string): PropertyViewModel;
@@ -52,59 +136,61 @@ module Spiro.Angular {
         domainObjectViewModel(objectRep: DomainObjectRepresentation, details? : PropertyRepresentation[], save?: (ovm: DomainObjectViewModel) => void ): DomainObjectViewModel;
     }
 
-    app.service('ViewModelFactory', function ($routeParams, $location) {
+    app.service('ViewModelFactory', function ($routeParams, $location, UrlHelper) {
 
-        this.errorViewModel = function (errorRep: ErrorRepresentation) {
+        var viewModelFactory = <VMFInterface>this; 
+
+        viewModelFactory.errorViewModel = function (errorRep: ErrorRepresentation) {
             return ErrorViewModel.create(errorRep);
         };
 
-        this.linkViewModel = function (linkRep: Link) {
-            return LinkViewModel.create(linkRep);
+        viewModelFactory.linkViewModel = function (linkRep: Link) {
+            return LinkViewModel.create(linkRep, UrlHelper);
         };
 
-        this.itemViewModel = function (linkRep: Link, parentHref: string, index: number) {
+        viewModelFactory.itemViewModel = function (linkRep: Link, parentHref: string, index: number) {
             return ItemViewModel.create(linkRep, parentHref, index, $routeParams);
         };
 
-        this.parameterViewModel = function (parmRep: Parameter, id: string) {
-            return ParameterViewModel.create(parmRep, id);
+        viewModelFactory.parameterViewModel = function (parmRep: Parameter, id: string, previousValue: string) {
+            return ParameterViewModel.create(parmRep, id, previousValue);
         };
 
-        this.actionViewModel = function (actionRep: ActionMember) {
-            return ActionViewModel.create(actionRep, $routeParams);
+        viewModelFactory.actionViewModel = function (actionRep: ActionMember) {
+            return ActionViewModel.create(actionRep, UrlHelper);
         };
 
-        this.dialogViewModel = function (actionRep: ActionRepresentation, invoke: (dvm: DialogViewModel, show: boolean) => void ) {
-            return DialogViewModel.create(actionRep, $routeParams, invoke);
+        viewModelFactory.dialogViewModel = function (actionRep: ActionRepresentation, invoke: (dvm: DialogViewModel, show: boolean) => void ) {
+            return DialogViewModel.create(actionRep, UrlHelper, invoke);
         };
 
-        this.propertyViewModel = function (propertyRep: PropertyMember, id: string) {
-            return PropertyViewModel.create(propertyRep, id, $routeParams);
+        viewModelFactory.propertyViewModel = function (propertyRep: PropertyMember, id: string) {
+            return PropertyViewModel.create(propertyRep, id, UrlHelper);
         };
 
-        this.collectionViewModel = function (collection) {
+        viewModelFactory.collectionViewModel = function (collection : any) {
             if (collection instanceof CollectionMember) {
-                return CollectionViewModel.create(<CollectionMember>collection, $routeParams);
+                return CollectionViewModel.create(<CollectionMember>collection, UrlHelper);
             }
             if (collection instanceof CollectionRepresentation) {
-                return CollectionViewModel.createFromDetails(<CollectionRepresentation>collection, $routeParams);
+                return CollectionViewModel.createFromDetails(<CollectionRepresentation>collection, UrlHelper);
             }
             if (collection instanceof ListRepresentation) {
-                return CollectionViewModel.createFromList(<ListRepresentation>collection, $routeParams, $location);
+                return CollectionViewModel.createFromList(<ListRepresentation>collection, UrlHelper, $location);
             }
             return null;
         };
 
-        this.servicesViewModel = function (servicesRep: DomainServicesRepresentation) {
-            return ServicesViewModel.create(servicesRep);
+        viewModelFactory.servicesViewModel = function (servicesRep: DomainServicesRepresentation) {
+            return ServicesViewModel.create(servicesRep, UrlHelper);
         };
 
-        this.serviceViewModel = function (serviceRep: DomainObjectRepresentation) {
-            return ServiceViewModel.create(serviceRep, $routeParams);
+        viewModelFactory.serviceViewModel = function (serviceRep: DomainObjectRepresentation) {
+            return ServiceViewModel.create(serviceRep, UrlHelper);
         };
 
-        this.domainObjectViewModel = function (objectRep: DomainObjectRepresentation, details?: PropertyRepresentation[], save?: (ovm: DomainObjectViewModel) => void ) {
-            return DomainObjectViewModel.create(objectRep, $routeParams, details, save);
+        viewModelFactory.domainObjectViewModel = function (objectRep: DomainObjectRepresentation, details?: PropertyRepresentation[], save?: (ovm: DomainObjectViewModel) => void ) {
+            return DomainObjectViewModel.create(objectRep, UrlHelper, details, save);
         };
     });
 
@@ -353,7 +439,7 @@ module Spiro.Angular {
     }
 
     // TODO rename 
-    app.service("Handlers", function ($routeParams, $location, $q: ng.IQService, $cacheFactory, RepresentationLoader: RLInterface, Context: ContextInterface, ViewModelFactory: VMFInterface) {
+    app.service("Handlers", function ($routeParams, $location, $q: ng.IQService, $cacheFactory, RepresentationLoader: RLInterface, Context: ContextInterface, ViewModelFactory: VMFInterface, UrlHelper : IUrlHelper) {
 
         var handlers = this;
 
@@ -387,7 +473,7 @@ module Spiro.Angular {
         this.handleActionDialog = function ($scope) {
             Context.getObject($routeParams.sid || $routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
-                    var actionTarget = object.actionMember($routeParams.action).getDetails();
+                    var actionTarget = object.actionMember(UrlHelper.action()).getDetails();
                     return RepresentationLoader.populate(actionTarget);
                 }).
                 then(function (action: ActionRepresentation) {
@@ -404,7 +490,7 @@ module Spiro.Angular {
         this.handleActionResult = function ($scope) {
             Context.getObject($routeParams.sid || $routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
-                    var action = object.actionMember($routeParams.action);
+                    var action = object.actionMember(UrlHelper.action());
 
                     if (action.extensions().hasParams) {
                         var delay = $q.defer();
@@ -625,7 +711,7 @@ module Spiro.Angular {
                 Context.setNestedObject(resultObject);
 
                 resultParm = "resultObject=" + resultObject.domainType() + "-" + resultObject.instanceId();  // todo add some parm handling code 
-                actionParm = show ? "&action=" + $routeParams.action : "";
+                actionParm = show ? "&action=" + UrlHelper.action() : "";
             }
 
             if (result.resultType() === "list") {
@@ -633,10 +719,10 @@ module Spiro.Angular {
 
                 Context.setCollection(resultList);
 
-                var pps = dvm ? _.reduce(dvm.parameters, (memo, parm) => { return memo + parm.value + "-"; }, "") : "";
+                var pps = dvm && dvm.parameters.length > 0  ? _.reduce(dvm.parameters, (memo, parm) => { return  memo + "-" + parm.getValue().toString(); }, "") : "";
 
-                resultParm = "resultCollection=" + $routeParams.action + pps;  // todo add some parm handling code 
-                actionParm = show ? "&action=" + $routeParams.action : "";
+                resultParm = "resultCollection=" + UrlHelper.action() + pps;  // todo add some parm handling code 
+                actionParm = show ? "&action=" + UrlHelper.action() + pps : "";
             }
             $location.search(resultParm + actionParm);
         };
@@ -670,7 +756,7 @@ module Spiro.Angular {
             invoke.attributes = {}; // todo make automatic 
 
             var parameters = dvm.parameters;
-            _.each(parameters, (parm) => invoke.setParameter(parm.id, new Value(parm.value || "")));
+            _.each(parameters, (parm) => invoke.setParameter(parm.id, parm.getValue()));
 
             RepresentationLoader.populate(invoke, true).
                 then(function (result: ActionResultRepresentation) {

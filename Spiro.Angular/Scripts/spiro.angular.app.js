@@ -23,58 +23,132 @@
             });
         });
 
-        Angular.app.service('ViewModelFactory', function ($routeParams, $location) {
-            this.errorViewModel = function (errorRep) {
+        Angular.app.service('UrlHelper', function ($routeParams) {
+            var helper = this;
+
+            helper.action = function () {
+                return _.first($routeParams.action.split("-"));
+            };
+
+            helper.actionParms = function () {
+                return _.rest($routeParams.action.split("-"));
+            };
+
+            helper.getOtherParms = function (excepts) {
+                function include(parm) {
+                    return $routeParams[parm] && !_.any(excepts, function (except) {
+                        return parm === except;
+                    });
+                }
+
+                function getParm(name) {
+                    return include(name) ? "&" + name + "=" + $routeParams[name] : "";
+                }
+
+                var actionParm = include("action") ? "&action=" + helper.action() : "";
+                var collectionParm = include("collection") ? "&collection=" + $routeParams.collection : "";
+                var collectionItemParm = include("collectionItem") ? "&collectionItem=" + $routeParams.collectionItem : "";
+                var propertyParm = include("property") ? "&property=" + $routeParams.property : "";
+                var resultObjectParm = include("resultObject") ? "&resultObject=" + $routeParams.resultObject : "";
+                var resultCollectionParm = include("resultCollection") ? "&resultCollection=" + $routeParams.resultCollection : "";
+
+                return actionParm + collectionParm + collectionItemParm + propertyParm + resultObjectParm + resultCollectionParm;
+            };
+
+            helper.toAppUrl = function (href, toClose) {
+                var urlRegex = /(objects|services)\/(.*)/;
+                var results = (urlRegex).exec(href);
+                var parms = "";
+
+                if (toClose) {
+                    parms = helper.getOtherParms(toClose);
+                    parms = parms ? "?" + parms.substr(1) : "";
+                }
+
+                return (results && results.length > 2) ? "#/" + results[1] + "/" + results[2] + parms : "";
+            };
+
+            helper.toActionUrl = function (href) {
+                var urlRegex = /(services|objects)\/([\w|\.]+(\/[\w|\.]+)?)\/actions\/([\w|\.]+)/;
+                var results = (urlRegex).exec(href);
+                return (results && results.length > 3) ? "#/" + results[1] + "/" + results[2] + "?action=" + results[4] + helper.getOtherParms(["action"]) : "";
+            };
+
+            helper.toPropertyUrl = function (href) {
+                var urlRegex = /(objects)\/([\w|\.]+)\/([\w|\.]+)\/(properties)\/([\w|\.]+)/;
+                var results = (urlRegex).exec(href);
+                return (results && results.length > 5) ? "#/" + results[1] + "/" + results[2] + "/" + results[3] + "?property=" + results[5] + helper.getOtherParms(["property", "collectionItem", "resultObject"]) : "";
+            };
+
+            helper.toCollectionUrl = function (href) {
+                var urlRegex = /(objects)\/([\w|\.]+)\/([\w|\.]+)\/(collections)\/([\w|\.]+)/;
+                var results = (urlRegex).exec(href);
+                return (results && results.length > 5) ? "#/" + results[1] + "/" + results[2] + "/" + results[3] + "?collection=" + results[5] + helper.getOtherParms(["collection", "resultCollection"]) : "";
+            };
+
+            helper.toItemUrl = function (href, itemHref) {
+                var parentUrlRegex = /(services|objects)\/([\w|\.]+(\/[\w|\.|-]+)?)/;
+                var itemUrlRegex = /(objects)\/([\w|\.]+)\/([\w|\.|-]+)/;
+                var parentResults = (parentUrlRegex).exec(href);
+                var itemResults = (itemUrlRegex).exec(itemHref);
+                return (parentResults && parentResults.length > 2) ? "#/" + parentResults[1] + "/" + parentResults[2] + "?collectionItem=" + itemResults[2] + "/" + itemResults[3] + helper.getOtherParms(["property", "collectionItem", "resultObject"]) : "";
+            };
+        });
+
+        Angular.app.service('ViewModelFactory', function ($routeParams, $location, UrlHelper) {
+            var viewModelFactory = this;
+
+            viewModelFactory.errorViewModel = function (errorRep) {
                 return Angular.ErrorViewModel.create(errorRep);
             };
 
-            this.linkViewModel = function (linkRep) {
-                return Angular.LinkViewModel.create(linkRep);
+            viewModelFactory.linkViewModel = function (linkRep) {
+                return Angular.LinkViewModel.create(linkRep, UrlHelper);
             };
 
-            this.itemViewModel = function (linkRep, parentHref, index) {
+            viewModelFactory.itemViewModel = function (linkRep, parentHref, index) {
                 return Angular.ItemViewModel.create(linkRep, parentHref, index, $routeParams);
             };
 
-            this.parameterViewModel = function (parmRep, id) {
-                return Angular.ParameterViewModel.create(parmRep, id);
+            viewModelFactory.parameterViewModel = function (parmRep, id, previousValue) {
+                return Angular.ParameterViewModel.create(parmRep, id, previousValue);
             };
 
-            this.actionViewModel = function (actionRep) {
-                return Angular.ActionViewModel.create(actionRep, $routeParams);
+            viewModelFactory.actionViewModel = function (actionRep) {
+                return Angular.ActionViewModel.create(actionRep, UrlHelper);
             };
 
-            this.dialogViewModel = function (actionRep, invoke) {
-                return Angular.DialogViewModel.create(actionRep, $routeParams, invoke);
+            viewModelFactory.dialogViewModel = function (actionRep, invoke) {
+                return Angular.DialogViewModel.create(actionRep, UrlHelper, invoke);
             };
 
-            this.propertyViewModel = function (propertyRep, id) {
-                return Angular.PropertyViewModel.create(propertyRep, id, $routeParams);
+            viewModelFactory.propertyViewModel = function (propertyRep, id) {
+                return Angular.PropertyViewModel.create(propertyRep, id, UrlHelper);
             };
 
-            this.collectionViewModel = function (collection) {
+            viewModelFactory.collectionViewModel = function (collection) {
                 if (collection instanceof Spiro.CollectionMember) {
-                    return Angular.CollectionViewModel.create(collection, $routeParams);
+                    return Angular.CollectionViewModel.create(collection, UrlHelper);
                 }
                 if (collection instanceof Spiro.CollectionRepresentation) {
-                    return Angular.CollectionViewModel.createFromDetails(collection, $routeParams);
+                    return Angular.CollectionViewModel.createFromDetails(collection, UrlHelper);
                 }
                 if (collection instanceof Spiro.ListRepresentation) {
-                    return Angular.CollectionViewModel.createFromList(collection, $routeParams, $location);
+                    return Angular.CollectionViewModel.createFromList(collection, UrlHelper, $location);
                 }
                 return null;
             };
 
-            this.servicesViewModel = function (servicesRep) {
-                return Angular.ServicesViewModel.create(servicesRep);
+            viewModelFactory.servicesViewModel = function (servicesRep) {
+                return Angular.ServicesViewModel.create(servicesRep, UrlHelper);
             };
 
-            this.serviceViewModel = function (serviceRep) {
-                return Angular.ServiceViewModel.create(serviceRep, $routeParams);
+            viewModelFactory.serviceViewModel = function (serviceRep) {
+                return Angular.ServiceViewModel.create(serviceRep, UrlHelper);
             };
 
-            this.domainObjectViewModel = function (objectRep, details, save) {
-                return Angular.DomainObjectViewModel.create(objectRep, $routeParams, details, save);
+            viewModelFactory.domainObjectViewModel = function (objectRep, details, save) {
+                return Angular.DomainObjectViewModel.create(objectRep, UrlHelper, details, save);
             };
         });
 
@@ -274,7 +348,7 @@
         });
 
         // TODO rename
-        Angular.app.service("Handlers", function ($routeParams, $location, $q, $cacheFactory, RepresentationLoader, Context, ViewModelFactory) {
+        Angular.app.service("Handlers", function ($routeParams, $location, $q, $cacheFactory, RepresentationLoader, Context, ViewModelFactory, UrlHelper) {
             var handlers = this;
 
             // tested
@@ -303,7 +377,7 @@
             // tested
             this.handleActionDialog = function ($scope) {
                 Context.getObject($routeParams.sid || $routeParams.dt, $routeParams.id).then(function (object) {
-                    var actionTarget = object.actionMember($routeParams.action).getDetails();
+                    var actionTarget = object.actionMember(UrlHelper.action()).getDetails();
                     return RepresentationLoader.populate(actionTarget);
                 }).then(function (action) {
                     if (action.extensions().hasParams) {
@@ -318,7 +392,7 @@
             // tested
             this.handleActionResult = function ($scope) {
                 Context.getObject($routeParams.sid || $routeParams.dt, $routeParams.id).then(function (object) {
-                    var action = object.actionMember($routeParams.action);
+                    var action = object.actionMember(UrlHelper.action());
 
                     if (action.extensions().hasParams) {
                         var delay = $q.defer();
@@ -512,7 +586,7 @@
                     Context.setNestedObject(resultObject);
 
                     resultParm = "resultObject=" + resultObject.domainType() + "-" + resultObject.instanceId();
-                    actionParm = show ? "&action=" + $routeParams.action : "";
+                    actionParm = show ? "&action=" + UrlHelper.action() : "";
                 }
 
                 if (result.resultType() === "list") {
@@ -520,12 +594,12 @@
 
                     Context.setCollection(resultList);
 
-                    var pps = dvm ? _.reduce(dvm.parameters, function (memo, parm) {
-                        return memo + parm.value + "-";
+                    var pps = dvm && dvm.parameters.length > 0 ? _.reduce(dvm.parameters, function (memo, parm) {
+                        return memo + "-" + parm.getValue().toString();
                     }, "") : "";
 
-                    resultParm = "resultCollection=" + $routeParams.action + pps;
-                    actionParm = show ? "&action=" + $routeParams.action : "";
+                    resultParm = "resultCollection=" + UrlHelper.action() + pps;
+                    actionParm = show ? "&action=" + UrlHelper.action() + pps : "";
                 }
                 $location.search(resultParm + actionParm);
             };
@@ -558,7 +632,7 @@
 
                 var parameters = dvm.parameters;
                 _.each(parameters, function (parm) {
-                    return invoke.setParameter(parm.id, new Spiro.Value(parm.value || ""));
+                    return invoke.setParameter(parm.id, parm.getValue());
                 });
 
                 RepresentationLoader.populate(invoke, true).then(function (result) {

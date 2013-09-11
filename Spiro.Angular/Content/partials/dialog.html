@@ -1,16 +1,38 @@
 ﻿<div class='action-dialog'>
     <div class='title'>
         {{dialog.title}}
-         <a class="cancel icon-cancel" href="{{dialog.close}}" ></a>
+        <a class="cancel icon-cancel" href="{{dialog.close}}" ></a>
     </div>
     <form>
         <div class='parameters'>
-            <div class='parameter' ng-repeat="parameter in dialog.parameters">
+            <div class='parameter' ng-repeat="parameter in dialog.parameters" ng-switch="parameter.type">
                 <div class='parameter-name'>{{parameter.title}}</div>
-                <div class='parameter-value input-control text'>
-                    <input type='text' placeholder='{{parameter.dflt}}' ng-model="parameter.value" />
-                    <div class='error'>{{parameter.message}}</div>
+                
+                <div ng-switch-when="ref">
+                    <div class='parameter-value input-control text' ng-switch="parameter.hasChoices">
+                     
+                        <input type='hidden' value='{{parameter.reference}}' ng-model="parameter.reference" />
+                    
+                        <input ng-switch-when="false" type='text' value='{{parameter.value}}' placeholder='{{parameter.dflt}}' ng-model="parameter.value" />
+                    
+                        <select ng-switch-when="true" ng-model="parameter.reference" ng-options="c.value as c.name for c in parameter.choices" />
+                       
+                    </div>
                 </div>
+                       
+                <div ng-switch-when="scalar">
+                    <div class='parameter-value input-control text' ng-switch="parameter.hasChoices">
+                     
+                        <input ng-switch-when="false" type='text' placeholder='{{parameter.dflt}}' ng-model="parameter.value" />
+                    
+                        <select ng-switch-when="true" ng-model="parameter.value" ng-options="c.value as c.name for c in parameter.choices"/>
+                            
+                    </div>
+                </div>
+                
+                <div class='error'>{{parameter.message}}</div>
+                
+
             </div>
             {{dialog.message}}
         </div>
