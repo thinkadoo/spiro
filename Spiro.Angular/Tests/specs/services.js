@@ -992,7 +992,9 @@ describe('Services', function () {
 
                 describe('with show flag', function () {
                     var testParameters = [new Spiro.Angular.ParameterViewModel(), new Spiro.Angular.ParameterViewModel()];
+                    testParameters[0].type = "scalar";
                     testParameters[0].value = "1";
+                    testParameters[1].type = "scalar";
                     testParameters[1].value = "2";
 
                     beforeEach(inject(function (Handlers) {
@@ -1003,7 +1005,7 @@ describe('Services', function () {
 
                     it('should set collection and search', function () {
                         expect(setCollection).toHaveBeenCalledWith(testList);
-                        expect(location.search()).toEqual({ resultCollection: 'anAction1-2-', action: 'anAction' });
+                        expect(location.search()).toEqual({ resultCollection: 'anAction-1-2', action: 'anAction-1-2' });
                     });
                 });
 
@@ -1030,6 +1032,8 @@ describe('Services', function () {
             testParameters[1].value = "2";
             testParameters[0].id = "one";
             testParameters[1].id = "two";
+            testParameters[0].type = "scalar";
+            testParameters[1].type = "scalar";
 
             var populate;
             var clearMessages;
