@@ -12,9 +12,9 @@
                     <div class='parameter-value input-control text' ng-switch="parameter.hasChoices">
                      
                         <input type='hidden' value='{{parameter.reference}}' ng-model="parameter.reference" />
-                    
-                        <input ng-switch-when="false" type='text' value='{{parameter.value}}' placeholder='{{parameter.dflt}}' ng-model="parameter.value" />
-                    
+                                        
+                        <input ng-switch-when="false" type='text'  ng-model="parameter.choice" typeahead="c as c.name for c in parameter.autoComplete($viewValue)"  />
+          
                         <select ng-switch-when="true" ng-model="parameter.choice" ng-options="c as c.name for c in parameter.choices" />
                        
                     </div>

@@ -200,6 +200,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap.css" />
     <Content Include="Content\jasmine\jasmine.css" />
     <Content Include="Content\jasmine\jasmine_favicon.png" />
     <Content Include="Content\partials\appbar.html" />
@@ -244,6 +245,10 @@
     <Content Include="Scripts\typings\jasmine\jasmine.d.ts" />
     <Content Include="Scripts\typings\jquery\jquery.d.ts" />
     <Content Include="Scripts\typings\underscore\underscore.d.ts" />
+    <Content Include="Scripts\ui-bootstrap-0.6.0.js" />
+    <Content Include="Scripts\ui-bootstrap-0.6.0.min.js" />
+    <Content Include="Scripts\ui-bootstrap-tpls-0.6.0.js" />
+    <Content Include="Scripts\ui-bootstrap-tpls-0.6.0.min.js" />
     <Content Include="Scripts\underscore.js" />
     <Content Include="Scripts\underscore.min.js" />
     <Content Include="Scripts\underscore.min.map" />

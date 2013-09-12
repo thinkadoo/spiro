@@ -43,17 +43,14 @@ module Spiro.Angular {
         return (results && results.length > 2) ? results[2] : "";
     }
 
-    function toColorFromHref(href : string) {      
+    export function toColorFromHref(href : string) {      
         var type = typeFromUrl(href);
         return "bg-color-" + getColourMapValues(type)["backgroundColor"]; 
     }
 
-    function toColorFromType(type) {
+    export function toColorFromType(type) {
         return "bg-color-" + getColourMapValues(type)["backgroundColor"];
     }
-
-
-    // TODO make these factories so can be injected ? 
 
     export class ChoiceViewModel {
         name: string;
@@ -73,14 +70,7 @@ module Spiro.Angular {
         message: string;
         stackTrace: string[];
        
-        static create(errorRep: ErrorRepresentation) {
-            var errorViewModel = new ErrorViewModel();
-            errorViewModel.message = errorRep.message() || "An Error occurred";
-            var stackTrace = errorRep.stacktrace();
-
-            errorViewModel.stackTrace = !stackTrace || stackTrace.length === 0 ? ["Empty"] : stackTrace; 
-            return errorViewModel;
-        }
+      
     } 
 
 
@@ -90,13 +80,7 @@ module Spiro.Angular {
         href: string;
         color: string; 
 
-        static create(linkRep: Link, UrlHelper : IUrlHelper) {
-            var linkViewModel = new LinkViewModel(); 
-            linkViewModel.title = linkRep.title();
-            linkViewModel.href = UrlHelper.toAppUrl(linkRep.href()); 
-            linkViewModel.color = toColorFromHref(linkRep.href());
-            return linkViewModel;
-        }
+     
     } 
 
     export class ItemViewModel {
@@ -105,13 +89,7 @@ module Spiro.Angular {
         href: string;
         color: string;
 
-        static create(linkRep: Link, parentHref: string, index: number, UrlHelper: IUrlHelper) {
-            var linkViewModel = new LinkViewModel();
-            linkViewModel.title = linkRep.title();
-            linkViewModel.href = UrlHelper.toItemUrl(parentHref, linkRep.href());
-            linkViewModel.color = toColorFromHref(linkRep.href());
-            return linkViewModel;
-        }
+      
     }
 
     export class ParameterViewModel {
@@ -131,6 +109,12 @@ module Spiro.Angular {
             this.message = "";
         }
 
+        autoComplete(parm) {
+            // for testing
+
+            return [ChoiceViewModel.create(new Value(1))];
+        }
+
         getValue(): Value {
             if (this.type === "scalar") {
                 return new Value(this.value || "");
@@ -143,30 +127,7 @@ module Spiro.Angular {
             return new Value({ href: this.reference });
         }
 
-        static create(parmRep: Parameter, id: string, previousValue : string) {
-            var parmViewModel = new ParameterViewModel();
-
-            parmViewModel.type = parmRep.isScalar() ? "scalar" : "ref";
-
-            parmViewModel.title = parmRep.extensions().friendlyName;
-            parmViewModel.dflt = parmRep.default().toValueString();
-            parmViewModel.message = "";
-            parmViewModel.value = previousValue;
-            parmViewModel.id = id;
-
-            parmViewModel.reference = "";
-
-            parmViewModel.choices = _.map(parmRep.choices(), (v) => {
-                return ChoiceViewModel.create(v);
-            });
-            parmViewModel.hasChoices = parmViewModel.choices.length > 0;
-
-            if (parmViewModel.hasChoices && previousValue) {
-                parmViewModel.choice = _.find(parmViewModel.choices, (c) => c.name == previousValue); 
-            }
-
-            return parmViewModel;
-        }
+      
     } 
 
     export class ActionViewModel {
@@ -174,12 +135,7 @@ module Spiro.Angular {
         title: string;
         href: string;
 
-        static create(actionRep: ActionMember, UrlHelper : IUrlHelper) {
-            var actionViewModel = new ActionViewModel();
-            actionViewModel.title = actionRep.extensions().friendlyName;
-            actionViewModel.href = UrlHelper.toActionUrl(actionRep.detailsLink().href());
-            return actionViewModel;
-        }
+      
     } 
 
     export class DialogViewModel {
@@ -199,26 +155,6 @@ module Spiro.Angular {
             _.each(this.parameters, (parm) => parm.clearMessage());
         }
 
-        static create(actionRep: ActionRepresentation, UrlHelper : IUrlHelper, invoke: (dvm : DialogViewModel, show : boolean) => void ) {
-            var dialogViewModel = new DialogViewModel();
-            var parameters = actionRep.parameters();
-            var parms = UrlHelper.actionParms(); 
-
-            dialogViewModel.title = actionRep.extensions().friendlyName;
-            dialogViewModel.isQuery = actionRep.invokeLink().method() === "GET";
-
-            dialogViewModel.message = "";
-
-            dialogViewModel.close = UrlHelper.toAppUrl(actionRep.upLink().href(), ["action"]); 
-
-            var i = 0; 
-            dialogViewModel.parameters = _.map(parameters, (parm, id?) => { return ParameterViewModel.create(parm, id, parms[i++]); });
-
-            dialogViewModel.doShow = () => invoke(dialogViewModel, true); 
-            dialogViewModel.doInvoke = () => invoke(dialogViewModel, false);  
-
-            return dialogViewModel;
-        }
     } 
     
     export class PropertyViewModel {
@@ -245,29 +181,7 @@ module Spiro.Angular {
             return new Value({ href: this.reference });
         }
 
-        static create(propertyRep: PropertyMember, id : string, UrlHelper : IUrlHelper, propertyDetails? : PropertyRepresentation) {
-            var propertyViewModel = new PropertyViewModel();
-            propertyViewModel.title = propertyRep.extensions().friendlyName;
-            propertyViewModel.value = propertyRep.value().toString();
-            propertyViewModel.type = propertyRep.isScalar() ? "scalar" : "ref";
-            propertyViewModel.returnType = propertyRep.extensions().returnType;
-            propertyViewModel.href = propertyRep.isScalar() ? "" : UrlHelper.toPropertyUrl(propertyRep.detailsLink().href());
-            propertyViewModel.target = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : UrlHelper.toAppUrl(propertyRep.value().link().href());
-            propertyViewModel.reference = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : propertyRep.value().link().href();
-
-            propertyViewModel.color = toColorFromType(propertyRep.extensions().returnType); 
-            propertyViewModel.id = id;
-            propertyViewModel.isEditable = !propertyRep.disabledReason(); 
-
-            if (propertyDetails) {
-                propertyViewModel.choices = _.map(propertyDetails.choices(), (v) => {
-                    return ChoiceViewModel.create(v);
-                });
-                propertyViewModel.hasChoices = propertyViewModel.choices.length > 0; 
-            }  
-
-            return propertyViewModel;
-        }
+       
 
     } 
 
@@ -280,55 +194,7 @@ module Spiro.Angular {
         color: string; 
         items: LinkViewModel[]; 
         
-        static create(collectionRep: CollectionMember, UrlHelper : IUrlHelper) {
-            var collectionViewModel = new CollectionViewModel();
-          
-            collectionViewModel.title = collectionRep.extensions().friendlyName;
-            collectionViewModel.size = collectionRep.size();
-            collectionViewModel.pluralName = collectionRep.extensions().pluralName;
-            
-            collectionViewModel.href = UrlHelper.toCollectionUrl(collectionRep.detailsLink().href());
-            collectionViewModel.color = toColorFromType(collectionRep.extensions().elementType);
-            
-            collectionViewModel.items = [];
-
-            return collectionViewModel;
-        }
-
-        static createFromDetails(collectionRep: CollectionRepresentation, UrlHelper: IUrlHelper) {
-            var collectionViewModel = new CollectionViewModel();
-            var links = collectionRep.value().models;
-            
-            collectionViewModel.title = collectionRep.extensions().friendlyName;
-            collectionViewModel.size = links.length;
-            collectionViewModel.pluralName = collectionRep.extensions().pluralName;
-
-            collectionViewModel.href = UrlHelper.toCollectionUrl(collectionRep.selfLink().href());
-            collectionViewModel.color = toColorFromType(collectionRep.extensions().elementType);
-
-            var i = 0; 
-            collectionViewModel.items = _.map(links, (link) => { return ItemViewModel.create(link, collectionViewModel.href, i++, UrlHelper); });
-
-            return collectionViewModel;
-        }
-
-        static createFromList(listRep: ListRepresentation, UrlHelper: IUrlHelper, $location) {
-            var collectionViewModel = new CollectionViewModel();
-            var links = listRep.value().models;
-
-            //collectionViewModel.title = listRep.extensions().friendlyName;
-            collectionViewModel.size = links.length;
-            collectionViewModel.pluralName = "Objects";
-
-            //collectionViewModel.href = toCollectionUrl(collectionRep.selfLink().href(), $routeParams);
-            //collectionViewModel.color = toColorFromType(listRep.extensions().elementType);
-
-            var i = 0;
-            collectionViewModel.items = _.map(links, (link) => { return ItemViewModel.create(link, $location.path(), i++, UrlHelper); });
-
-            return collectionViewModel;
-        }
-
+       
     } 
 
     export class ServicesViewModel {
@@ -337,14 +203,7 @@ module Spiro.Angular {
         color: string; 
         items: LinkViewModel[]; 
             
-        static create(servicesRep: DomainServicesRepresentation, UrlHelper : IUrlHelper) {
-            var servicesViewModel = new ServicesViewModel(); 
-            var links = servicesRep.value().models;
-            servicesViewModel.title = "Services";
-            servicesViewModel.color = "bg-color-darkBlue";
-            servicesViewModel.items = _.map(links, (link) => { return LinkViewModel.create(link, UrlHelper); });
-            return servicesViewModel;
-        }
+       
     } 
 
     export class ServiceViewModel {
@@ -358,19 +217,6 @@ module Spiro.Angular {
         closeNestedObject: string; 
         closeCollection: string; 
 
-        static create(serviceRep: DomainObjectRepresentation, UrlHelper : IUrlHelper) {
-            var serviceViewModel = new ServiceViewModel();
-            var actions = serviceRep.actionMembers();
-            serviceViewModel.serviceId = serviceRep.serviceId();
-            serviceViewModel.title = serviceRep.title();
-            serviceViewModel.actions = _.map(actions, (action) => { return ActionViewModel.create(action, UrlHelper); });
-            serviceViewModel.color = toColorFromType(serviceRep.serviceId());
-            serviceViewModel.href = UrlHelper.toAppUrl(serviceRep.getUrl()); 
-            serviceViewModel.closeNestedObject = UrlHelper.toAppUrl(serviceRep.getUrl(), ["property", "collectionItem", "resultObject"]); 
-            serviceViewModel.closeCollection = UrlHelper.toAppUrl(serviceRep.getUrl(), ["collection", "resultCollection"]); 
-
-            return serviceViewModel;
-        }
     } 
 
     export class DomainObjectViewModel {
@@ -390,39 +236,6 @@ module Spiro.Angular {
 
         doSave(): void {}
         
-        update(objectRep: DomainObjectRepresentation, $routeParams, details? : PropertyRepresentation[]) {
-            
-            var properties = objectRep.propertyMembers();
-            var collections = objectRep.collectionMembers();
-            var actions = objectRep.actionMembers();
-            
-            this.domainType = objectRep.domainType();
-            this.title = objectRep.title();
-          
-            this.message = ""; 
-
-            this.properties = _.map(properties, (property, id?) => { return PropertyViewModel.create(property, id, $routeParams, _.find(details, (d) => { return d.instanceId() === id } )); });
-            this.collections = _.map(collections, (collection) => { return CollectionViewModel.create(collection, $routeParams); });
-            this.actions = _.map(actions, (action) => { return ActionViewModel.create(action, $routeParams); });
-        }
-
-        static create(objectRep: DomainObjectRepresentation, UrlHelper : IUrlHelper, details? : PropertyRepresentation[],  save? : (ovm : DomainObjectViewModel) => void) {
-            var objectViewModel = new DomainObjectViewModel();
-            
-            objectViewModel.href = UrlHelper.toAppUrl(objectRep.getUrl());
-
-            objectViewModel.closeNestedObject = UrlHelper.toAppUrl(objectRep.getUrl(), ["property", "collectionItem", "resultObject"]);
-            objectViewModel.closeCollection = UrlHelper.toAppUrl(objectRep.getUrl(), ["collection", "resultCollection"]);
-
-            objectViewModel.cancelEdit = UrlHelper.toAppUrl(objectRep.getUrl());
-
-            objectViewModel.color = toColorFromType(objectRep.domainType());
-
-            objectViewModel.doSave = save ? () => save(objectViewModel) : () => { };
-
-            objectViewModel.update(objectRep, details || []); 
-
-            return objectViewModel;
-        }
+       
     } 
 }

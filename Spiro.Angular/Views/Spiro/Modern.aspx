@@ -11,6 +11,7 @@
     <link href="~/Content/themes/base/jquery.ui.datepicker.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/themes/base/jquery.ui.theme.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/themes/base/jquery.ui.core.css" rel="stylesheet" type="text/css" />
+    <%--<link href="~/Content/bootstrap.css" rel="stylesheet" type="text/css" />--%>
 </head>
 
 <body style="cursor: auto;" class="spiro" >
@@ -98,6 +99,8 @@
     <script type="text/javascript" src="<%= Url.Content("~/Scripts/jquery-ui-1.10.3.js") %>"></script>
     <script type="text/javascript" src="<%= Url.Content("~/Scripts/angular.js") %>"></script>
     <script type="text/javascript" src="<%= Url.Content("~/Scripts/angular-resource.js") %>"></script>
+    <script type="text/javascript" src="<%= Url.Content("~/Scripts/ui-bootstrap-0.6.0.js") %>"></script>
+    <script type="text/javascript" src="<%= Url.Content("~/Scripts/ui-bootstrap-tpls-0.6.0.js") %>"></script>
     <script type="text/javascript" src="<%= Url.Content("~/Scripts/spiro.models.helpers.js") %>"></script>
     <script type="text/javascript" src="<%= Url.Content("~/Scripts/spiro.models.shims.js") %>"></script>
     <script type="text/javascript" src="<%= Url.Content("~/Scripts/spiro.models.js") %>"></script>

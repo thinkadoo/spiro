@@ -9,6 +9,7 @@ module Spiro.Angular {
     declare var svrPath: string;
 
     /* Declare app level module */
+    //export var app = angular.module('app', ['ngResource', 'ui.bootstrap']);
     export var app = angular.module('app', ['ngResource']);
 
     app.config(function ($routeProvider) {
@@ -130,7 +131,7 @@ module Spiro.Angular {
         parameterViewModel(parmRep: Parameter, id: string, previousValue : string): ParameterViewModel;
         actionViewModel(actionRep: ActionMember): ActionViewModel;
         dialogViewModel(actionRep: ActionRepresentation, invoke: (dvm: DialogViewModel, show: boolean) => void ): DialogViewModel;
-        propertyViewModel(propertyRep: PropertyMember, id: string): PropertyViewModel;
+        propertyViewModel(propertyRep: PropertyMember, id: string, propertyDetails? : PropertyRepresentation): PropertyViewModel;
         collectionViewModel(collection: CollectionMember): CollectionViewModel;
         collectionViewModel(collection: CollectionRepresentation): CollectionViewModel;
         collectionViewModel(collection: ListRepresentation): CollectionViewModel;
@@ -141,59 +142,230 @@ module Spiro.Angular {
 
     app.service('ViewModelFactory', function ($routeParams, $location, UrlHelper) {
 
+
         var viewModelFactory = <VMFInterface>this; 
 
         viewModelFactory.errorViewModel = function (errorRep: ErrorRepresentation) {
-            return ErrorViewModel.create(errorRep);
+            var errorViewModel = new ErrorViewModel();
+            errorViewModel.message = errorRep.message() || "An Error occurred";
+            var stackTrace = errorRep.stacktrace();
+
+            errorViewModel.stackTrace = !stackTrace || stackTrace.length === 0 ? ["Empty"] : stackTrace;
+            return errorViewModel;
         };
 
         viewModelFactory.linkViewModel = function (linkRep: Link) {
-            return LinkViewModel.create(linkRep, UrlHelper);
+            var linkViewModel = new LinkViewModel();
+            linkViewModel.title = linkRep.title();
+            linkViewModel.href = UrlHelper.toAppUrl(linkRep.href());
+            linkViewModel.color = Spiro.Angular.toColorFromHref(linkRep.href());
+            return linkViewModel;
         };
 
         viewModelFactory.itemViewModel = function (linkRep: Link, parentHref: string, index: number) {
-            return ItemViewModel.create(linkRep, parentHref, index, $routeParams);
+            var linkViewModel = new LinkViewModel();
+            linkViewModel.title = linkRep.title();
+            linkViewModel.href = UrlHelper.toItemUrl(parentHref, linkRep.href());
+            linkViewModel.color = Spiro.Angular.toColorFromHref(linkRep.href());
+            return linkViewModel;
         };
 
         viewModelFactory.parameterViewModel = function (parmRep: Parameter, id: string, previousValue: string) {
-            return ParameterViewModel.create(parmRep, id, previousValue);
+            var parmViewModel = new ParameterViewModel();
+
+            parmViewModel.type = parmRep.isScalar() ? "scalar" : "ref";
+
+            parmViewModel.title = parmRep.extensions().friendlyName;
+            parmViewModel.dflt = parmRep.default().toValueString();
+            parmViewModel.message = "";
+            parmViewModel.value = previousValue;
+            parmViewModel.id = id;
+
+            parmViewModel.reference = "";
+
+            parmViewModel.choices = _.map(parmRep.choices(), (v) => {
+                return ChoiceViewModel.create(v);
+            });
+            parmViewModel.hasChoices = parmViewModel.choices.length > 0;
+
+            if (parmViewModel.hasChoices && previousValue) {
+                parmViewModel.choice = _.find(parmViewModel.choices, (c) => c.name == previousValue);
+            }
+
+            return parmViewModel;
         };
 
         viewModelFactory.actionViewModel = function (actionRep: ActionMember) {
-            return ActionViewModel.create(actionRep, UrlHelper);
+            var actionViewModel = new ActionViewModel();
+            actionViewModel.title = actionRep.extensions().friendlyName;
+            actionViewModel.href = UrlHelper.toActionUrl(actionRep.detailsLink().href());
+            return actionViewModel;
         };
 
         viewModelFactory.dialogViewModel = function (actionRep: ActionRepresentation, invoke: (dvm: DialogViewModel, show: boolean) => void ) {
-            return DialogViewModel.create(actionRep, UrlHelper, invoke);
+            var dialogViewModel = new DialogViewModel();
+            var parameters = actionRep.parameters();
+            var parms = UrlHelper.actionParms();
+
+            dialogViewModel.title = actionRep.extensions().friendlyName;
+            dialogViewModel.isQuery = actionRep.invokeLink().method() === "GET";
+
+            dialogViewModel.message = "";
+
+            dialogViewModel.close = UrlHelper.toAppUrl(actionRep.upLink().href(), ["action"]);
+
+            var i = 0;
+            dialogViewModel.parameters = _.map(parameters, (parm, id?) => { return viewModelFactory.parameterViewModel(parm, id, parms[i++]); });
+
+            dialogViewModel.doShow = () => invoke(dialogViewModel, true);
+            dialogViewModel.doInvoke = () => invoke(dialogViewModel, false);
+
+            return dialogViewModel;
         };
 
-        viewModelFactory.propertyViewModel = function (propertyRep: PropertyMember, id: string) {
-            return PropertyViewModel.create(propertyRep, id, UrlHelper);
+        viewModelFactory.propertyViewModel = function (propertyRep: PropertyMember, id: string, propertyDetails?: PropertyRepresentation) {
+            var propertyViewModel = new PropertyViewModel();
+            propertyViewModel.title = propertyRep.extensions().friendlyName;
+            propertyViewModel.value = propertyRep.value().toString();
+            propertyViewModel.type = propertyRep.isScalar() ? "scalar" : "ref";
+            propertyViewModel.returnType = propertyRep.extensions().returnType;
+            propertyViewModel.href = propertyRep.isScalar() ? "" : UrlHelper.toPropertyUrl(propertyRep.detailsLink().href());
+            propertyViewModel.target = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : UrlHelper.toAppUrl(propertyRep.value().link().href());
+            propertyViewModel.reference = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : propertyRep.value().link().href();
+
+            propertyViewModel.color = Spiro.Angular.toColorFromType(propertyRep.extensions().returnType);
+            propertyViewModel.id = id;
+            propertyViewModel.isEditable = !propertyRep.disabledReason();
+
+            if (propertyDetails) {
+                propertyViewModel.choices = _.map(propertyDetails.choices(), (v) => {
+                    return ChoiceViewModel.create(v);
+                });
+                propertyViewModel.hasChoices = propertyViewModel.choices.length > 0;
+            }
+
+            return propertyViewModel;
         };
+
+        function create(collectionRep: CollectionMember, UrlHelper: IUrlHelper) {
+            var collectionViewModel = new CollectionViewModel();
+
+            collectionViewModel.title = collectionRep.extensions().friendlyName;
+            collectionViewModel.size = collectionRep.size();
+            collectionViewModel.pluralName = collectionRep.extensions().pluralName;
+
+            collectionViewModel.href = UrlHelper.toCollectionUrl(collectionRep.detailsLink().href());
+            collectionViewModel.color = Spiro.Angular.toColorFromType(collectionRep.extensions().elementType);
+
+            collectionViewModel.items = [];
+
+            return collectionViewModel;
+        }
+
+        function createFromDetails(collectionRep: CollectionRepresentation, UrlHelper: IUrlHelper) {
+            var collectionViewModel = new CollectionViewModel();
+            var links = collectionRep.value().models;
+
+            collectionViewModel.title = collectionRep.extensions().friendlyName;
+            collectionViewModel.size = links.length;
+            collectionViewModel.pluralName = collectionRep.extensions().pluralName;
+
+            collectionViewModel.href = UrlHelper.toCollectionUrl(collectionRep.selfLink().href());
+            collectionViewModel.color = Spiro.Angular.toColorFromType(collectionRep.extensions().elementType);
+
+            var i = 0;
+            collectionViewModel.items = _.map(links, (link) => { return viewModelFactory.itemViewModel(link, collectionViewModel.href, i++); });
+
+            return collectionViewModel;
+        }
+
+        function createFromList(listRep: ListRepresentation, UrlHelper: IUrlHelper, $location) {
+            var collectionViewModel = new CollectionViewModel();
+            var links = listRep.value().models;
+
+            //collectionViewModel.title = listRep.extensions().friendlyName;
+            collectionViewModel.size = links.length;
+            collectionViewModel.pluralName = "Objects";
+
+            //collectionViewModel.href = toCollectionUrl(collectionRep.selfLink().href(), $routeParams);
+            //collectionViewModel.color = toColorFromType(listRep.extensions().elementType);
+
+            var i = 0;
+            collectionViewModel.items = _.map(links, (link) => { return viewModelFactory.itemViewModel(link, $location.path(), i++); });
+
+            return collectionViewModel;
+        }
+
+
 
         viewModelFactory.collectionViewModel = function (collection : any) {
             if (collection instanceof CollectionMember) {
-                return CollectionViewModel.create(<CollectionMember>collection, UrlHelper);
+                return create(<CollectionMember>collection, UrlHelper);
             }
             if (collection instanceof CollectionRepresentation) {
-                return CollectionViewModel.createFromDetails(<CollectionRepresentation>collection, UrlHelper);
+                return createFromDetails(<CollectionRepresentation>collection, UrlHelper);
             }
             if (collection instanceof ListRepresentation) {
-                return CollectionViewModel.createFromList(<ListRepresentation>collection, UrlHelper, $location);
+                return createFromList(<ListRepresentation>collection, UrlHelper, $location);
             }
             return null;
         };
 
         viewModelFactory.servicesViewModel = function (servicesRep: DomainServicesRepresentation) {
-            return ServicesViewModel.create(servicesRep, UrlHelper);
+            var servicesViewModel = new ServicesViewModel();
+            var links = servicesRep.value().models;
+            servicesViewModel.title = "Services";
+            servicesViewModel.color = "bg-color-darkBlue";
+            servicesViewModel.items = _.map(links, (link) => { return viewModelFactory.linkViewModel(link); });
+            return servicesViewModel;
         };
 
         viewModelFactory.serviceViewModel = function (serviceRep: DomainObjectRepresentation) {
-            return ServiceViewModel.create(serviceRep, UrlHelper);
+            var serviceViewModel = new ServiceViewModel();
+            var actions = serviceRep.actionMembers();
+            serviceViewModel.serviceId = serviceRep.serviceId();
+            serviceViewModel.title = serviceRep.title();
+            serviceViewModel.actions = _.map(actions, (action) => { return viewModelFactory.actionViewModel(action); });
+            serviceViewModel.color = Spiro.Angular.toColorFromType(serviceRep.serviceId());
+            serviceViewModel.href = UrlHelper.toAppUrl(serviceRep.getUrl());
+            serviceViewModel.closeNestedObject = UrlHelper.toAppUrl(serviceRep.getUrl(), ["property", "collectionItem", "resultObject"]);
+            serviceViewModel.closeCollection = UrlHelper.toAppUrl(serviceRep.getUrl(), ["collection", "resultCollection"]);
+
+            return serviceViewModel;
         };
 
+
+       
+
         viewModelFactory.domainObjectViewModel = function (objectRep: DomainObjectRepresentation, details?: PropertyRepresentation[], save?: (ovm: DomainObjectViewModel) => void ) {
-            return DomainObjectViewModel.create(objectRep, UrlHelper, details, save);
+            var objectViewModel = new DomainObjectViewModel();
+
+            objectViewModel.href = UrlHelper.toAppUrl(objectRep.getUrl());
+
+            objectViewModel.closeNestedObject = UrlHelper.toAppUrl(objectRep.getUrl(), ["property", "collectionItem", "resultObject"]);
+            objectViewModel.closeCollection = UrlHelper.toAppUrl(objectRep.getUrl(), ["collection", "resultCollection"]);
+
+            objectViewModel.cancelEdit = UrlHelper.toAppUrl(objectRep.getUrl());
+
+            objectViewModel.color = Spiro.Angular.toColorFromType(objectRep.domainType());
+
+            objectViewModel.doSave = save ? () => save(objectViewModel) : () => { };
+
+            var properties = objectRep.propertyMembers();
+            var collections = objectRep.collectionMembers();
+            var actions = objectRep.actionMembers();
+
+            objectViewModel.domainType = objectRep.domainType();
+            objectViewModel.title = objectRep.title();
+
+            objectViewModel.message = "";
+
+            objectViewModel.properties = _.map(properties, (property, id?) => { return viewModelFactory.propertyViewModel(property, id, _.find(details, (d) => { return d.instanceId() === id })); });
+            objectViewModel.collections = _.map(collections, (collection) => { return viewModelFactory.collectionViewModel(collection); });
+            objectViewModel.actions = _.map(actions, (action) => { return viewModelFactory.actionViewModel(action); });
+
+
+            return objectViewModel;
         };
     });
 
@@ -671,7 +843,6 @@ module Spiro.Angular {
                 });
 
         };
-
 
         // helper functions 
 
