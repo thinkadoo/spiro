@@ -24,11 +24,20 @@
             </div>
             <div ng-switch-when="scalar" ng-switch="property.isEditable">
                 
-                <div ng-switch-when="false" class='property-value'>{{property.value}}</div>
-
+                
+                <div  ng-switch-when="false" ng-switch="property.format" >
+                    <div ng-switch-when="date-time" class='property-value'>{{property.value | date:'longDate' }}</div>    
+                    <div ng-switch-default class='property-value'>{{property.value}}</div>       
+                </div> 
+                
                 <div ng-switch-when="true" class='property-value input-control text' ng-switch="property.hasChoices">
                     
-                    <input ng-switch-when="false" type='text' placeholder='{{property.value}}' ng-model="property.value" />
+                    <div  ng-switch-when="false" ng-switch="property.format" >
+                        <div ng-switch-when="date-time">
+                            <input  type='text'  ng-model="property.value" />
+                        </div>
+                        <input ng-switch-default type='text' placeholder='{{property.value}}' ng-model="property.value" />
+                    </div> 
                             
                     <select ng-switch-when="true" ng-model="property.value" ng-options="c.value as c.name for c in property.choices"/>
                     

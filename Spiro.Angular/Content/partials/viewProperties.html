@@ -9,7 +9,11 @@
                     {{property.value}}
                 </a>
             </div>
-            <div ng-switch-when="scalar" class='property-value'>{{property.value}}</div>
+
+            <div  ng-switch-when="scalar" ng-switch="property.format" >
+                <div ng-switch-when="date-time" class='property-value'>{{property.value | date:'longDate' }}</div>    
+                <div ng-switch-default class='property-value'>{{property.value}}</div>       
+            </div> 
 
         </div>
 

@@ -158,6 +158,7 @@ module Spiro.Angular {
         value: string;
         type: string;
         returnType: string;
+        format: string;
         href: string;
         target: string;
         color: string; 
@@ -175,9 +176,6 @@ module Spiro.Angular {
 
             return new Value({ href: this.reference });
         }
-
-       
-
     } 
 
     export class CollectionViewModel {

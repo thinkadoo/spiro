@@ -255,6 +255,7 @@ module Spiro.Angular {
             propertyViewModel.value = propertyRep.value().toString();
             propertyViewModel.type = propertyRep.isScalar() ? "scalar" : "ref";
             propertyViewModel.returnType = propertyRep.extensions().returnType;
+            propertyViewModel.format = propertyRep.extensions().format;
             propertyViewModel.href = propertyRep.isScalar() ? "" : UrlHelper.toPropertyUrl(propertyRep.detailsLink().href());
             propertyViewModel.target = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : UrlHelper.toAppUrl(propertyRep.value().link().href());
             propertyViewModel.reference = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : propertyRep.value().link().href();

@@ -11,6 +11,7 @@
     <link href="~/Content/themes/base/jquery.ui.datepicker.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/themes/base/jquery.ui.theme.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/themes/base/jquery.ui.core.css" rel="stylesheet" type="text/css" />
+    
 </head>
 
 <body style="cursor: auto;" class="spiro" >
