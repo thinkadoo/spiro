@@ -216,9 +216,16 @@
     <Content Include="Content\partials\viewProperties.html" />
     <Content Include="fonts\iconFont.svg" />
     <Content Include="fonts\license.txt" />
+    <TypeScriptCompile Include="Scripts\spiro.angular.directives.ts" />
+    <Content Include="Scripts\spiro.angular.directives.js">
+      <DependentUpon>spiro.angular.directives.ts</DependentUpon>
+    </Content>
     <Content Include="Scripts\jasmine\jasmine-html.js" />
     <Content Include="Scripts\jasmine\jasmine.js" />
     <Content Include="Scripts\jasmine\MIT.LICENSE" />
+    <Content Include="Scripts\spiro.angular.directives.js.map">
+      <DependentUpon>spiro.angular.directives.ts</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-2.0.3.intellisense.js" />
     <Content Include="Scripts\jasmine-samples\Player.js" />
     <Content Include="Scripts\jasmine-samples\PlayerSpec.js" />

@@ -34,7 +34,7 @@
                     
                     <div  ng-switch-when="false" ng-switch="property.format" >
                         <div ng-switch-when="date-time">
-                            <input  type='text'  ng-model="property.value" />
+                            <input  type='text'  ng-model="property.value" datepicker/>
                         </div>
                         <input ng-switch-default type='text' placeholder='{{property.value}}' ng-model="property.value" />
                     </div> 
