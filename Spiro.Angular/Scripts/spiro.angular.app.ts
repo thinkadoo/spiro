@@ -9,7 +9,7 @@ module Spiro.Angular {
     declare var svrPath: string;
 
     /* Declare app level module */
-    //export var app = angular.module('app', ['ngResource', 'ui.bootstrap']);
+   
     export var app = angular.module('app', ['ngResource']);
 
     app.config(function ($routeProvider) {
@@ -35,6 +35,7 @@ module Spiro.Angular {
 
     export interface RLInterface<T> {
         populate: (m: HateoasModel, ignoreCache?: boolean, r?: HateoasModel) => ng.IPromise<T>;
+      
     }
 
     export interface IUrlHelper {
@@ -130,7 +131,7 @@ module Spiro.Angular {
         itemViewModel(linkRep: Link, parentHref: string, index: number): ItemViewModel;
         parameterViewModel(parmRep: Parameter, id: string, previousValue : string): ParameterViewModel;
         actionViewModel(actionRep: ActionMember): ActionViewModel;
-        dialogViewModel(actionRep: ActionRepresentation, invoke: (dvm: DialogViewModel, show: boolean) => void ): DialogViewModel;
+        dialogViewModel(actionRep: ActionRepresentation, invoke: (dvm: DialogViewModel, show: boolean) => void): DialogViewModel;
         propertyViewModel(propertyRep: PropertyMember, id: string, propertyDetails? : PropertyRepresentation): PropertyViewModel;
         collectionViewModel(collection: CollectionMember): CollectionViewModel;
         collectionViewModel(collection: CollectionRepresentation): CollectionViewModel;
@@ -140,10 +141,10 @@ module Spiro.Angular {
         domainObjectViewModel(objectRep: DomainObjectRepresentation, details? : PropertyRepresentation[], save?: (ovm: DomainObjectViewModel) => void ): DomainObjectViewModel;
     }
 
-    app.service('ViewModelFactory', function ($routeParams, $location, UrlHelper) {
+    app.service('ViewModelFactory', function ($routeParams, $location, $q,  $controller, UrlHelper: IUrlHelper, RepresentationLoader: RLInterface) {
 
 
-        var viewModelFactory = <VMFInterface>this; 
+        var viewModelFactory = <VMFInterface>this;
 
         viewModelFactory.errorViewModel = function (errorRep: ErrorRepresentation) {
             var errorViewModel = new ErrorViewModel();
@@ -170,7 +171,7 @@ module Spiro.Angular {
             return linkViewModel;
         };
 
-        viewModelFactory.parameterViewModel = function (parmRep: Parameter, id: string, previousValue: string) {
+        viewModelFactory.parameterViewModel = function (parmRep: Parameter, id: string, previousValue: string) : any{
             var parmViewModel = new ParameterViewModel();
 
             parmViewModel.type = parmRep.isScalar() ? "scalar" : "ref";
@@ -186,10 +187,35 @@ module Spiro.Angular {
             parmViewModel.choices = _.map(parmRep.choices(), (v) => {
                 return ChoiceViewModel.create(v);
             });
+
             parmViewModel.hasChoices = parmViewModel.choices.length > 0;
 
             if (parmViewModel.hasChoices && previousValue) {
                 parmViewModel.choice = _.find(parmViewModel.choices, (c) => c.name == previousValue);
+            }
+
+            parmViewModel.autoComplete = function (): any {
+
+                var object = new DomainObjectRepresentation();
+
+                object.hateoasUrl = appPath + "/objects/" + parmRep.extensions().returnType + "/" + parmViewModel.search;
+
+                RepresentationLoader.populate(object).then((d: DomainObjectRepresentation) => {
+
+                    var l = d.selfLink();
+                    l.set("title", d.title());
+                    var v = new Value(l);
+
+                    var cvm = ChoiceViewModel.create(v);
+
+                    parmViewModel.choice = cvm;
+                    parmViewModel.choices = [cvm];
+                }, () => {
+                        // not found 
+                        parmViewModel.choice = null;
+                        parmViewModel.choices = [];
+                    }
+                );
             }
 
             return parmViewModel;
@@ -436,6 +462,7 @@ module Spiro.Angular {
 
             return delay.promise;
         };
+
     });
 
     export interface ContextInterface {

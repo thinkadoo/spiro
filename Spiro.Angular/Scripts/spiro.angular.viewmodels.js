@@ -86,9 +86,8 @@ var Spiro;
                 this.message = "";
             };
 
-            ParameterViewModel.prototype.autoComplete = function (parm) {
-                // for testing
-                return [ChoiceViewModel.create(new Spiro.Value(1))];
+            ParameterViewModel.prototype.autoComplete = function (any) {
+                return null;
             };
 
             ParameterViewModel.prototype.getValue = function () {
@@ -96,7 +95,7 @@ var Spiro;
                     return new Spiro.Value(this.value || "");
                 }
 
-                if (this.hasChoices) {
+                if (this.hasChoices || this.choice) {
                     return new Spiro.Value({ href: this.choice.value, title: this.choice.name });
                 }
 

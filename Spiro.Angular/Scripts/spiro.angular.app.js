@@ -6,7 +6,6 @@
     /// <reference path="spiro.angular.viewmodels.ts" />
     (function (Angular) {
         /* Declare app level module */
-        //export var app = angular.module('app', ['ngResource', 'ui.bootstrap']);
         Angular.app = angular.module('app', ['ngResource']);
 
         Angular.app.config(function ($routeProvider) {
@@ -100,7 +99,7 @@
             };
         });
 
-        Angular.app.service('ViewModelFactory', function ($routeParams, $location, UrlHelper) {
+        Angular.app.service('ViewModelFactory', function ($routeParams, $location, $q, $controller, UrlHelper, RepresentationLoader) {
             var viewModelFactory = this;
 
             viewModelFactory.errorViewModel = function (errorRep) {
@@ -144,6 +143,7 @@
                 parmViewModel.choices = _.map(parmRep.choices(), function (v) {
                     return Angular.ChoiceViewModel.create(v);
                 });
+
                 parmViewModel.hasChoices = parmViewModel.choices.length > 0;
 
                 if (parmViewModel.hasChoices && previousValue) {
@@ -151,6 +151,27 @@
                         return c.name == previousValue;
                     });
                 }
+
+                parmViewModel.autoComplete = function () {
+                    var object = new Spiro.DomainObjectRepresentation();
+
+                    object.hateoasUrl = appPath + "/objects/" + parmRep.extensions().returnType + "/" + parmViewModel.search;
+
+                    RepresentationLoader.populate(object).then(function (d) {
+                        var l = d.selfLink();
+                        l.set("title", d.title());
+                        var v = new Spiro.Value(l);
+
+                        var cvm = Angular.ChoiceViewModel.create(v);
+
+                        parmViewModel.choice = cvm;
+                        parmViewModel.choices = [cvm];
+                    }, function () {
+                        // not found
+                        parmViewModel.choice = null;
+                        parmViewModel.choices = [];
+                    });
+                };
 
                 return parmViewModel;
             };

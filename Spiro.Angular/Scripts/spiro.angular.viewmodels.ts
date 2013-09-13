@@ -104,15 +104,14 @@ module Spiro.Angular {
         type: string; 
         reference: string; 
         choice: ChoiceViewModel; 
+        search: string; 
 
         clearMessage() {
             this.message = "";
         }
 
-        autoComplete(parm) {
-            // for testing
-
-            return [ChoiceViewModel.create(new Value(1))];
+        autoComplete (any) : any {
+           return null; 
         }
 
         getValue(): Value {
@@ -120,22 +119,18 @@ module Spiro.Angular {
                 return new Value(this.value || "");
             }
 
-            if (this.hasChoices) {
+            if (this.hasChoices || this.choice) {
                 return new Value({ href: this.choice.value, title : this.choice.name });
             }
 
             return new Value({ href: this.reference });
         }
 
-      
     } 
 
     export class ActionViewModel {
-
         title: string;
-        href: string;
-
-      
+        href: string;    
     } 
 
     export class DialogViewModel {
