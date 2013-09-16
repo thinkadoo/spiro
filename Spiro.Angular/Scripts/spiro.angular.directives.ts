@@ -6,7 +6,8 @@
 // tested 
 module Spiro.Angular {
 
-    app.directive('datepicker', function () {
+    // based on code in AngularJs, Green and Seshadri, O'Reilly
+    app.directive('datepicker', function ($filter) {
             return {
                 // Enforce the angularJS default of restricting the directive to
                 // attributes only
@@ -23,7 +24,7 @@ module Spiro.Angular {
 
                     var optionsObj = {};
 
-                    (<any>optionsObj).dateFormat = 'mm/dd/yy';
+                    (<any>optionsObj).dateFormat = 'd M yy';
                     var updateModel = function (dateTxt) {
                         scope.$apply(function () {
                             // Call the internal AngularJS helper to
@@ -42,8 +43,10 @@ module Spiro.Angular {
                     };
 
                     ngModel.$render = function () {
+                        var formattedDate = $filter('date')(ngModel.$viewValue, 'd MMM yyyy');
+
                         // Use the AngularJS internal 'binding-specific' variable
-                        element.datepicker('setDate', ngModel.$viewValue || '');
+                        element.datepicker('setDate', formattedDate);
                     };
                     element.datepicker(optionsObj);
                 }

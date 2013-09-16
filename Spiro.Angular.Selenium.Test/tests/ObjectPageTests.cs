@@ -54,7 +54,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             Assert.AreEqual("Store Name:\r\nTwin Cycles", properties[0].Text);
             Assert.AreEqual("Demographics:\r\nAnnualSales: 800000 AnnualRevenue: 80000 BankName: International Security BusinessType: BM YearOpened: 1988 Specialty: Touring SquareFeet: 21000 Brands: AW Internet: T1 NumberEmployees: 11", properties[1].Text);
             Assert.AreEqual("Sales Person:\r\nLynn Tsoflias", properties[2].Text);
-            Assert.AreEqual("Last Modified:\r\nOctober 13, 2004", properties[3].Text);
+            Assert.AreEqual("Last Modified:\r\n13 Oct 2004", properties[3].Text);
             Assert.AreEqual("Account Number:\r\nAW00000555", properties[4].Text);
             Assert.AreEqual("Sales Territory:\r\nAustralia", properties[5].Text);
             Assert.AreEqual("Addresses:\r\n1-Customer Addresses", properties[6].Text);
