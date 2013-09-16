@@ -87,7 +87,7 @@ module Spiro.Angular {
 
         title: string;
         dflt: string; 
-        value: string; 
+        value: Object; 
         message: string; 
         id: string; 
         choices: ChoiceViewModel[]; 
@@ -97,6 +97,7 @@ module Spiro.Angular {
         choice: ChoiceViewModel; 
         search: string; 
         format: string;
+        returnType: string;
 
         clearMessage() {
             this.message = "";
@@ -108,6 +109,11 @@ module Spiro.Angular {
 
         getValue(): Value {
             if (this.type === "scalar") {
+
+                if (this.returnType === "boolean" && !(this.value == null)) {
+                    return new Value(this.value);
+                }
+
                 return new Value(this.value || "");
             }
 

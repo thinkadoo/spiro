@@ -135,8 +135,15 @@
                 parmViewModel.title = parmRep.extensions().friendlyName;
                 parmViewModel.dflt = parmRep.default().toValueString();
                 parmViewModel.message = "";
-                parmViewModel.value = previousValue;
+
+                if (parmRep.extensions().returnType === "boolean") {
+                    parmViewModel.value = previousValue ? previousValue.toLowerCase() === 'true' : parmRep.default().scalar();
+                } else {
+                    parmViewModel.value = previousValue || parmViewModel.dflt;
+                }
+
                 parmViewModel.id = id;
+                parmViewModel.returnType = parmRep.extensions().returnType;
                 parmViewModel.format = parmRep.extensions().format;
 
                 parmViewModel.reference = "";

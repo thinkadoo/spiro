@@ -14,28 +14,39 @@
                         <input type='hidden' value='{{parameter.reference}}' ng-model="parameter.reference" />
                                         
                         <!--  <input ng-switch-when="false" type='text' ng-change="parameter.autoComplete()"   ng-model="parameter.choice"  typeahead="c as c.name for c in parameter.getChoices()"  />-->
-                        
-                      
+                                  
                         <input ng-switch-when="false" type='text' ng-change="parameter.autoComplete()"  ng-model="parameter.search" />
                         
-                        <select  ng-model="parameter.choice" ng-options="c as c.name for c in parameter.choices" />
+                        <select  ng-switch-when="true" ng-model="parameter.choice" ng-options="c as c.name for c in parameter.choices" />
                       
 
-                       <!-- <select ng-switch-when="true" ng-model="parameter.choice" ng-options="c as c.name for c in parameter.choices" />-->
+                        <!-- <select ng-switch-when="true" ng-model="parameter.choice" ng-options="c as c.name for c in parameter.choices" />-->
                        
                     </div>
                 </div>
                        
                 <div ng-switch-when="scalar">
                     <div class='parameter-value input-control text' ng-switch="parameter.hasChoices">
-                     
-                        <div  ng-switch-when="false" ng-switch="parameter.format" >
-                            <div ng-switch-when="date-time">
-                                <input  type='text' ng-model="$parent.parameter.value" datepicker/>
+                                                                    
+                        <div  ng-switch-when="false" ng-switch="parameter.returnType" >
+                        
+                            <div ng-switch-when="string" ng-switch="parameter.format">
+                                <div ng-switch-when="date-time">
+                                    <input  type='text'  ng-model="$parent.parameter.value" datepicker/>
+                                </div>
+                                <input ng-switch-default type='text' placeholder='{{parameter.dflt}}' ng-model="parameter.value" />
                             </div>
-                            <input ng-switch-default type='text' placeholder='{{parameter.dflt}}' ng-model="parameter.value" />
-                        </div> 
-                              
+
+                            <div ng-switch-when="boolean">
+                                <input type="checkbox" ng-model="parameter.value"  />
+                            </div>
+
+                            <div ng-switch-default>
+                                <input type='text' placeholder='{{parameter.dflt}}' ng-model="parameter.value" />
+                            </div>
+                        
+                        </div>                                                                                                                                                
+
                         <select ng-switch-when="true" ng-model="parameter.value" ng-options="c.value as c.name for c in parameter.choices"/>     
                     </div>
                 </div>

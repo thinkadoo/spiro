@@ -92,6 +92,10 @@ var Spiro;
 
             ParameterViewModel.prototype.getValue = function () {
                 if (this.type === "scalar") {
+                    if (this.returnType === "boolean" && !(this.value == null)) {
+                        return new Spiro.Value(this.value);
+                    }
+
                     return new Spiro.Value(this.value || "");
                 }
 
