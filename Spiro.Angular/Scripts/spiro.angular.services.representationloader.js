@@ -7,7 +7,7 @@ var Spiro;
     /// <reference path="spiro.angular.app.ts" />
     (function (Angular) {
         // TODO investigate using transformations to transform results
-        Angular.app.service("RepresentationLoader", function ($http, $q) {
+        Angular.app.service("RepLoader", function ($http, $q) {
             function getUrl(model) {
                 var url = model.url();
 

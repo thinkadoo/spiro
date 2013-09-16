@@ -7,12 +7,12 @@
 
 module Spiro.Angular {
 
-    export interface RLInterface<T> {
+    export interface IRepLoader<T> {
         populate: (m: HateoasModel, ignoreCache?: boolean, r?: HateoasModel) => ng.IPromise<T>;
     }
 
     // TODO investigate using transformations to transform results 
-    app.service("RepresentationLoader", function ($http, $q) {
+    app.service("RepLoader", function ($http, $q) {
 
         function getUrl(model: HateoasModel): string {
 

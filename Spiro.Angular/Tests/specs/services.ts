@@ -113,7 +113,7 @@ describe('Services', function () {
                 var collectionViewModel;
 
 
-                beforeEach(inject(function ($rootScope, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface, ViewModelFactory: Spiro.Angular.VMFInterface) {
+                beforeEach(inject(function ($rootScope, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext, ViewModelFactory: Spiro.Angular.VMFInterface) {
                     $scope = $rootScope.$new();
 
                     getCollection = spyOnPromise(Context, 'getCollection', testObject);
@@ -137,7 +137,7 @@ describe('Services', function () {
                 var testObject = new Spiro.ErrorRepresentation();
                 var setError;
 
-                beforeEach(inject(function ($rootScope, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface) {
+                beforeEach(inject(function ($rootScope, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext) {
                     $scope = $rootScope.$new();
 
                     getCollection = spyOnPromiseFail(Context, 'getCollection', testObject);
@@ -174,14 +174,14 @@ describe('Services', function () {
                 var populate;
                 var collectionViewModel;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface, ViewModelFactory: Spiro.Angular.VMFInterface, RepresentationLoader: Spiro.Angular.RLInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext, ViewModelFactory: Spiro.Angular.VMFInterface, RepLoader: Spiro.Angular.IRepLoader) {
                     $scope = $rootScope.$new();
 
                     getObject = spyOnPromise(Context, 'getObject', testObject);
 
                     collectionMember = spyOn(testObject, "collectionMember").andReturn(testMember);
                     collectionDetails = spyOn(testMember, "getDetails").andReturn(testDetails);
-                    populate = spyOnPromise(RepresentationLoader, "populate", testDetails);
+                    populate = spyOnPromise(RepLoader, "populate", testDetails);
                     collectionViewModel = spyOn(ViewModelFactory, 'collectionViewModel').andReturn(testViewModel);
 
 
@@ -211,7 +211,7 @@ describe('Services', function () {
                 var testObject = new Spiro.ErrorRepresentation();
                 var setError;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext) {
                     $scope = $rootScope.$new();
 
                     getObject = spyOnPromiseNestedFail(Context, 'getObject', testObject);
@@ -251,21 +251,21 @@ describe('Services', function () {
                 var populate;
                 var dialogViewModel;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface, ViewModelFactory: Spiro.Angular.VMFInterface, RepresentationLoader: Spiro.Angular.RLInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext, ViewModelFactory: Spiro.Angular.VMFInterface, RepLoader: Spiro.Angular.IRepLoader) {
                     $scope = $rootScope.$new();
 
                     getObject = spyOnPromise(Context, 'getObject', testObject);
 
                     actionMember = spyOn(testObject, "actionMember").andReturn(testMember);
                     actionDetails = spyOn(testMember, "getDetails").andReturn(testDetails);
-                    populate = spyOnPromise(RepresentationLoader, "populate", testDetails);
+                    populate = spyOnPromise(RepLoader, "populate", testDetails);
                     dialogViewModel = spyOn(ViewModelFactory, 'dialogViewModel').andReturn(testViewModel);
 
                 }));
 
                 describe('if it is a service', function () {
 
-                    beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface) {
+                    beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers) {
                         spyOn(testDetails, "extensions").andReturn({ hasParams: true });
 
                         $routeParams.sid = "testService";
@@ -291,7 +291,7 @@ describe('Services', function () {
 
                 describe('if it has params', function () {
 
-                    beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface) {
+                    beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers) {
                         spyOn(testDetails, "extensions").andReturn({ hasParams: true });
                         $routeParams.dt = "test";
                         $routeParams.id = "1";
@@ -315,7 +315,7 @@ describe('Services', function () {
 
                 describe('if it has no params', function () {
 
-                    beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface) {
+                    beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers) {
                         spyOn(testDetails, "extensions").andReturn({ hasParams: false });
                         $routeParams.dt = "test";
                         $routeParams.id = "1";
@@ -344,7 +344,7 @@ describe('Services', function () {
                 var testObject = new Spiro.ErrorRepresentation();
                 var setError;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext) {
                     $scope = $rootScope.$new();
 
                     getObject = spyOnPromiseNestedFail(Context, 'getObject', testObject);
@@ -385,7 +385,7 @@ describe('Services', function () {
                 var populate;
                 var setResult;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface, ViewModelFactory: Spiro.Angular.VMFInterface, RepresentationLoader: Spiro.Angular.RLInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext, ViewModelFactory: Spiro.Angular.VMFInterface, RepLoader: Spiro.Angular.IRepLoader) {
                     $scope = $rootScope.$new();
 
                     getObject = spyOnPromise(Context, 'getObject', testObject);
@@ -393,14 +393,14 @@ describe('Services', function () {
                     actionMember = spyOn(testObject, "actionMember").andReturn(testMember);
                     actionDetails = spyOn(testMember, "getDetails").andReturn(testDetails);
                     actionResult = spyOn(testDetails, "getInvoke").andReturn(testResult);
-                    populate = spyOnPromiseConditional(RepresentationLoader, "populate", testDetails, testResult);
+                    populate = spyOnPromiseConditional(RepLoader, "populate", testDetails, testResult);
 
                     setResult = spyOn(Handlers, "setResult");
                 }));
 
                 describe('if it is a service', function () {
 
-                    beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface) {
+                    beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers) {
                         spyOn(testMember, "extensions").andReturn({ hasParams: false });
 
                         $routeParams.sid = "testService";
@@ -423,7 +423,7 @@ describe('Services', function () {
 
                 describe('if it has no params', function () {
 
-                    beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface) {
+                    beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers) {
                         spyOn(testMember, "extensions").andReturn({ hasParams: false });
                         $routeParams.dt = "test";
                         $routeParams.id = "1";
@@ -446,7 +446,7 @@ describe('Services', function () {
 
                 describe('if it has params', function () {
 
-                    beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface) {
+                    beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers) {
                         spyOn(testMember, "extensions").andReturn({ hasParams: true });
                         $routeParams.dt = "test";
                         $routeParams.id = "1";
@@ -473,7 +473,7 @@ describe('Services', function () {
                 var testObject = new Spiro.ErrorRepresentation();
                 var setError;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext) {
                     $scope = $rootScope.$new();
 
                     getObject = spyOnPromise2NestedFail(Context, 'getObject', testObject);
@@ -518,7 +518,7 @@ describe('Services', function () {
 
                 var populate;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface, ViewModelFactory: Spiro.Angular.VMFInterface, RepresentationLoader: Spiro.Angular.RLInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext, ViewModelFactory: Spiro.Angular.VMFInterface, RepLoader: Spiro.Angular.IRepLoader) {
                     $scope = $rootScope.$new();
 
                     getObject = spyOnPromise(Context, 'getObject', testObject);
@@ -530,7 +530,7 @@ describe('Services', function () {
                     spyOn(testValue, "link").andReturn(testLink);
                     spyOn(testLink, "getTarget").andReturn(testTarget);
 
-                    populate = spyOnPromiseConditional(RepresentationLoader, "populate", testDetails, testTarget);
+                    populate = spyOnPromiseConditional(RepLoader, "populate", testDetails, testTarget);
 
                     objectViewModel = spyOn(ViewModelFactory, 'domainObjectViewModel').andReturn(testViewModel);
                     setNestedObject = spyOn(Context, 'setNestedObject');
@@ -563,7 +563,7 @@ describe('Services', function () {
                 var testObject = new Spiro.ErrorRepresentation();
                 var setError;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext) {
                     $scope = $rootScope.$new();
 
                     getObject = spyOnPromise2NestedFail(Context, 'getObject', testObject);
@@ -599,7 +599,7 @@ describe('Services', function () {
                 var objectViewModel;
                 var setNestedObject;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface, ViewModelFactory: Spiro.Angular.VMFInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext, ViewModelFactory: Spiro.Angular.VMFInterface) {
                     $scope = $rootScope.$new();
 
                     getNestedObject = spyOnPromise(Context, 'getNestedObject', testObject);
@@ -630,7 +630,7 @@ describe('Services', function () {
                 var testObject = new Spiro.ErrorRepresentation();
                 var setError;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext) {
                     $scope = $rootScope.$new();
 
                     getNestedObject = spyOnPromiseFail(Context, 'getNestedObject', testObject);
@@ -663,7 +663,7 @@ describe('Services', function () {
                 var objectViewModel;
                 var setNestedObject;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface, ViewModelFactory: Spiro.Angular.VMFInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext, ViewModelFactory: Spiro.Angular.VMFInterface) {
                     $scope = $rootScope.$new();
 
                     getNestedObject = spyOnPromise(Context, 'getNestedObject', testObject);
@@ -693,7 +693,7 @@ describe('Services', function () {
                 var testObject = new Spiro.ErrorRepresentation();
                 var setError;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext) {
                     $scope = $rootScope.$new();
 
                     getNestedObject = spyOnPromiseFail(Context, 'getNestedObject', testObject);
@@ -731,7 +731,7 @@ describe('Services', function () {
                 var setObject;
                 var setNestedObject;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface, ViewModelFactory: Spiro.Angular.VMFInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext, ViewModelFactory: Spiro.Angular.VMFInterface) {
                     $scope = $rootScope.$new();
 
                     getServices = spyOnPromise(Context, 'getServices', testObject);
@@ -760,7 +760,7 @@ describe('Services', function () {
                 var testObject = new Spiro.ErrorRepresentation();
                 var setError;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext) {
                     $scope = $rootScope.$new();
 
                     getServices = spyOnPromiseFail(Context, 'getServices', testObject);
@@ -791,7 +791,7 @@ describe('Services', function () {
 
                 var serviceViewModel;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface, ViewModelFactory: Spiro.Angular.VMFInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext, ViewModelFactory: Spiro.Angular.VMFInterface) {
                     $scope = $rootScope.$new();
 
                     getObject = spyOnPromise(Context, 'getObject', testObject);
@@ -818,7 +818,7 @@ describe('Services', function () {
                 var testObject = new Spiro.ErrorRepresentation();
                 var setError;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext) {
                     $scope = $rootScope.$new();
 
                     getObject = spyOnPromiseFail(Context, 'getObject', testObject);
@@ -850,7 +850,7 @@ describe('Services', function () {
                 var objectViewModel;
                 var setNestedObject;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface, ViewModelFactory: Spiro.Angular.VMFInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext, ViewModelFactory: Spiro.Angular.VMFInterface) {
                     $scope = $rootScope.$new();
 
                     getObject = spyOnPromise(Context, 'getObject', testObject);
@@ -864,7 +864,7 @@ describe('Services', function () {
 
                 describe('not in edit mode', function () {
 
-                    beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface) {
+                    beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers) {
 
                         Handlers.handleObject($scope);
                     }));
@@ -887,7 +887,7 @@ describe('Services', function () {
 
                     var populate; 
 
-                    beforeEach(inject(function ($rootScope, $q, $routeParams, RepresentationLoader : Spiro.Angular.RLInterface,  Handlers: Spiro.Angular.HandlersInterface) {
+                    beforeEach(inject(function ($rootScope, $q, $routeParams, RepLoader : Spiro.Angular.IRepLoader,  Handlers: Spiro.Angular.IHandlers) {
 
                         spyOn(testObject, 'propertyMembers').andReturn([propertyMem]);
                         spyOn(propertyMem, 'getDetails').andReturn(propertyRep);
@@ -895,7 +895,7 @@ describe('Services', function () {
                         spyOnPromise($q, 'all', [propertyRep]);  
 
 
-                        populate = spyOnPromise(RepresentationLoader, "populate", propertyRep);
+                        populate = spyOnPromise(RepLoader, "populate", propertyRep);
 
                         $routeParams.editMode = "test";
                         Handlers.handleEditObject($scope);
@@ -918,7 +918,7 @@ describe('Services', function () {
                 var testObject = new Spiro.ErrorRepresentation();
                 var setError;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext) {
                     $scope = $rootScope.$new();
 
                     getObject = spyOnPromiseFail(Context, 'getObject', testObject);
@@ -943,7 +943,7 @@ describe('Services', function () {
 
         describe('handleError', function () {
 
-            beforeEach(inject(function ($rootScope, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface) {
+            beforeEach(inject(function ($rootScope, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext) {
                 $scope = $rootScope.$new();
 
                 spyOn(Context, 'getError').andReturn(new Spiro.ErrorRepresentation({ message: "", stacktrace: [] }));
@@ -972,7 +972,7 @@ describe('Services', function () {
 
             describe('handleAppBar when not viewing an  object', function () {
 
-                beforeEach(inject(function ($rootScope, Handlers: Spiro.Angular.HandlersInterface) {
+                beforeEach(inject(function ($rootScope, Handlers: Spiro.Angular.IHandlers) {
                     $scope = $rootScope.$new();
 
                     Handlers.handleAppBar($scope);
@@ -991,7 +991,7 @@ describe('Services', function () {
 
             describe('handleAppBar when viewing an object', function () {
 
-                beforeEach(inject(function ($rootScope, $location, $routeParams, Handlers: Spiro.Angular.HandlersInterface, Context: Spiro.Angular.ContextInterface) {
+                beforeEach(inject(function ($rootScope, $location, $routeParams, Handlers: Spiro.Angular.IHandlers, Context: Spiro.Angular.IContext) {
                     $scope = $rootScope.$new();
 
                     $routeParams.dt = "test";
@@ -1030,7 +1030,7 @@ describe('Services', function () {
 
                 var testResult = new Spiro.Result(null, 'object');
 
-                beforeEach(inject(function (Handlers: Spiro.Angular.HandlersInterface) {
+                beforeEach(inject(function (Handlers: Spiro.Angular.IHandlers) {
                     spyOn(testActionResult, 'result').andReturn(testResult);
                     (<any>Handlers).setResult(testActionResult, testViewModel);
                 }));
@@ -1047,7 +1047,7 @@ describe('Services', function () {
                 var testResult = new Spiro.Result({}, 'object');
                 var setNestedObject;
 
-                beforeEach(inject(function ($routeParams, Context: Spiro.Angular.ContextInterface) {
+                beforeEach(inject(function ($routeParams, Context: Spiro.Angular.IContext) {
 
                     spyOn(testActionResult, 'result').andReturn(testResult);
                     spyOn(testActionResult, 'resultType').andReturn('object');
@@ -1063,7 +1063,7 @@ describe('Services', function () {
 
                 describe('with show flag', function () {
 
-                    beforeEach(inject(function (Handlers: Spiro.Angular.HandlersInterface) {
+                    beforeEach(inject(function (Handlers: Spiro.Angular.IHandlers) {
                         testViewModel.parameters = [];
 
                         (<any>Handlers).setResult(testActionResult, testViewModel, true);
@@ -1078,7 +1078,7 @@ describe('Services', function () {
 
                 describe('without show flag', function () {
 
-                    beforeEach(inject(function (Handlers: Spiro.Angular.HandlersInterface) {
+                    beforeEach(inject(function (Handlers: Spiro.Angular.IHandlers) {
                         (<any>Handlers).setResult(testActionResult);
                     }));
 
@@ -1096,7 +1096,7 @@ describe('Services', function () {
                 var testResult = new Spiro.Result([], 'list');
                 var setCollection;
 
-                beforeEach(inject(function ($routeParams, Context: Spiro.Angular.ContextInterface) {
+                beforeEach(inject(function ($routeParams, Context: Spiro.Angular.IContext) {
 
                     spyOn(testActionResult, 'result').andReturn(testResult);
                     spyOn(testActionResult, 'resultType').andReturn('list');
@@ -1114,7 +1114,7 @@ describe('Services', function () {
                     testParameters[1].type = "scalar";
                     testParameters[1].value = "2";
 
-                    beforeEach(inject(function (Handlers: Spiro.Angular.HandlersInterface) {
+                    beforeEach(inject(function (Handlers: Spiro.Angular.IHandlers) {
 
                         testViewModel.parameters = testParameters;
 
@@ -1129,7 +1129,7 @@ describe('Services', function () {
 
                 describe('without show flag', function () {
 
-                    beforeEach(inject(function (Handlers: Spiro.Angular.HandlersInterface) {
+                    beforeEach(inject(function (Handlers: Spiro.Angular.IHandlers) {
                         (<any>Handlers).setResult(testActionResult);
                     }));
 
@@ -1174,8 +1174,8 @@ describe('Services', function () {
                 var setResult;
                 
                 
-                beforeEach(inject(function (Handlers: Spiro.Angular.HandlersInterface, RepresentationLoader: Spiro.Angular.RLInterface) {
-                    populate = spyOnPromise(RepresentationLoader, 'populate', testActionResult);
+                beforeEach(inject(function (Handlers: Spiro.Angular.IHandlers, RepLoader: Spiro.Angular.IRepLoader) {
+                    populate = spyOnPromise(RepLoader, 'populate', testActionResult);
                     setResult = spyOn(Handlers, 'setResult');
                     testViewModel.parameters = testParameters;
                     
@@ -1203,8 +1203,8 @@ describe('Services', function () {
                 var testObject = new Spiro.ErrorRepresentation();
                 var setInvokeUpdateError;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, RepresentationLoader: Spiro.Angular.RLInterface, Context: Spiro.Angular.ContextInterface) {
-                    populate = spyOnPromiseFail(RepresentationLoader, 'populate', testObject);
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, RepLoader: Spiro.Angular.IRepLoader, Context: Spiro.Angular.IContext) {
+                    populate = spyOnPromiseFail(RepLoader, 'populate', testObject);
                     setInvokeUpdateError = spyOn(Handlers, 'setInvokeUpdateError');
                     (<any>Handlers).invokeAction($scope, testAction, testViewModel, false);
                 }));
@@ -1245,7 +1245,7 @@ describe('Services', function () {
             var setProperty;
             var set;
             
-            beforeEach(inject(function ($rootScope, RepresentationLoader: Spiro.Angular.RLInterface) {
+            beforeEach(inject(function ($rootScope, RepLoader: Spiro.Angular.IRepLoader) {
 
                 (<any>testUpdate).setProperty = () => { };
 
@@ -1268,7 +1268,7 @@ describe('Services', function () {
                 var testCache = {};
                 var remove;
 
-                beforeEach(inject(function ($location, $cacheFactory, Handlers: Spiro.Angular.HandlersInterface, RepresentationLoader: Spiro.Angular.RLInterface, Context: Spiro.Angular.ContextInterface) {
+                beforeEach(inject(function ($location, $cacheFactory, Handlers: Spiro.Angular.IHandlers, RepLoader: Spiro.Angular.IRepLoader, Context: Spiro.Angular.IContext) {
 
                     setObject = spyOn(Context, 'setObject');
                     
@@ -1276,7 +1276,7 @@ describe('Services', function () {
                     cacheFactory = $cacheFactory;
                     (<any>testCache).remove = (url: string) => { };
 
-                    populate = spyOnPromise(RepresentationLoader, 'populate', testUpdatedObject);
+                    populate = spyOnPromise(RepLoader, 'populate', testUpdatedObject);
 
                     spyOn(cacheFactory, 'get').andReturn(testCache);
                     remove = spyOn(testCache, 'remove');
@@ -1309,8 +1309,8 @@ describe('Services', function () {
                 var setInvokeUpdateError;
                 var editableProperties = _.filter(testProperties, (tp) => tp.isEditable);
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface, RepresentationLoader: Spiro.Angular.RLInterface) {
-                    populate = spyOnPromiseFail(RepresentationLoader, 'populate', testError);
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers, RepLoader: Spiro.Angular.IRepLoader) {
+                    populate = spyOnPromiseFail(RepLoader, 'populate', testError);
                     setInvokeUpdateError = spyOn(Handlers, 'setInvokeUpdateError');
                     (<any>Handlers).updateObject($scope, testObject, testViewModel);
                 }));
@@ -1337,7 +1337,7 @@ describe('Services', function () {
                 var errorMap = new Spiro.ErrorMap(error, "status", "a warning message");
                 var vms = [{ id: "one", value: null, message: null }, { id: "two", value: null, message: null }];
 
-                beforeEach(inject(function (Handlers: Spiro.Angular.HandlersInterface) {
+                beforeEach(inject(function (Handlers: Spiro.Angular.IHandlers) {
                     
                     (<any>Handlers).setInvokeUpdateError($scope, errorMap, vms, testViewModel);
                 }));
@@ -1359,7 +1359,7 @@ describe('Services', function () {
                 var testErrorViewModel = new Spiro.Angular.ErrorViewModel();
                 var errorViewModel;
                 
-                beforeEach(inject(function (Handlers: Spiro.Angular.HandlersInterface, ViewModelFactory: Spiro.Angular.VMFInterface) {
+                beforeEach(inject(function (Handlers: Spiro.Angular.IHandlers, ViewModelFactory: Spiro.Angular.VMFInterface) {
                     errorViewModel = spyOn(ViewModelFactory, 'errorViewModel').andReturn(testErrorViewModel);
                     (<any>Handlers).setInvokeUpdateError($scope, testError, [], testViewModel);
                 }));
@@ -1376,7 +1376,7 @@ describe('Services', function () {
 
                 var errorMessage = 'an error message';
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.HandlersInterface) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers: Spiro.Angular.IHandlers) {
                     (<any>Handlers).setInvokeUpdateError($scope, errorMessage, [], testViewModel);
                 }));
                 
@@ -1396,8 +1396,8 @@ describe('Services', function () {
 
             var result;
 
-            beforeEach(inject(function ($rootScope, $routeParams, Context: Spiro.Angular.ContextInterface, RepresentationLoader: Spiro.Angular.RLInterface) {
-                spyOnPromise(RepresentationLoader, 'populate', testHome);
+            beforeEach(inject(function ($rootScope, $routeParams, Context: Spiro.Angular.IContext, RepLoader: Spiro.Angular.IRepLoader) {
+                spyOnPromise(RepLoader, 'populate', testHome);
                 context = Context;
 
                 runs(function () {
@@ -1453,8 +1453,8 @@ describe('Services', function () {
 
             var result;
 
-            beforeEach(inject(function ($rootScope, $routeParams, Context: Spiro.Angular.ContextInterface, RepresentationLoader: Spiro.Angular.RLInterface) {
-                spyOnPromise(RepresentationLoader, 'populate', testServices);
+            beforeEach(inject(function ($rootScope, $routeParams, Context: Spiro.Angular.IContext, RepLoader: Spiro.Angular.IRepLoader) {
+                spyOnPromise(RepLoader, 'populate', testServices);
                 spyOnPromise(Context, 'getHome', testHome);
 
                 spyOn(testHome, 'getDomainServices').andReturn(testServices);
@@ -1517,8 +1517,8 @@ describe('Services', function () {
             var getDomainObject;
             var getService;
 
-            beforeEach(inject(function ($rootScope, $routeParams, Context: Spiro.Angular.ContextInterface, RepresentationLoader: Spiro.Angular.RLInterface) {
-                spyOnPromise(RepresentationLoader, 'populate', testObject);
+            beforeEach(inject(function ($rootScope, $routeParams, Context: Spiro.Angular.IContext, RepLoader: Spiro.Angular.IRepLoader) {
+                spyOnPromise(RepLoader, 'populate', testObject);
                 getDomainObject = spyOnPromise(Context, 'getDomainObject', testObject);
                 getService = spyOnPromise(Context, 'getService', testObject);
 
@@ -1619,7 +1619,7 @@ describe('Services', function () {
 
             var populate ;
       
-            beforeEach(inject(function ($rootScope, $routeParams, Context: Spiro.Angular.ContextInterface ) {
+            beforeEach(inject(function ($rootScope, $routeParams, Context: Spiro.Angular.IContext ) {
                
              
                 spyOn(testObject, 'domainType').andReturn("test");
@@ -1631,9 +1631,9 @@ describe('Services', function () {
 
             describe('when nestedObject is set', function () {
 
-                beforeEach(inject(function ($rootScope, RepresentationLoader: Spiro.Angular.RLInterface) {
+                beforeEach(inject(function ($rootScope, RepLoader: Spiro.Angular.IRepLoader) {
 
-                    populate = spyOnPromise(RepresentationLoader, 'populate', testObject);
+                    populate = spyOnPromise(RepLoader, 'populate', testObject);
 
                     context.setNestedObject(testObject);
 
@@ -1660,11 +1660,11 @@ describe('Services', function () {
 
                 var testResult = new Spiro.DomainObjectRepresentation();
 
-                beforeEach(inject(function ($rootScope, RepresentationLoader: Spiro.Angular.RLInterface) {
+                beforeEach(inject(function ($rootScope, RepLoader: Spiro.Angular.IRepLoader) {
 
                     testResult.hateoasUrl = "objects/test2/2";
 
-                    populate = spyOnPromise(RepresentationLoader, 'populate', testResult);
+                    populate = spyOnPromise(RepLoader, 'populate', testResult);
 
                     context.setNestedObject(testObject);
 
@@ -1690,11 +1690,11 @@ describe('Services', function () {
 
                 var testResult = new Spiro.DomainObjectRepresentation();
                 
-                beforeEach(inject(function ($rootScope, RepresentationLoader: Spiro.Angular.RLInterface) {
+                beforeEach(inject(function ($rootScope, RepLoader: Spiro.Angular.IRepLoader) {
 
                     testResult.hateoasUrl = "objects/test/1";
 
-                    populate = spyOnPromise(RepresentationLoader, 'populate', testResult);
+                    populate = spyOnPromise(RepLoader, 'populate', testResult);
 
                     runs(function () {
                         context.getNestedObject("test", "1").then(function (object) {
@@ -1726,7 +1726,7 @@ describe('Services', function () {
 
             var populate;
             
-            beforeEach(inject(function ($rootScope, $routeParams, Context: Spiro.Angular.ContextInterface) {
+            beforeEach(inject(function ($rootScope, $routeParams, Context: Spiro.Angular.IContext) {
                 
                
                 context = Context;
@@ -1798,8 +1798,8 @@ describe('Services', function () {
             var getDomainObject;
             var getService;
 
-            beforeEach(inject(function ($rootScope, $routeParams, Context: Spiro.Angular.ContextInterface, RepresentationLoader: Spiro.Angular.RLInterface) {
-                spyOnPromise(RepresentationLoader, 'populate', testObject);
+            beforeEach(inject(function ($rootScope, $routeParams, Context: Spiro.Angular.IContext, RepLoader: Spiro.Angular.IRepLoader) {
+                spyOnPromise(RepLoader, 'populate', testObject);
                 getDomainObject = spyOnPromise(Context, 'getDomainObject', testObject);
                 getService = spyOnPromise(Context, 'getService', testObject);
 

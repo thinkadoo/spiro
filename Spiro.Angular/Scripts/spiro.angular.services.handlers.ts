@@ -8,7 +8,7 @@
 module Spiro.Angular {
 
 
-    export interface HandlersInterface {
+    export interface IHandlers {
         handleCollectionResult($scope): void;
         handleCollection($scope): void;
         handleActionDialog($scope): void;
@@ -25,7 +25,7 @@ module Spiro.Angular {
     }
 
     // TODO rename 
-    app.service("Handlers", function ($routeParams, $location, $q: ng.IQService, $cacheFactory, RepresentationLoader: RLInterface, Context: ContextInterface, ViewModelFactory: VMFInterface, UrlHelper: IUrlHelper) {
+    app.service("Handlers", function ($routeParams, $location, $q: ng.IQService, $cacheFactory, RepLoader: IRepLoader, Context: IContext, ViewModelFactory: VMFInterface, UrlHelper: IUrlHelper) {
 
         var handlers = this;
 
@@ -45,7 +45,7 @@ module Spiro.Angular {
             Context.getObject($routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
                     var collectionDetails = object.collectionMember($routeParams.collection).getDetails();
-                    return RepresentationLoader.populate(collectionDetails);
+                    return RepLoader.populate(collectionDetails);
                 }).
                 then(function (details: CollectionRepresentation) {
                     $scope.collection = ViewModelFactory.collectionViewModel(details);
@@ -60,7 +60,7 @@ module Spiro.Angular {
             Context.getObject($routeParams.sid || $routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
                     var actionTarget = object.actionMember(UrlHelper.action()).getDetails();
-                    return RepresentationLoader.populate(actionTarget);
+                    return RepLoader.populate(actionTarget);
                 }).
                 then(function (action: ActionRepresentation) {
                     if (action.extensions().hasParams) {
@@ -84,11 +84,11 @@ module Spiro.Angular {
                         return delay.promise;
                     }
                     var actionTarget = action.getDetails();
-                    return RepresentationLoader.populate(actionTarget);
+                    return RepLoader.populate(actionTarget);
                 }).
                 then(function (action: ActionRepresentation) {
                     var result = action.getInvoke();
-                    return RepresentationLoader.populate(result, true);
+                    return RepLoader.populate(result, true);
                 }).
                 then(function (result: ActionResultRepresentation) {
                     handlers.setResult(result);
@@ -105,11 +105,11 @@ module Spiro.Angular {
             Context.getObject($routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
                     var propertyDetails = object.propertyMember($routeParams.property).getDetails();
-                    return RepresentationLoader.populate(propertyDetails);
+                    return RepLoader.populate(propertyDetails);
                 }).
                 then(function (details: PropertyRepresentation) {
                     var target = details.value().link().getTarget();
-                    return RepresentationLoader.populate(target);
+                    return RepLoader.populate(target);
                 }).
                 then(function (object: DomainObjectRepresentation) {
                     setNestedObject(object, $scope);
@@ -237,7 +237,7 @@ module Spiro.Angular {
 
             Context.getObject($routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
-                    var detailPromises = _.map(object.propertyMembers(), (pm: PropertyMember) => { return RepresentationLoader.populate(pm.getDetails()) });
+                    var detailPromises = _.map(object.propertyMembers(), (pm: PropertyMember) => { return RepLoader.populate(pm.getDetails()) });
 
                     $q.all(detailPromises).then(function (details: PropertyRepresentation[]) {
                         Context.setNestedObject(null);
@@ -341,7 +341,7 @@ module Spiro.Angular {
             var parameters = dvm.parameters;
             _.each(parameters, (parm) => invoke.setParameter(parm.id, parm.getValue()));
 
-            RepresentationLoader.populate(invoke, true).
+            RepLoader.populate(invoke, true).
                 then(function (result: ActionResultRepresentation) {
                     handlers.setResult(result, dvm, show);
                 }, function (error: any) {
@@ -355,7 +355,7 @@ module Spiro.Angular {
             var properties = _.filter(ovm.properties, (property) => property.isEditable);
             _.each(properties, (property) => update.setProperty(property.id, property.getValue()));
 
-            RepresentationLoader.populate(update, true, new DomainObjectRepresentation()).
+            RepLoader.populate(update, true, new DomainObjectRepresentation()).
                 then(function (updatedObject: DomainObjectRepresentation) {
 
                     // This is a kludge because updated object has no self link.

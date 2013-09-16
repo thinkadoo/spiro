@@ -22,8 +22,7 @@ module Spiro.Angular {
         domainObjectViewModel(objectRep: DomainObjectRepresentation, details?: PropertyRepresentation[], save?: (ovm: DomainObjectViewModel) => void): DomainObjectViewModel;
     }
 
-    app.service('ViewModelFactory', function ($routeParams, $location, $q, $controller, UrlHelper: IUrlHelper, RepresentationLoader: RLInterface) {
-
+    app.service('ViewModelFactory', function ($routeParams, $location, $q, $controller, UrlHelper: IUrlHelper, RepLoader: IRepLoader) {
 
         var viewModelFactory = <VMFInterface>this;
 
@@ -90,7 +89,7 @@ module Spiro.Angular {
 
                 object.hateoasUrl = appPath + "/objects/" + parmRep.extensions().returnType + "/" + parmViewModel.search;
 
-                RepresentationLoader.populate(object).then((d: DomainObjectRepresentation) => {
+                RepLoader.populate(object).then((d: DomainObjectRepresentation) => {
 
                     var l = d.selfLink();
                     l.set("title", d.title());

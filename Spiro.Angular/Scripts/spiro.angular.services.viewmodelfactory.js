@@ -6,7 +6,7 @@ var Spiro;
     /// <reference path="spiro.angular.viewmodels.ts" />
     /// <reference path="spiro.angular.app.ts" />
     (function (Angular) {
-        Angular.app.service('ViewModelFactory', function ($routeParams, $location, $q, $controller, UrlHelper, RepresentationLoader) {
+        Angular.app.service('ViewModelFactory', function ($routeParams, $location, $q, $controller, UrlHelper, RepLoader) {
             var viewModelFactory = this;
 
             viewModelFactory.errorViewModel = function (errorRep) {
@@ -72,7 +72,7 @@ var Spiro;
 
                     object.hateoasUrl = appPath + "/objects/" + parmRep.extensions().returnType + "/" + parmViewModel.search;
 
-                    RepresentationLoader.populate(object).then(function (d) {
+                    RepLoader.populate(object).then(function (d) {
                         var l = d.selfLink();
                         l.set("title", d.title());
                         var v = new Spiro.Value(l);

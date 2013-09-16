@@ -155,14 +155,14 @@ describe('Services', function () {
                 var populate;
                 var collectionViewModel;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers, Context, ViewModelFactory, RepresentationLoader) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers, Context, ViewModelFactory, RepLoader) {
                     $scope = $rootScope.$new();
 
                     getObject = spyOnPromise(Context, 'getObject', testObject);
 
                     collectionMember = spyOn(testObject, "collectionMember").andReturn(testMember);
                     collectionDetails = spyOn(testMember, "getDetails").andReturn(testDetails);
-                    populate = spyOnPromise(RepresentationLoader, "populate", testDetails);
+                    populate = spyOnPromise(RepLoader, "populate", testDetails);
                     collectionViewModel = spyOn(ViewModelFactory, 'collectionViewModel').andReturn(testViewModel);
 
                     $routeParams.dt = "test";
@@ -224,14 +224,14 @@ describe('Services', function () {
                 var populate;
                 var dialogViewModel;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers, Context, ViewModelFactory, RepresentationLoader) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers, Context, ViewModelFactory, RepLoader) {
                     $scope = $rootScope.$new();
 
                     getObject = spyOnPromise(Context, 'getObject', testObject);
 
                     actionMember = spyOn(testObject, "actionMember").andReturn(testMember);
                     actionDetails = spyOn(testMember, "getDetails").andReturn(testDetails);
-                    populate = spyOnPromise(RepresentationLoader, "populate", testDetails);
+                    populate = spyOnPromise(RepLoader, "populate", testDetails);
                     dialogViewModel = spyOn(ViewModelFactory, 'dialogViewModel').andReturn(testViewModel);
                 }));
 
@@ -343,7 +343,7 @@ describe('Services', function () {
                 var populate;
                 var setResult;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers, Context, ViewModelFactory, RepresentationLoader) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers, Context, ViewModelFactory, RepLoader) {
                     $scope = $rootScope.$new();
 
                     getObject = spyOnPromise(Context, 'getObject', testObject);
@@ -351,7 +351,7 @@ describe('Services', function () {
                     actionMember = spyOn(testObject, "actionMember").andReturn(testMember);
                     actionDetails = spyOn(testMember, "getDetails").andReturn(testDetails);
                     actionResult = spyOn(testDetails, "getInvoke").andReturn(testResult);
-                    populate = spyOnPromiseConditional(RepresentationLoader, "populate", testDetails, testResult);
+                    populate = spyOnPromiseConditional(RepLoader, "populate", testDetails, testResult);
 
                     setResult = spyOn(Handlers, "setResult");
                 }));
@@ -464,7 +464,7 @@ describe('Services', function () {
 
                 var populate;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers, Context, ViewModelFactory, RepresentationLoader) {
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers, Context, ViewModelFactory, RepLoader) {
                     $scope = $rootScope.$new();
 
                     getObject = spyOnPromise(Context, 'getObject', testObject);
@@ -476,7 +476,7 @@ describe('Services', function () {
                     spyOn(testValue, "link").andReturn(testLink);
                     spyOn(testLink, "getTarget").andReturn(testTarget);
 
-                    populate = spyOnPromiseConditional(RepresentationLoader, "populate", testDetails, testTarget);
+                    populate = spyOnPromiseConditional(RepLoader, "populate", testDetails, testTarget);
 
                     objectViewModel = spyOn(ViewModelFactory, 'domainObjectViewModel').andReturn(testViewModel);
                     setNestedObject = spyOn(Context, 'setNestedObject');
@@ -796,13 +796,13 @@ describe('Services', function () {
 
                     var populate;
 
-                    beforeEach(inject(function ($rootScope, $q, $routeParams, RepresentationLoader, Handlers) {
+                    beforeEach(inject(function ($rootScope, $q, $routeParams, RepLoader, Handlers) {
                         spyOn(testObject, 'propertyMembers').andReturn([propertyMem]);
                         spyOn(propertyMem, 'getDetails').andReturn(propertyRep);
 
                         spyOnPromise($q, 'all', [propertyRep]);
 
-                        populate = spyOnPromise(RepresentationLoader, "populate", propertyRep);
+                        populate = spyOnPromise(RepLoader, "populate", propertyRep);
 
                         $routeParams.editMode = "test";
                         Handlers.handleEditObject($scope);
@@ -1052,8 +1052,8 @@ describe('Services', function () {
             describe('invoke is successful', function () {
                 var setResult;
 
-                beforeEach(inject(function (Handlers, RepresentationLoader) {
-                    populate = spyOnPromise(RepresentationLoader, 'populate', testActionResult);
+                beforeEach(inject(function (Handlers, RepLoader) {
+                    populate = spyOnPromise(RepLoader, 'populate', testActionResult);
                     setResult = spyOn(Handlers, 'setResult');
                     testViewModel.parameters = testParameters;
 
@@ -1080,8 +1080,8 @@ describe('Services', function () {
                 var testObject = new Spiro.ErrorRepresentation();
                 var setInvokeUpdateError;
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers, RepresentationLoader, Context) {
-                    populate = spyOnPromiseFail(RepresentationLoader, 'populate', testObject);
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers, RepLoader, Context) {
+                    populate = spyOnPromiseFail(RepLoader, 'populate', testObject);
                     setInvokeUpdateError = spyOn(Handlers, 'setInvokeUpdateError');
                     (Handlers).invokeAction($scope, testAction, testViewModel, false);
                 }));
@@ -1120,7 +1120,7 @@ describe('Services', function () {
             var setProperty;
             var set;
 
-            beforeEach(inject(function ($rootScope, RepresentationLoader) {
+            beforeEach(inject(function ($rootScope, RepLoader) {
                 (testUpdate).setProperty = function () {
                 };
 
@@ -1142,7 +1142,7 @@ describe('Services', function () {
                 var testCache = {};
                 var remove;
 
-                beforeEach(inject(function ($location, $cacheFactory, Handlers, RepresentationLoader, Context) {
+                beforeEach(inject(function ($location, $cacheFactory, Handlers, RepLoader, Context) {
                     setObject = spyOn(Context, 'setObject');
 
                     location = $location;
@@ -1150,7 +1150,7 @@ describe('Services', function () {
                     (testCache).remove = function (url) {
                     };
 
-                    populate = spyOnPromise(RepresentationLoader, 'populate', testUpdatedObject);
+                    populate = spyOnPromise(RepLoader, 'populate', testUpdatedObject);
 
                     spyOn(cacheFactory, 'get').andReturn(testCache);
                     remove = spyOn(testCache, 'remove');
@@ -1184,8 +1184,8 @@ describe('Services', function () {
                     return tp.isEditable;
                 });
 
-                beforeEach(inject(function ($rootScope, $routeParams, Handlers, RepresentationLoader) {
-                    populate = spyOnPromiseFail(RepresentationLoader, 'populate', testError);
+                beforeEach(inject(function ($rootScope, $routeParams, Handlers, RepLoader) {
+                    populate = spyOnPromiseFail(RepLoader, 'populate', testError);
                     setInvokeUpdateError = spyOn(Handlers, 'setInvokeUpdateError');
                     (Handlers).updateObject($scope, testObject, testViewModel);
                 }));
@@ -1261,8 +1261,8 @@ describe('Services', function () {
 
             var result;
 
-            beforeEach(inject(function ($rootScope, $routeParams, Context, RepresentationLoader) {
-                spyOnPromise(RepresentationLoader, 'populate', testHome);
+            beforeEach(inject(function ($rootScope, $routeParams, Context, RepLoader) {
+                spyOnPromise(RepLoader, 'populate', testHome);
                 context = Context;
 
                 runs(function () {
@@ -1313,8 +1313,8 @@ describe('Services', function () {
 
             var result;
 
-            beforeEach(inject(function ($rootScope, $routeParams, Context, RepresentationLoader) {
-                spyOnPromise(RepresentationLoader, 'populate', testServices);
+            beforeEach(inject(function ($rootScope, $routeParams, Context, RepLoader) {
+                spyOnPromise(RepLoader, 'populate', testServices);
                 spyOnPromise(Context, 'getHome', testHome);
 
                 spyOn(testHome, 'getDomainServices').andReturn(testServices);
@@ -1371,8 +1371,8 @@ describe('Services', function () {
             var getDomainObject;
             var getService;
 
-            beforeEach(inject(function ($rootScope, $routeParams, Context, RepresentationLoader) {
-                spyOnPromise(RepresentationLoader, 'populate', testObject);
+            beforeEach(inject(function ($rootScope, $routeParams, Context, RepLoader) {
+                spyOnPromise(RepLoader, 'populate', testObject);
                 getDomainObject = spyOnPromise(Context, 'getDomainObject', testObject);
                 getService = spyOnPromise(Context, 'getService', testObject);
 
@@ -1468,8 +1468,8 @@ describe('Services', function () {
             }));
 
             describe('when nestedObject is set', function () {
-                beforeEach(inject(function ($rootScope, RepresentationLoader) {
-                    populate = spyOnPromise(RepresentationLoader, 'populate', testObject);
+                beforeEach(inject(function ($rootScope, RepLoader) {
+                    populate = spyOnPromise(RepLoader, 'populate', testObject);
 
                     context.setNestedObject(testObject);
 
@@ -1494,10 +1494,10 @@ describe('Services', function () {
             describe('when nestedObject is set but not same', function () {
                 var testResult = new Spiro.DomainObjectRepresentation();
 
-                beforeEach(inject(function ($rootScope, RepresentationLoader) {
+                beforeEach(inject(function ($rootScope, RepLoader) {
                     testResult.hateoasUrl = "objects/test2/2";
 
-                    populate = spyOnPromise(RepresentationLoader, 'populate', testResult);
+                    populate = spyOnPromise(RepLoader, 'populate', testResult);
 
                     context.setNestedObject(testObject);
 
@@ -1522,10 +1522,10 @@ describe('Services', function () {
             describe('when nestedObject is not set', function () {
                 var testResult = new Spiro.DomainObjectRepresentation();
 
-                beforeEach(inject(function ($rootScope, RepresentationLoader) {
+                beforeEach(inject(function ($rootScope, RepLoader) {
                     testResult.hateoasUrl = "objects/test/1";
 
-                    populate = spyOnPromise(RepresentationLoader, 'populate', testResult);
+                    populate = spyOnPromise(RepLoader, 'populate', testResult);
 
                     runs(function () {
                         context.getNestedObject("test", "1").then(function (object) {
@@ -1611,8 +1611,8 @@ describe('Services', function () {
             var getDomainObject;
             var getService;
 
-            beforeEach(inject(function ($rootScope, $routeParams, Context, RepresentationLoader) {
-                spyOnPromise(RepresentationLoader, 'populate', testObject);
+            beforeEach(inject(function ($rootScope, $routeParams, Context, RepLoader) {
+                spyOnPromise(RepLoader, 'populate', testObject);
                 getDomainObject = spyOnPromise(Context, 'getDomainObject', testObject);
                 getService = spyOnPromise(Context, 'getService', testObject);
 

@@ -106,7 +106,7 @@
     <script type="text/javascript" src="<%= Url.Content("~/Scripts/spiro.angular.app.js") %>"></script>
     <script type="text/javascript" src="<%= Url.Content("~/Scripts/spiro.angular.controllers.js") %>"></script>
     <script type="text/javascript" src="<%= Url.Content("~/Scripts/spiro.angular.directives.js") %>"></script>
-    <script type="text/javascript" src="<%= Url.Content("~/Scripts/spiro.angular.services.representationloader.js") %>"></script>
+    <script type="text/javascript" src="<%= Url.Content("~/Scripts/spiro.angular.services.RepLoader.js") %>"></script>
     <script type="text/javascript" src="<%= Url.Content("~/Scripts/spiro.angular.services.viewmodelfactory.js") %>"></script>
     <script type="text/javascript" src="<%= Url.Content("~/Scripts/spiro.angular.services.urlhelper.js") %>"></script>
     <script type="text/javascript" src="<%= Url.Content("~/Scripts/spiro.angular.services.context.js") %>"></script>

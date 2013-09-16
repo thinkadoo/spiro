@@ -6,7 +6,9 @@ var Spiro;
     /// <reference path="spiro.angular.viewmodels.ts" />
     /// <reference path="spiro.angular.app.ts" />
     (function (Angular) {
-        Angular.app.service('Context', function ($q, RepresentationLoader) {
+        Angular.app.service('Context', function ($q, RepLoader) {
+            var context = this;
+
             var currentHome = null;
 
             function isSameObject(object, type, id) {
@@ -14,12 +16,14 @@ var Spiro;
                 return sid ? sid === type : (object.domainType() == type && object.instanceId() === id);
             }
 
+            // exposed for testing
             this.getDomainObject = function (type, id) {
                 var object = new Spiro.DomainObjectRepresentation();
                 object.hateoasUrl = appPath + "/objects/" + type + "/" + id;
-                return RepresentationLoader.populate(object);
+                return RepLoader.populate(object);
             };
 
+            // exposed for testing
             this.getService = function (type) {
                 var delay = $q.defer();
 
@@ -28,7 +32,7 @@ var Spiro;
                         return model.rel().parms[0] === 'serviceId="' + type + '"';
                     });
                     var service = serviceLink.getTarget();
-                    return RepresentationLoader.populate(service);
+                    return RepLoader.populate(service);
                 }).then(function (service) {
                     currentObject = service;
                     delay.resolve(service);
@@ -36,14 +40,14 @@ var Spiro;
                 return delay.promise;
             };
 
-            this.getHome = function () {
+            context.getHome = function () {
                 var delay = $q.defer();
 
                 if (currentHome) {
                     delay.resolve(currentHome);
                 } else {
                     var home = new Spiro.HomePageRepresentation();
-                    RepresentationLoader.populate(home).then(function (home) {
+                    RepLoader.populate(home).then(function (home) {
                         currentHome = home;
                         delay.resolve(home);
                     });
@@ -54,7 +58,7 @@ var Spiro;
 
             var currentServices = null;
 
-            this.getServices = function () {
+            context.getServices = function () {
                 var delay = $q.defer();
 
                 if (currentServices) {
@@ -62,7 +66,7 @@ var Spiro;
                 } else {
                     this.getHome().then(function (home) {
                         var ds = home.getDomainServices();
-                        return RepresentationLoader.populate(ds);
+                        return RepLoader.populate(ds);
                     }).then(function (services) {
                         currentServices = services;
                         delay.resolve(services);
@@ -74,7 +78,7 @@ var Spiro;
 
             var currentObject = null;
 
-            this.getObject = function (type, id) {
+            context.getObject = function (type, id) {
                 var delay = $q.defer();
 
                 if (currentObject && isSameObject(currentObject, type, id)) {
@@ -90,13 +94,13 @@ var Spiro;
                 return delay.promise;
             };
 
-            this.setObject = function (co) {
+            context.setObject = function (co) {
                 currentObject = co;
             };
 
             var currentNestedObject = null;
 
-            this.getNestedObject = function (type, id) {
+            context.getNestedObject = function (type, id) {
                 var delay = $q.defer();
 
                 if (currentNestedObject && isSameObject(currentNestedObject, type, id)) {
@@ -105,7 +109,7 @@ var Spiro;
                     var object = new Spiro.DomainObjectRepresentation();
                     object.hateoasUrl = appPath + "/objects/" + type + "/" + id;
 
-                    RepresentationLoader.populate(object).then(function (object) {
+                    RepLoader.populate(object).then(function (object) {
                         currentNestedObject = object;
                         delay.resolve(object);
                     });
@@ -114,29 +118,29 @@ var Spiro;
                 return delay.promise;
             };
 
-            this.setNestedObject = function (cno) {
+            context.setNestedObject = function (cno) {
                 currentNestedObject = cno;
             };
 
             var currentError = null;
 
-            this.getError = function () {
+            context.getError = function () {
                 return currentError;
             };
 
-            this.setError = function (e) {
+            context.setError = function (e) {
                 currentError = e;
             };
 
             var currentCollection = null;
 
-            this.getCollection = function () {
+            context.getCollection = function () {
                 var delay = $q.defer();
                 delay.resolve(currentCollection);
                 return delay.promise;
             };
 
-            this.setCollection = function (c) {
+            context.setCollection = function (c) {
                 currentCollection = c;
             };
         });

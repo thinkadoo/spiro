@@ -12,7 +12,7 @@ describe('Controllers', function () {
 
         var handleServices;
 
-        beforeEach(inject(function ($rootScope, $controller, Handlers: Spiro.Angular.HandlersInterface) {
+        beforeEach(inject(function ($rootScope, $controller, Handlers: Spiro.Angular.IHandlers) {
             $scope = $rootScope.$new();
             handleServices = spyOn(Handlers, 'handleServices');
             ctrl = $controller('ServicesController', { $scope: $scope, Handlers: Handlers });
@@ -28,7 +28,7 @@ describe('Controllers', function () {
 
         var handleService;
 
-        beforeEach(inject(function ($rootScope, $controller, Handlers: Spiro.Angular.HandlersInterface) {
+        beforeEach(inject(function ($rootScope, $controller, Handlers: Spiro.Angular.IHandlers) {
             $scope = $rootScope.$new();
             handleService = spyOn(Handlers, 'handleService');
             ctrl = $controller('ServiceController', { $scope: $scope, Handlers: Handlers });
@@ -44,7 +44,7 @@ describe('Controllers', function () {
 
         var handleObject;
 
-        beforeEach(inject(function ($rootScope, $controller, Handlers: Spiro.Angular.HandlersInterface) {
+        beforeEach(inject(function ($rootScope, $controller, Handlers: Spiro.Angular.IHandlers) {
             $scope = $rootScope.$new();
             handleObject = spyOn(Handlers, 'handleObject');
             ctrl = $controller('ObjectController', { $scope: $scope, Handlers: Handlers });
@@ -61,7 +61,7 @@ describe('Controllers', function () {
 
         var handleActionDialog;
 
-        beforeEach(inject(function ($rootScope, Handlers: Spiro.Angular.HandlersInterface) {
+        beforeEach(inject(function ($rootScope, Handlers: Spiro.Angular.IHandlers) {
             $scope = $rootScope.$new();
             handleActionDialog = spyOn(Handlers, 'handleActionDialog');
         }));
@@ -69,7 +69,7 @@ describe('Controllers', function () {
 
         describe('if action parm set', function () {
 
-            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.HandlersInterface) {
+            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.IHandlers) {
                 $routeParams.action = "test";
                 ctrl = $controller('DialogController', { $scope: $scope, Handlers: Handlers });
             }));
@@ -81,7 +81,7 @@ describe('Controllers', function () {
 
         describe('if action parm not set', function () {
             
-            beforeEach(inject(function ($controller, Handlers: Spiro.Angular.HandlersInterface) {
+            beforeEach(inject(function ($controller, Handlers: Spiro.Angular.IHandlers) {
                 ctrl = $controller('DialogController', { $scope: $scope, Handlers: Handlers });
             }));
 
@@ -99,7 +99,7 @@ describe('Controllers', function () {
         var handleCollectionItem;
         var handleResult;
 
-        beforeEach(inject(function ($rootScope, Handlers: Spiro.Angular.HandlersInterface) {
+        beforeEach(inject(function ($rootScope, Handlers: Spiro.Angular.IHandlers) {
             $scope = $rootScope.$new();
             handleActionResult = spyOn(Handlers, 'handleActionResult');
             handleProperty = spyOn(Handlers, 'handleProperty');
@@ -110,7 +110,7 @@ describe('Controllers', function () {
 
         describe('if action parm set', function () {
 
-            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.HandlersInterface) {
+            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.IHandlers) {
                 $routeParams.action = "test";
                 ctrl = $controller('NestedObjectController', { $scope: $scope, Handlers: Handlers });
             }));
@@ -125,7 +125,7 @@ describe('Controllers', function () {
 
         describe('if property parm set', function () {
 
-            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.HandlersInterface) {
+            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.IHandlers) {
                 $routeParams.property = "test";
                 ctrl = $controller('NestedObjectController', { $scope: $scope, Handlers: Handlers });
             }));
@@ -141,7 +141,7 @@ describe('Controllers', function () {
 
         describe('if collection Item parm set', function () {
 
-            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.HandlersInterface) {
+            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.IHandlers) {
                 $routeParams.collectionItem = "test";
                 ctrl = $controller('NestedObjectController', { $scope: $scope, Handlers: Handlers });
             }));
@@ -157,7 +157,7 @@ describe('Controllers', function () {
 
         describe('if result object parm set', function () {
 
-            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.HandlersInterface) {
+            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.IHandlers) {
                 $routeParams.resultObject = "test";
                 ctrl = $controller('NestedObjectController', { $scope: $scope, Handlers: Handlers });
             }));
@@ -172,7 +172,7 @@ describe('Controllers', function () {
 
         describe('if all parms set', function () {
 
-            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.HandlersInterface) {
+            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.IHandlers) {
                 $routeParams.action = "test";
                 $routeParams.property = "test";
                 $routeParams.collectionItem = "test";
@@ -190,7 +190,7 @@ describe('Controllers', function () {
 
         describe('if no parms set', function () {
 
-            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.HandlersInterface) {
+            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.IHandlers) {
                 ctrl = $controller('NestedObjectController', { $scope: $scope, Handlers: Handlers });
             }));
 
@@ -209,7 +209,7 @@ describe('Controllers', function () {
         var handleCollectionResult;
         var handleCollection;
 
-        beforeEach(inject(function ($rootScope, Handlers: Spiro.Angular.HandlersInterface) {
+        beforeEach(inject(function ($rootScope, Handlers: Spiro.Angular.IHandlers) {
             $scope = $rootScope.$new();
             handleCollectionResult = spyOn(Handlers, 'handleCollectionResult');
             handleCollection = spyOn(Handlers, 'handleCollection');
@@ -218,7 +218,7 @@ describe('Controllers', function () {
 
         describe('if result collection parm set', function () {
 
-            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.HandlersInterface) {
+            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.IHandlers) {
                 $routeParams.resultCollection = "test";
                 ctrl = $controller('CollectionController', { $scope: $scope, Handlers: Handlers });
             }));
@@ -231,7 +231,7 @@ describe('Controllers', function () {
 
         describe('if collection parm set', function () {
 
-            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.HandlersInterface) {
+            beforeEach(inject(function ($routeParams, $controller, Handlers: Spiro.Angular.IHandlers) {
                 $routeParams.collection = "test";
                 ctrl = $controller('CollectionController', { $scope: $scope, Handlers: Handlers });
             }));
@@ -245,7 +245,7 @@ describe('Controllers', function () {
 
         describe('if no parms set', function () {
 
-            beforeEach(inject(function ($controller, Handlers: Spiro.Angular.HandlersInterface) {
+            beforeEach(inject(function ($controller, Handlers: Spiro.Angular.IHandlers) {
                 ctrl = $controller('CollectionController', { $scope: $scope, Handlers: Handlers });
             }));
 
@@ -262,7 +262,7 @@ describe('Controllers', function () {
 
         var handleError;
 
-        beforeEach(inject(function ($rootScope, $controller, Handlers: Spiro.Angular.HandlersInterface) {
+        beforeEach(inject(function ($rootScope, $controller, Handlers: Spiro.Angular.IHandlers) {
             $scope = $rootScope.$new();
             handleError = spyOn(Handlers, 'handleError');
             ctrl = $controller('ErrorController', { $scope: $scope, Handlers: Handlers });
@@ -278,7 +278,7 @@ describe('Controllers', function () {
 
         var handleAppBar;
 
-        beforeEach(inject(function ($rootScope, $controller, Handlers: Spiro.Angular.HandlersInterface) {
+        beforeEach(inject(function ($rootScope, $controller, Handlers: Spiro.Angular.IHandlers) {
             $scope = $rootScope.$new();
             handleAppBar = spyOn(Handlers, 'handleAppBar');
             ctrl = $controller('AppBarController', { $scope: $scope, Handlers: Handlers });
