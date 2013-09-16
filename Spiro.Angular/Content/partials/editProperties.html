@@ -8,7 +8,7 @@
 
             <div ng-switch-when="ref" ng-switch="property.isEditable">
                
-                 <div ng-switch-when="false" class="property-reference clickable-area" ng-class="property.color">
+                <div ng-switch-when="false" class="property-reference clickable-area" ng-class="property.color">
                     <a href="{{property.href}}"><span></span>{{property.value}}</a>
                 </div>
 
@@ -24,20 +24,43 @@
             </div>
             <div ng-switch-when="scalar" ng-switch="property.isEditable">
                 
-                
-                <div  ng-switch-when="false" ng-switch="property.format" >
-                    <div ng-switch-when="date-time" class='property-value'>{{property.value | date:'d MMM yyyy' }}</div>    
-                    <div ng-switch-default class='property-value'>{{property.value}}</div>       
-                </div> 
+         
+                <div ng-switch-when="false" ng-switch="property.returnType">
+
+                    <div ng-switch-when="string" ng-switch="property.format">
+                        <div ng-switch-when="date-time" class='property-value'>{{property.value | date:'d MMM yyyy' }}</div>
+                        <div ng-switch-default class='property-value'>{{property.value}}</div>
+                    </div>
+
+                    <div ng-switch-when="boolean">
+                        <input type="checkbox" onclick=" return false " ng-checked="property.value"/>
+                    </div>
+
+                    <div ng-switch-default>
+                        <div ng-switch-default class='property-value'>{{property.value}}</div>
+                    </div>
+                </div>
                 
                 <div ng-switch-when="true" class='property-value input-control text' ng-switch="property.hasChoices">
                     
-                    <div  ng-switch-when="false" ng-switch="property.format" >
-                        <div ng-switch-when="date-time">
-                            <input  type='text'  ng-model="$parent.property.value" datepicker/>
+                    <div  ng-switch-when="false" ng-switch="property.returnType" >
+                        
+                        <div ng-switch-when="string" ng-switch="property.format">
+                            <div ng-switch-when="date-time">
+                                <input  type='text'  ng-model="$parent.property.value" datepicker/>
+                            </div>
+                            <input ng-switch-default type='text' placeholder='{{property.value}}' ng-model="property.value" />
                         </div>
-                        <input ng-switch-default type='text' placeholder='{{property.value}}' ng-model="property.value" />
-                    </div> 
+
+                        <div ng-switch-when="boolean">
+                            <input type="checkbox" ng-model="property.value"   />
+                        </div>
+
+                        <div ng-switch-default>
+                            <input type='text' placeholder='{{property.value}}' ng-model="property.value" />
+                        </div>
+                        
+                    </div>    
                             
                     <select ng-switch-when="true" ng-model="property.value" ng-options="c.value as c.name for c in property.choices"/>
                     

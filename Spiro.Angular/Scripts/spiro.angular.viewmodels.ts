@@ -115,6 +115,10 @@ module Spiro.Angular {
                 return new Value({ href: this.choice.value, title : this.choice.name });
             }
 
+            if (this.reference === "") {
+                return new Value("");
+            }
+
             return new Value({ href: this.reference });
         }
 
@@ -147,7 +151,7 @@ module Spiro.Angular {
     export class PropertyViewModel {
 
         title: string;
-        value: string;
+        value: Object;
         type: string;
         returnType: string;
         format: string;
@@ -163,7 +167,16 @@ module Spiro.Angular {
 
         getValue() : Value {
             if (this.type === "scalar") {
+
+                if (this.returnType === "boolean" && !(this.value == null)) {
+                    return new Value(this.value);
+                }
+
                 return new Value(this.value || "");
+            }
+
+            if (this.reference === "") {
+                return new Value("");
             }
 
             return new Value({ href: this.reference });

@@ -99,6 +99,10 @@ var Spiro;
                     return new Spiro.Value({ href: this.choice.value, title: this.choice.name });
                 }
 
+                if (this.reference === "") {
+                    return new Spiro.Value("");
+                }
+
                 return new Spiro.Value({ href: this.reference });
             };
             return ParameterViewModel;
@@ -135,7 +139,15 @@ var Spiro;
             }
             PropertyViewModel.prototype.getValue = function () {
                 if (this.type === "scalar") {
+                    if (this.returnType === "boolean" && !(this.value == null)) {
+                        return new Spiro.Value(this.value);
+                    }
+
                     return new Spiro.Value(this.value || "");
+                }
+
+                if (this.reference === "") {
+                    return new Spiro.Value("");
                 }
 
                 return new Spiro.Value({ href: this.reference });

@@ -14,20 +14,33 @@
                     {{property.value}}
                 </a>
             </div>
-           
-            <div  ng-switch-when="scalar" ng-switch="property.format" >
-                <div ng-switch-when="date-time" class='property-value'>{{property.value | date:'d MMM yyyy' }}</div>    
-                <div ng-switch-default class='property-value'>{{property.value}}</div>       
-            </div>         
-        </div>
-         
-        <div class="property" ng-repeat="collection in result.collections">
-                             
-            <div class='property-name'>{{collection.title}}:</div>
-            <div class='property-collection'>
-                <span></span>{{collection.size}}-{{collection.pluralName}}
-            </div>        
-        </div>
-        
+
+            <div ng-switch-when="scalar" ng-switch="property.returnType">
+
+                <div ng-switch-when="string" ng-switch="property.format">
+                    <div ng-switch-when="date-time" class='property-value'>{{property.value | date:'d MMM yyyy' }}</div>
+                    <div ng-switch-default class='property-value'>{{property.value}}</div>
+                </div>
+
+                <div ng-switch-when="boolean">
+                    <input type="checkbox" onclick="return false" ng-checked="property.value"/>
+                </div>
+
+                <div ng-switch-default>
+                    <div ng-switch-default class='property-value'>{{property.value}}</div>
+                </div>
+            </div>
+                   
+        </div>         
     </div>
+         
+    <div class="property" ng-repeat="collection in result.collections">
+                             
+        <div class='property-name'>{{collection.title}}:</div>
+        <div class='property-collection'>
+            <span></span>{{collection.size}}-{{collection.pluralName}}
+        </div>        
+    </div>
+        
+</div>
 </div>

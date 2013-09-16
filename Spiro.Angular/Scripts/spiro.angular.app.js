@@ -214,7 +214,7 @@
             viewModelFactory.propertyViewModel = function (propertyRep, id, propertyDetails) {
                 var propertyViewModel = new Angular.PropertyViewModel();
                 propertyViewModel.title = propertyRep.extensions().friendlyName;
-                propertyViewModel.value = propertyRep.value().toString();
+                propertyViewModel.value = propertyRep.isScalar() ? propertyRep.value().scalar() : propertyRep.value().toString();
                 propertyViewModel.type = propertyRep.isScalar() ? "scalar" : "ref";
                 propertyViewModel.returnType = propertyRep.extensions().returnType;
                 propertyViewModel.format = propertyRep.extensions().format;
