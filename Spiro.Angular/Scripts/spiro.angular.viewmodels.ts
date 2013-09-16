@@ -66,30 +66,21 @@ module Spiro.Angular {
     }
 
     export class ErrorViewModel {
-
         message: string;
-        stackTrace: string[];
-       
-      
+        stackTrace: string[];   
     } 
 
 
     export class LinkViewModel {
-
         title: string;
         href: string;
         color: string; 
-
-     
     } 
 
     export class ItemViewModel {
-
         title: string;
         href: string;
         color: string;
-
-      
     }
 
     export class ParameterViewModel {
@@ -105,6 +96,7 @@ module Spiro.Angular {
         reference: string; 
         choice: ChoiceViewModel; 
         search: string; 
+        format: string;
 
         clearMessage() {
             this.message = "";

@@ -24,11 +24,13 @@ module Spiro.Angular {
 
                     var optionsObj = {};
 
-                    (<any>optionsObj).dateFormat = 'd M yy';
+                    (<any>optionsObj).dateFormat = 'd M yy'; // datepicker format
                     var updateModel = function (dateTxt) {
                         scope.$apply(function () {
                             // Call the internal AngularJS helper to
                             // update the two way binding
+
+                            ngModel.$parsers.push((val) => { return new Date(val).toISOString() });
                             ngModel.$setViewValue(dateTxt);
                         });
                     };
@@ -43,7 +45,7 @@ module Spiro.Angular {
                     };
 
                     ngModel.$render = function () {
-                        var formattedDate = $filter('date')(ngModel.$viewValue, 'd MMM yyyy');
+                        var formattedDate = $filter('date')(ngModel.$viewValue, 'd MMM yyyy'); // angularjs format
 
                         // Use the AngularJS internal 'binding-specific' variable
                         element.datepicker('setDate', formattedDate);

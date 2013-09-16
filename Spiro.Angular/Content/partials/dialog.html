@@ -29,10 +29,14 @@
                 <div ng-switch-when="scalar">
                     <div class='parameter-value input-control text' ng-switch="parameter.hasChoices">
                      
-                        <input ng-switch-when="false" type='text' placeholder='{{parameter.dflt}}' ng-model="parameter.value" />
-                    
-                        <select ng-switch-when="true" ng-model="parameter.value" ng-options="c.value as c.name for c in parameter.choices"/>
-                            
+                        <div  ng-switch-when="false" ng-switch="parameter.format" >
+                            <div ng-switch-when="date-time">
+                                <input  type='text' ng-model="$parent.parameter.value" datepicker/>
+                            </div>
+                            <input ng-switch-default type='text' placeholder='{{parameter.dflt}}' ng-model="parameter.value" />
+                        </div> 
+                              
+                        <select ng-switch-when="true" ng-model="parameter.value" ng-options="c.value as c.name for c in parameter.choices"/>     
                     </div>
                 </div>
                 

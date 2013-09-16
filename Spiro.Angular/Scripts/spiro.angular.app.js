@@ -137,6 +137,7 @@
                 parmViewModel.message = "";
                 parmViewModel.value = previousValue;
                 parmViewModel.id = id;
+                parmViewModel.format = parmRep.extensions().format;
 
                 parmViewModel.reference = "";
 

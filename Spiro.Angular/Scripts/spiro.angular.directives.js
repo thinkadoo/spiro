@@ -30,6 +30,9 @@
                         scope.$apply(function () {
                             // Call the internal AngularJS helper to
                             // update the two way binding
+                            ngModel.$parsers.push(function (val) {
+                                return new Date(val).toISOString();
+                            });
                             ngModel.$setViewValue(dateTxt);
                         });
                     };
