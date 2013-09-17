@@ -32,23 +32,18 @@ module Spiro.Angular {
     }
 
     // TODO rename 
-    app.service("Handlers", function ($routeParams: ISpiroRouteParams,
-        $location: ng.ILocationService,
-        $q: ng.IQService,
-        $cacheFactory: ng.ICacheFactoryService,
-        RepLoader: IRepLoader,
-        Context: IContext,
-        ViewModelFactory: VMFInterface,
-        UrlHelper: IUrlHelper) {
+    app.service("Handlers", function ($routeParams: ISpiroRouteParams, $location: ng.ILocationService, $q: ng.IQService, $cacheFactory: ng.ICacheFactoryService, RepLoader: IRepLoader, Context: IContext, ViewModelFactory: VMFInterface, UrlHelper: IUrlHelper) {
 
         var handlers = <IHandlersInternal>this;
 
         // tested
         handlers.handleCollectionResult = function ($scope) {
+            $scope.loading = true;
             Context.getCollection().
                 then(function (list: ListRepresentation) {
                     $scope.collection = ViewModelFactory.collectionViewModel(list);
                     $scope.collectionTemplate = svrPath + "Content/partials/nestedCollection.html";
+                    $scope.loading = false;;
                 }, function (error) {
                     setError(error);
                 });
@@ -161,12 +156,12 @@ module Spiro.Angular {
         };
 
         // tested
-        handlers.handleService = function ($scope) {
+       handlers.handleService = function ($scope) {      
             Context.getObject($routeParams.sid).
                 then(function (service: DomainObjectRepresentation) {
                     $scope.object = ViewModelFactory.serviceViewModel(service);
                     $scope.serviceTemplate = svrPath + "Content/partials/service.html";
-                    $scope.actionTemplate = svrPath + "Content/partials/actions.html";
+                    $scope.actionTemplate = svrPath + "Content/partials/actions.html";             
                 }, function (error) {
                     setError(error);
                 });
@@ -204,8 +199,19 @@ module Spiro.Angular {
 
         // tested
         handlers.handleAppBar = function ($scope) {
+
             $scope.appBar = {};
 
+            $scope.$on("ajax-change", (event, count) => {
+                if (count > 0) {
+                    $scope.appBar.loading = "Loading...";
+                }
+                else {
+                    $scope.appBar.loading = "";
+                }
+            });
+
+         
             $scope.appBar.template = svrPath + "Content/partials/appbar.html";
 
             $scope.appBar.goHome = "#/";
@@ -270,7 +276,6 @@ module Spiro.Angular {
                 }, function (error) {
                     setError(error);
                 });
-
         };
 
         // helper functions 

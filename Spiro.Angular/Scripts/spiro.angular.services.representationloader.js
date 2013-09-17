@@ -7,7 +7,10 @@ var Spiro;
     /// <reference path="spiro.angular.app.ts" />
     (function (Angular) {
         // TODO investigate using transformations to transform results
-        Angular.app.service("RepLoader", function ($http, $q) {
+        Angular.app.service("RepLoader", function ($http, $q, $rootScope) {
+            var repLoader = this;
+            repLoader.loadingCount = 0;
+
             function getUrl(model) {
                 var url = model.url();
 
@@ -47,9 +50,11 @@ var Spiro;
                     data: getData(model)
                 };
 
+                $rootScope.$broadcast("ajax-change", ++repLoader.loadingCount);
                 $http(config).success(function (data, status, headers, config) {
                     (response).attributes = data;
                     delay.resolve(response);
+                    $rootScope.$broadcast("ajax-change", --repLoader.loadingCount);
                 }).error(function (data, status, headers, config) {
                     if (status === 500) {
                         var error = new Spiro.ErrorRepresentation(data);
@@ -60,6 +65,7 @@ var Spiro;
                     } else {
                         delay.reject(headers().warning);
                     }
+                    $rootScope.$broadcast("ajax-change", --repLoader.loadingCount);
                 });
 
                 return delay.promise;

@@ -9,10 +9,14 @@ module Spiro.Angular {
 
     export interface IRepLoader<T> {
         populate: (m: HateoasModel, ignoreCache?: boolean, r?: HateoasModel) => ng.IPromise<T>;
+        isLoading($scope): boolean; 
     }
 
     // TODO investigate using transformations to transform results 
-    app.service("RepLoader", function ($http, $q) {
+    app.service("RepLoader", function ($http, $q, $rootScope) {
+
+        var repLoader = this; 
+        repLoader.loadingCount = 0; 
 
         function getUrl(model: HateoasModel): string {
 
@@ -56,10 +60,12 @@ module Spiro.Angular {
                 data: getData(model)
             };
 
+            $rootScope.$broadcast("ajax-change", ++repLoader.loadingCount); 
             $http(config).
                 success(function (data, status, headers, config) {
                     (<any>response).attributes = data; // TODO make typed 
                     delay.resolve(response);
+                    $rootScope.$broadcast("ajax-change", --repLoader.loadingCount); 
                 }).
                 error(function (data, status, headers, config) {
 
@@ -74,6 +80,7 @@ module Spiro.Angular {
                     else {
                         delay.reject(headers().warning);
                     }
+                    $rootScope.$broadcast("ajax-change", --repLoader.loadingCount); 
                 });
 
             return delay.promise;

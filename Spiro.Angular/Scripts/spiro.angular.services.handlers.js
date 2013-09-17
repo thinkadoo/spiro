@@ -12,9 +12,12 @@ var Spiro;
 
             // tested
             handlers.handleCollectionResult = function ($scope) {
+                $scope.loading = true;
                 Context.getCollection().then(function (list) {
                     $scope.collection = ViewModelFactory.collectionViewModel(list);
                     $scope.collectionTemplate = svrPath + "Content/partials/nestedCollection.html";
+                    $scope.loading = false;
+                    ;
                 }, function (error) {
                     setError(error);
                 });
@@ -152,6 +155,14 @@ var Spiro;
             // tested
             handlers.handleAppBar = function ($scope) {
                 $scope.appBar = {};
+
+                $scope.$on("ajax-change", function (event, count) {
+                    if (count > 0) {
+                        $scope.appBar.loading = "Loading...";
+                    } else {
+                        $scope.appBar.loading = "";
+                    }
+                });
 
                 $scope.appBar.template = svrPath + "Content/partials/appbar.html";
 
