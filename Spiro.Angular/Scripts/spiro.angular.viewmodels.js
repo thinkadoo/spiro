@@ -1,3 +1,9 @@
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
 var Spiro;
 (function (Spiro) {
     /// <reference path="spiro.models.ts" />
@@ -79,8 +85,26 @@ var Spiro;
         })();
         Angular.ItemViewModel = ItemViewModel;
 
-        var ParameterViewModel = (function () {
+        var MessageViewModel = (function () {
+            function MessageViewModel() {
+            }
+            return MessageViewModel;
+        })();
+        Angular.MessageViewModel = MessageViewModel;
+
+        var ValueViewModel = (function (_super) {
+            __extends(ValueViewModel, _super);
+            function ValueViewModel() {
+                _super.apply(this, arguments);
+            }
+            return ValueViewModel;
+        })(MessageViewModel);
+        Angular.ValueViewModel = ValueViewModel;
+
+        var ParameterViewModel = (function (_super) {
+            __extends(ParameterViewModel, _super);
             function ParameterViewModel() {
+                _super.apply(this, arguments);
             }
             ParameterViewModel.prototype.clearMessage = function () {
                 this.message = "";
@@ -110,7 +134,7 @@ var Spiro;
                 return new Spiro.Value({ href: this.reference });
             };
             return ParameterViewModel;
-        })();
+        })(ValueViewModel);
         Angular.ParameterViewModel = ParameterViewModel;
 
         var ActionViewModel = (function () {
@@ -120,8 +144,10 @@ var Spiro;
         })();
         Angular.ActionViewModel = ActionViewModel;
 
-        var DialogViewModel = (function () {
+        var DialogViewModel = (function (_super) {
+            __extends(DialogViewModel, _super);
             function DialogViewModel() {
+                _super.apply(this, arguments);
             }
             DialogViewModel.prototype.doShow = function () {
             };
@@ -135,11 +161,13 @@ var Spiro;
                 });
             };
             return DialogViewModel;
-        })();
+        })(MessageViewModel);
         Angular.DialogViewModel = DialogViewModel;
 
-        var PropertyViewModel = (function () {
+        var PropertyViewModel = (function (_super) {
+            __extends(PropertyViewModel, _super);
             function PropertyViewModel() {
+                _super.apply(this, arguments);
             }
             PropertyViewModel.prototype.getValue = function () {
                 if (this.type === "scalar") {
@@ -157,7 +185,7 @@ var Spiro;
                 return new Spiro.Value({ href: this.reference });
             };
             return PropertyViewModel;
-        })();
+        })(ValueViewModel);
         Angular.PropertyViewModel = PropertyViewModel;
 
         var CollectionViewModel = (function () {

@@ -24,13 +24,27 @@ module Spiro.Angular {
         handleAppBar($scope): void;
     }
 
-    // TODO rename 
-    app.service("Handlers", function ($routeParams, $location, $q: ng.IQService, $cacheFactory, RepLoader: IRepLoader, Context: IContext, ViewModelFactory: VMFInterface, UrlHelper: IUrlHelper) {
+    interface IHandlersInternal extends IHandlers {
+        setResult (result: ActionResultRepresentation, dvm?: DialogViewModel, show?: boolean);
+        setInvokeUpdateError($scope, error: any, vms: ValueViewModel[], vm: MessageViewModel);
+        invokeAction($scope, action: Spiro.ActionRepresentation, dvm: DialogViewModel, show: boolean);
+        updateObject($scope, object: DomainObjectRepresentation, ovm: DomainObjectViewModel);
+    }
 
-        var handlers = this;
+    // TODO rename 
+    app.service("Handlers", function ($routeParams: ISpiroRouteParams,
+                                      $location: ng.ILocationService,
+                                      $q: ng.IQService,
+                                      $cacheFactory : ng.ICacheFactoryService,
+                                      RepLoader: IRepLoader,
+                                      Context: IContext,
+                                      ViewModelFactory: VMFInterface,
+                                      UrlHelper: IUrlHelper) {
+
+        var handlers = <IHandlersInternal>this;
 
         // tested
-        this.handleCollectionResult = function ($scope) {
+        handlers.handleCollectionResult = function ($scope) {
             Context.getCollection().
                 then(function (list: ListRepresentation) {
                     $scope.collection = ViewModelFactory.collectionViewModel(list);
@@ -41,7 +55,7 @@ module Spiro.Angular {
         };
 
         // tested
-        this.handleCollection = function ($scope) {
+        handlers.handleCollection = function ($scope) {
             Context.getObject($routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
                     var collectionDetails = object.collectionMember($routeParams.collection).getDetails();
@@ -56,7 +70,7 @@ module Spiro.Angular {
         };
 
         // tested
-        this.handleActionDialog = function ($scope) {
+        handlers.handleActionDialog = function ($scope) {
             Context.getObject($routeParams.sid || $routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
                     var actionTarget = object.actionMember(UrlHelper.action()).getDetails();
@@ -73,7 +87,7 @@ module Spiro.Angular {
         };
 
         // tested
-        this.handleActionResult = function ($scope) {
+        handlers.handleActionResult = function ($scope) {
             Context.getObject($routeParams.sid || $routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
                     var action = object.actionMember(UrlHelper.action());
@@ -101,7 +115,7 @@ module Spiro.Angular {
         };
 
         // tested
-        this.handleProperty = function ($scope) {
+        handlers.handleProperty = function ($scope) {
             Context.getObject($routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
                     var propertyDetails = object.propertyMember($routeParams.property).getDetails();
@@ -119,7 +133,7 @@ module Spiro.Angular {
         };
 
         //tested
-        this.handleCollectionItem = function ($scope) {
+        handlers.handleCollectionItem = function ($scope) {
             var collectionItemTypeKey = $routeParams.collectionItem.split("/");
             var collectionItemType = collectionItemTypeKey[0];
             var collectionItemKey = collectionItemTypeKey[1];
@@ -133,7 +147,7 @@ module Spiro.Angular {
         };
 
         // tested
-        this.handleServices = function ($scope) {
+        handlers.handleServices = function ($scope) {
             Context.getServices().
                 then(function (services: DomainServicesRepresentation) {
                     $scope.services = ViewModelFactory.servicesViewModel(services);
@@ -146,7 +160,7 @@ module Spiro.Angular {
         };
 
         // tested
-        this.handleService = function ($scope) {
+        handlers.handleService = function ($scope) {
             Context.getObject($routeParams.sid).
                 then(function (service: DomainObjectRepresentation) {
                     $scope.object = ViewModelFactory.serviceViewModel(service);
@@ -157,7 +171,7 @@ module Spiro.Angular {
         };
 
         // tested
-        this.handleResult = function ($scope) {
+        handlers.handleResult = function ($scope) {
             var result = $routeParams.resultObject.split("-");
             var dt = result[0];
             var id = result[1];
@@ -174,7 +188,7 @@ module Spiro.Angular {
         };
 
         // tested
-        this.handleError = function ($scope) {
+        handlers.handleError = function ($scope) {
             var error = Context.getError();
             if (error) {
                 var evm = ViewModelFactory.errorViewModel(error);
@@ -184,7 +198,7 @@ module Spiro.Angular {
         };
 
         // tested
-        this.handleAppBar = function ($scope) {
+        handlers.handleAppBar = function ($scope) {
             $scope.appBar = {};
 
             $scope.appBar.template = svrPath + "Content/partials/appbar.html";
@@ -217,7 +231,7 @@ module Spiro.Angular {
         };
 
         //tested
-        this.handleObject = function ($scope) {
+        handlers.handleObject = function ($scope) {
             Context.getObject($routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
 
@@ -233,7 +247,7 @@ module Spiro.Angular {
         };
 
         // tested
-        this.handleEditObject = function ($scope) {
+        handlers.handleEditObject = function ($scope) {
 
             Context.getObject($routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
@@ -277,7 +291,7 @@ module Spiro.Angular {
 
         // expose for testing 
 
-        this.setResult = function (result: ActionResultRepresentation, dvm?: DialogViewModel, show?: boolean) {
+        handlers.setResult = function (result: ActionResultRepresentation, dvm?: DialogViewModel, show?: boolean) {
             if (result.result().isNull()) {
                 if (dvm) {
                     dvm.message = "no result found";
@@ -310,7 +324,7 @@ module Spiro.Angular {
             $location.search(resultParm + actionParm);
         };
 
-        this.setInvokeUpdateError = function ($scope, error: any, vms: { id: string; value: string; message: string; }[], vm: { message: string; }) {
+        this.setInvokeUpdateError = function ($scope, error: any, vms: ValueViewModel[], vm: MessageViewModel) {
             if (error instanceof ErrorMap) {
                 _.each(vms, (vmi) => {
                     var errorValue = error.valuesMap()[vmi.id];

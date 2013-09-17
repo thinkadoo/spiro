@@ -20,7 +20,7 @@ module Spiro.Angular {
         setError: (object: ErrorRepresentation) => void;
     }
 
-    app.service('Context', function ($q, RepLoader: IRepLoader) {
+    app.service('Context', function ($q : ng.IQService, RepLoader: IRepLoader) {
 
         var context = <IContext>this; 
 

@@ -6,8 +6,12 @@
 // tested 
 module Spiro.Angular {
 
+    interface ISelectScope extends ng.IScope {
+        select: any;
+    }
+
     // based on code in AngularJs, Green and Seshadri, O'Reilly
-    app.directive('datepicker', function ($filter) {
+    app.directive('datepicker', function ($filter : ng.IFilterService) : ng.IDirective {
             return {
                 // Enforce the angularJS default of restricting the directive to
                 // attributes only
@@ -19,12 +23,12 @@ module Spiro.Angular {
                 scope: {
                     select: '&'        // Bind the select function we refer to the right scope
                 },
-                link: function (scope, element, attrs, ngModel) {
+                link: function (scope: ISelectScope, element, attrs, ngModel: ng.INgModelController) {
                     if (!ngModel) return;
 
-                    var optionsObj = {};
+                    var optionsObj: { dateFormat?: string; onSelect?: Function } = {};
 
-                    (<any>optionsObj).dateFormat = 'd M yy'; // datepicker format
+                    optionsObj.dateFormat = 'd M yy'; // datepicker format
                     var updateModel = function (dateTxt) {
                         scope.$apply(function () {
                             // Call the internal AngularJS helper to
@@ -35,7 +39,7 @@ module Spiro.Angular {
                         });
                     };
 
-                    (<any>optionsObj).onSelect = function (dateTxt, picker) {
+                    optionsObj.onSelect = function (dateTxt, picker) {
                         updateModel(dateTxt);
                         if (scope.select) {
                             scope.$apply(function () {

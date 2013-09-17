@@ -11,7 +11,7 @@ var Spiro;
             var handlers = this;
 
             // tested
-            this.handleCollectionResult = function ($scope) {
+            handlers.handleCollectionResult = function ($scope) {
                 Context.getCollection().then(function (list) {
                     $scope.collection = ViewModelFactory.collectionViewModel(list);
                     $scope.collectionTemplate = svrPath + "Content/partials/nestedCollection.html";
@@ -21,7 +21,7 @@ var Spiro;
             };
 
             // tested
-            this.handleCollection = function ($scope) {
+            handlers.handleCollection = function ($scope) {
                 Context.getObject($routeParams.dt, $routeParams.id).then(function (object) {
                     var collectionDetails = object.collectionMember($routeParams.collection).getDetails();
                     return RepLoader.populate(collectionDetails);
@@ -34,7 +34,7 @@ var Spiro;
             };
 
             // tested
-            this.handleActionDialog = function ($scope) {
+            handlers.handleActionDialog = function ($scope) {
                 Context.getObject($routeParams.sid || $routeParams.dt, $routeParams.id).then(function (object) {
                     var actionTarget = object.actionMember(UrlHelper.action()).getDetails();
                     return RepLoader.populate(actionTarget);
@@ -49,7 +49,7 @@ var Spiro;
             };
 
             // tested
-            this.handleActionResult = function ($scope) {
+            handlers.handleActionResult = function ($scope) {
                 Context.getObject($routeParams.sid || $routeParams.dt, $routeParams.id).then(function (object) {
                     var action = object.actionMember(UrlHelper.action());
 
@@ -74,7 +74,7 @@ var Spiro;
             };
 
             // tested
-            this.handleProperty = function ($scope) {
+            handlers.handleProperty = function ($scope) {
                 Context.getObject($routeParams.dt, $routeParams.id).then(function (object) {
                     var propertyDetails = object.propertyMember($routeParams.property).getDetails();
                     return RepLoader.populate(propertyDetails);
@@ -89,7 +89,7 @@ var Spiro;
             };
 
             //tested
-            this.handleCollectionItem = function ($scope) {
+            handlers.handleCollectionItem = function ($scope) {
                 var collectionItemTypeKey = $routeParams.collectionItem.split("/");
                 var collectionItemType = collectionItemTypeKey[0];
                 var collectionItemKey = collectionItemTypeKey[1];
@@ -102,7 +102,7 @@ var Spiro;
             };
 
             // tested
-            this.handleServices = function ($scope) {
+            handlers.handleServices = function ($scope) {
                 Context.getServices().then(function (services) {
                     $scope.services = ViewModelFactory.servicesViewModel(services);
                     Context.setObject(null);
@@ -113,7 +113,7 @@ var Spiro;
             };
 
             // tested
-            this.handleService = function ($scope) {
+            handlers.handleService = function ($scope) {
                 Context.getObject($routeParams.sid).then(function (service) {
                     $scope.object = ViewModelFactory.serviceViewModel(service);
                 }, function (error) {
@@ -122,7 +122,7 @@ var Spiro;
             };
 
             // tested
-            this.handleResult = function ($scope) {
+            handlers.handleResult = function ($scope) {
                 var result = $routeParams.resultObject.split("-");
                 var dt = result[0];
                 var id = result[1];
@@ -137,7 +137,7 @@ var Spiro;
             };
 
             // tested
-            this.handleError = function ($scope) {
+            handlers.handleError = function ($scope) {
                 var error = Context.getError();
                 if (error) {
                     var evm = ViewModelFactory.errorViewModel(error);
@@ -147,7 +147,7 @@ var Spiro;
             };
 
             // tested
-            this.handleAppBar = function ($scope) {
+            handlers.handleAppBar = function ($scope) {
                 $scope.appBar = {};
 
                 $scope.appBar.template = svrPath + "Content/partials/appbar.html";
@@ -175,7 +175,7 @@ var Spiro;
             };
 
             //tested
-            this.handleObject = function ($scope) {
+            handlers.handleObject = function ($scope) {
                 Context.getObject($routeParams.dt, $routeParams.id).then(function (object) {
                     Context.setNestedObject(null);
                     $scope.actionTemplate = svrPath + "Content/partials/actions.html";
@@ -188,7 +188,7 @@ var Spiro;
             };
 
             // tested
-            this.handleEditObject = function ($scope) {
+            handlers.handleEditObject = function ($scope) {
                 Context.getObject($routeParams.dt, $routeParams.id).then(function (object) {
                     var detailPromises = _.map(object.propertyMembers(), function (pm) {
                         return RepLoader.populate(pm.getDetails());
@@ -226,7 +226,7 @@ var Spiro;
             }
 
             // expose for testing
-            this.setResult = function (result, dvm, show) {
+            handlers.setResult = function (result, dvm, show) {
                 if (result.result().isNull()) {
                     if (dvm) {
                         dvm.message = "no result found";

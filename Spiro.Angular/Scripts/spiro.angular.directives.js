@@ -25,7 +25,7 @@
 
                     var optionsObj = {};
 
-                    (optionsObj).dateFormat = 'd M yy';
+                    optionsObj.dateFormat = 'd M yy';
                     var updateModel = function (dateTxt) {
                         scope.$apply(function () {
                             // Call the internal AngularJS helper to
@@ -37,7 +37,7 @@
                         });
                     };
 
-                    (optionsObj).onSelect = function (dateTxt, picker) {
+                    optionsObj.onSelect = function (dateTxt, picker) {
                         updateModel(dateTxt);
                         if (scope.select) {
                             scope.$apply(function () {

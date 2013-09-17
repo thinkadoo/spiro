@@ -83,13 +83,21 @@ module Spiro.Angular {
         color: string;
     }
 
-    export class ParameterViewModel {
+    export class MessageViewModel {
+     
+        message: string;
+       
+    }
+
+    export class ValueViewModel extends MessageViewModel {
+        value: Object;    
+        id: string; 
+    }
+
+    export class ParameterViewModel extends ValueViewModel{
 
         title: string;
         dflt: string; 
-        value: Object; 
-        message: string; 
-        id: string; 
         choices: ChoiceViewModel[]; 
         hasChoices: boolean;
         type: string; 
@@ -135,7 +143,7 @@ module Spiro.Angular {
         href: string;    
     } 
 
-    export class DialogViewModel {
+    export class DialogViewModel extends MessageViewModel {
 
         title: string;
         message: string;
@@ -154,18 +162,17 @@ module Spiro.Angular {
 
     } 
     
-    export class PropertyViewModel {
+    export class PropertyViewModel extends ValueViewModel {
 
         title: string;
-        value: Object;
+       
         type: string;
         returnType: string;
         format: string;
         href: string;
         target: string;
         color: string; 
-        id: string; 
-        message: string; 
+      
         isEditable: boolean;
         reference: string; 
         choices: ChoiceViewModel[]; 
