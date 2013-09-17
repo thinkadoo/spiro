@@ -199,10 +199,10 @@ var Spiro;
 
                     $q.all(detailPromises).then(function (details) {
                         Context.setNestedObject(null);
-                        $scope.actionTemplate = "";
-
-                        $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
                         $scope.object = ViewModelFactory.domainObjectViewModel(object, details, _.partial(handlers.updateObject, $scope, object));
+                        $scope.objectTemplate = svrPath + "Content/partials/object.html";
+                        $scope.actionTemplate = "";
+                        $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
                     }, function (error) {
                         setError(error);
                     });

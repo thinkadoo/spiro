@@ -45,8 +45,6 @@ module Spiro.Angular {
 
         // tested
         handlers.handleCollectionResult = function ($scope) {
-           
-
             Context.getCollection().
                 then(function (list: ListRepresentation) {
                     $scope.collection = ViewModelFactory.collectionViewModel(list);
@@ -240,7 +238,6 @@ module Spiro.Angular {
         //tested
         handlers.handleObject = function ($scope) {
         
-
             Context.getObject($routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
                     Context.setNestedObject(null);
@@ -257,21 +254,19 @@ module Spiro.Angular {
         // tested
         handlers.handleEditObject = function ($scope) {
             
-
             Context.getObject($routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
                     var detailPromises = _.map(object.propertyMembers(), (pm: PropertyMember) => { return RepLoader.populate(pm.getDetails()) });
 
                     $q.all(detailPromises).then(function (details: PropertyRepresentation[]) {
-                        Context.setNestedObject(null);
-                        $scope.actionTemplate = "";
-
-                        $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
+                        Context.setNestedObject(null);                        
                         $scope.object = ViewModelFactory.domainObjectViewModel(object, details, <(ovm: DomainObjectViewModel) => void > _.partial(handlers.updateObject, $scope, object));
-
+                        $scope.objectTemplate = svrPath + "Content/partials/object.html";
+                        $scope.actionTemplate = "";  
+                        $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
                     }, function (error) {
-                            setError(error);
-                        });
+                        setError(error);
+                    });
                 }, function (error) {
                     setError(error);
                 });
