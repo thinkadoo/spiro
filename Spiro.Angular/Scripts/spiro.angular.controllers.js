@@ -14,7 +14,7 @@
             Handlers.handleService($scope);
         });
 
-        Angular.app.controller('DialogController', function ($routeParams, $scope, Handlers) {
+        Angular.app.controller('DialogController', function ($scope, $routeParams, Handlers) {
             if ($routeParams.action) {
                 Handlers.handleActionDialog($scope);
             }

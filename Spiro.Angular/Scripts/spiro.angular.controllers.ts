@@ -8,21 +8,21 @@ module Spiro.Angular {
 
     declare var svrPath: string;
 
-    app.controller('ServicesController', function ($scope, Handlers: IHandlers) {
+    app.controller('ServicesController', function ($scope : ng.IScope, Handlers: IHandlers) {
         Handlers.handleServices($scope);
     });
 
-    app.controller('ServiceController', function ($scope, Handlers: IHandlers) {
+    app.controller('ServiceController', function ($scope: ng.IScope, Handlers: IHandlers) {
         Handlers.handleService($scope);
     });
 
-    app.controller('DialogController', function ($routeParams, $scope, Handlers: IHandlers) {
+    app.controller('DialogController', function ($scope: ng.IScope, $routeParams: ISpiroRouteParams, Handlers: IHandlers) {
         if ($routeParams.action) {
             Handlers.handleActionDialog($scope);
         }
     });
 
-    app.controller('NestedObjectController', function ($scope, $routeParams, Handlers: IHandlers) {
+    app.controller('NestedObjectController', function ($scope: ng.IScope, $routeParams: ISpiroRouteParams, Handlers: IHandlers) {
 
         // action takes priority 
         if ($routeParams.action) {
@@ -39,7 +39,7 @@ module Spiro.Angular {
         }
     });
 
-    app.controller('CollectionController', function ($scope, $routeParams, Handlers: IHandlers) {
+    app.controller('CollectionController', function ($scope: ng.IScope, $routeParams: ISpiroRouteParams, Handlers: IHandlers) {
         if ($routeParams.resultCollection) {
             Handlers.handleCollectionResult($scope);
         }
@@ -48,7 +48,7 @@ module Spiro.Angular {
         }
     });
 
-    app.controller('ObjectController', function ($scope, $routeParams, Handlers: IHandlers) {
+    app.controller('ObjectController', function ($scope: ng.IScope, $routeParams: ISpiroRouteParams, Handlers: IHandlers) {
         if ($routeParams.editMode) {
             Handlers.handleEditObject($scope);
         }
@@ -57,11 +57,11 @@ module Spiro.Angular {
         }
     });
 
-    app.controller('ErrorController', function ($scope, Handlers: IHandlers) {
+    app.controller('ErrorController', function ($scope: ng.IScope, Handlers: IHandlers) {
         Handlers.handleError($scope);
     });
 
-    app.controller('AppBarController', function ($scope, Handlers: IHandlers) {
+    app.controller('AppBarController', function ($scope: ng.IScope, Handlers: IHandlers) {
         Handlers.handleAppBar($scope);    
     });
 }

@@ -1,9 +1,6 @@
 ﻿var Spiro;
 (function (Spiro) {
     /// <reference path="typings/angularjs/angular.d.ts" />
-    /// <reference path="typings/underscore/underscore.d.ts" />
-    /// <reference path="spiro.models.ts" />
-    /// <reference path="spiro.angular.viewmodels.ts" />
     (function (Angular) {
         /* Declare app level module */
         Angular.app = angular.module('app', ['ngResource']);

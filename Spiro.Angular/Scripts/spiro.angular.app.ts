@@ -1,8 +1,4 @@
 ﻿/// <reference path="typings/angularjs/angular.d.ts" />
-/// <reference path="typings/underscore/underscore.d.ts" />
-/// <reference path="spiro.models.ts" />
-/// <reference path="spiro.angular.viewmodels.ts" />
-
 
 module Spiro.Angular {
 
@@ -12,7 +8,7 @@ module Spiro.Angular {
    
     export var app = angular.module('app', ['ngResource']);
 
-    app.config(function ($routeProvider) {
+    app.config(function ($routeProvider: ng.IRouteProvider) {
         $routeProvider.
             when('/services', {
                 templateUrl: svrPath + 'Content/partials/services.html',
@@ -30,4 +26,15 @@ module Spiro.Angular {
                 redirectTo: '/services'
             });
     });
+
+
+    export interface ISpiroRouteParams extends ng.IRouteParamsService {
+        action: string;
+        property: string;
+        collectionItem: string;
+        resultObject: string; 
+        resultCollection: string; 
+        collection: string; 
+        editMode: string; 
+    }
 }
