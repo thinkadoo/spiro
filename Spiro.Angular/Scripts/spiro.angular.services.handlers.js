@@ -40,8 +40,8 @@ var Spiro;
                     return RepLoader.populate(actionTarget);
                 }).then(function (action) {
                     if (action.extensions().hasParams) {
-                        $scope.dialogTemplate = svrPath + "Content/partials/dialog.html";
                         $scope.dialog = ViewModelFactory.dialogViewModel(action, _.partial(handlers.invokeAction, $scope, action));
+                        $scope.dialogTemplate = svrPath + "Content/partials/dialog.html";
                     }
                 }, function (error) {
                     setError(error);
@@ -105,6 +105,7 @@ var Spiro;
             handlers.handleServices = function ($scope) {
                 Context.getServices().then(function (services) {
                     $scope.services = ViewModelFactory.servicesViewModel(services);
+                    $scope.servicesTemplate = svrPath + "Content/partials/services.html";
                     Context.setObject(null);
                     Context.setNestedObject(null);
                 }, function (error) {
@@ -116,6 +117,8 @@ var Spiro;
             handlers.handleService = function ($scope) {
                 Context.getObject($routeParams.sid).then(function (service) {
                     $scope.object = ViewModelFactory.serviceViewModel(service);
+                    $scope.serviceTemplate = svrPath + "Content/partials/service.html";
+                    $scope.actionTemplate = svrPath + "Content/partials/actions.html";
                 }, function (error) {
                     setError(error);
                 });
@@ -178,10 +181,10 @@ var Spiro;
             handlers.handleObject = function ($scope) {
                 Context.getObject($routeParams.dt, $routeParams.id).then(function (object) {
                     Context.setNestedObject(null);
+                    $scope.object = ViewModelFactory.domainObjectViewModel(object);
+                    $scope.objectTemplate = svrPath + "Content/partials/object.html";
                     $scope.actionTemplate = svrPath + "Content/partials/actions.html";
                     $scope.propertiesTemplate = svrPath + "Content/partials/viewProperties.html";
-
-                    $scope.object = ViewModelFactory.domainObjectViewModel(object);
                 }, function (error) {
                     setError(error);
                 });
@@ -197,8 +200,8 @@ var Spiro;
                     $q.all(detailPromises).then(function (details) {
                         Context.setNestedObject(null);
                         $scope.actionTemplate = "";
-                        $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
 
+                        $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
                         $scope.object = ViewModelFactory.domainObjectViewModel(object, details, _.partial(handlers.updateObject, $scope, object));
                     }, function (error) {
                         setError(error);

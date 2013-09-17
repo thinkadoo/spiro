@@ -1,25 +1,7 @@
-﻿<div class="object-view" ng-class="object.color">
-    <div class="header">
-        <div class="title">{{object.title}}</div>
-        <div class="type"></div>
-        <div class="messages"></div>
-    </div>
-    <div class="properties-pane" ng-class="object.color"></div>
-    <div class="actions-pane" ng-class="object.color">
-        <div>
-            <div class="actions" ng-repeat="action in object.actions">
-                <div class="action-button clickable-area">
-                    <a class="action" href="{{action.href}}">
-                        <span></span>
-                        {{action.title}}
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="dialog-pane" ng-controller="DialogController" ng-include="dialogTemplate"></div>
-    <div class="collection-pane" ng-controller="CollectionController" ng-include="collectionTemplate"></div>
-    <div class="object-pane" ng-controller="NestedObjectController" ng-include="nestedTemplate"></div>
-    <div class="error-pane"  ng-controller="ErrorController" ng-include="errorTemplate"></div>
-    <div class="app-bar" ng-controller="AppBarController" ng-include="appBar.template"></div>
+﻿<div class="header">
+    <div class="title">{{object.title}}</div>
+    <div class="type"></div>
+    <div class="messages"></div>
 </div>
+<div class="properties-pane" ng-class="object.color"></div>
+<div class="actions-pane" ng-include="actionTemplate"></div>

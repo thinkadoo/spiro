@@ -25,7 +25,7 @@ module Spiro.Angular {
     }
 
     interface IHandlersInternal extends IHandlers {
-        setResult (result: ActionResultRepresentation, dvm?: DialogViewModel, show?: boolean);
+        setResult(result: ActionResultRepresentation, dvm?: DialogViewModel, show?: boolean);
         setInvokeUpdateError($scope, error: any, vms: ValueViewModel[], vm: MessageViewModel);
         invokeAction($scope, action: Spiro.ActionRepresentation, dvm: DialogViewModel, show: boolean);
         updateObject($scope, object: DomainObjectRepresentation, ovm: DomainObjectViewModel);
@@ -33,18 +33,20 @@ module Spiro.Angular {
 
     // TODO rename 
     app.service("Handlers", function ($routeParams: ISpiroRouteParams,
-                                      $location: ng.ILocationService,
-                                      $q: ng.IQService,
-                                      $cacheFactory : ng.ICacheFactoryService,
-                                      RepLoader: IRepLoader,
-                                      Context: IContext,
-                                      ViewModelFactory: VMFInterface,
-                                      UrlHelper: IUrlHelper) {
+        $location: ng.ILocationService,
+        $q: ng.IQService,
+        $cacheFactory: ng.ICacheFactoryService,
+        RepLoader: IRepLoader,
+        Context: IContext,
+        ViewModelFactory: VMFInterface,
+        UrlHelper: IUrlHelper) {
 
         var handlers = <IHandlersInternal>this;
 
         // tested
         handlers.handleCollectionResult = function ($scope) {
+           
+
             Context.getCollection().
                 then(function (list: ListRepresentation) {
                     $scope.collection = ViewModelFactory.collectionViewModel(list);
@@ -71,15 +73,16 @@ module Spiro.Angular {
 
         // tested
         handlers.handleActionDialog = function ($scope) {
+           
             Context.getObject($routeParams.sid || $routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
                     var actionTarget = object.actionMember(UrlHelper.action()).getDetails();
                     return RepLoader.populate(actionTarget);
                 }).
                 then(function (action: ActionRepresentation) {
-                    if (action.extensions().hasParams) {
-                        $scope.dialogTemplate = svrPath + "Content/partials/dialog.html";
+                    if (action.extensions().hasParams) {      
                         $scope.dialog = ViewModelFactory.dialogViewModel(action, <(dvm: DialogViewModel, show: boolean) => void > _.partial(handlers.invokeAction, $scope, action));
+                        $scope.dialogTemplate = svrPath + "Content/partials/dialog.html";
                     }
                 }, function (error) {
                     setError(error);
@@ -148,9 +151,12 @@ module Spiro.Angular {
 
         // tested
         handlers.handleServices = function ($scope) {
+
+           
             Context.getServices().
                 then(function (services: DomainServicesRepresentation) {
                     $scope.services = ViewModelFactory.servicesViewModel(services);
+                    $scope.servicesTemplate = svrPath + "Content/partials/services.html";
                     Context.setObject(null);
                     Context.setNestedObject(null);
                 }, function (error) {
@@ -161,9 +167,13 @@ module Spiro.Angular {
 
         // tested
         handlers.handleService = function ($scope) {
+         
+
             Context.getObject($routeParams.sid).
                 then(function (service: DomainObjectRepresentation) {
                     $scope.object = ViewModelFactory.serviceViewModel(service);
+                    $scope.serviceTemplate = svrPath + "Content/partials/service.html";
+                    $scope.actionTemplate = svrPath + "Content/partials/actions.html";
                 }, function (error) {
                     setError(error);
                 });
@@ -172,6 +182,7 @@ module Spiro.Angular {
 
         // tested
         handlers.handleResult = function ($scope) {
+           
             var result = $routeParams.resultObject.split("-");
             var dt = result[0];
             var id = result[1];
@@ -189,6 +200,7 @@ module Spiro.Angular {
 
         // tested
         handlers.handleError = function ($scope) {
+            
             var error = Context.getError();
             if (error) {
                 var evm = ViewModelFactory.errorViewModel(error);
@@ -232,14 +244,15 @@ module Spiro.Angular {
 
         //tested
         handlers.handleObject = function ($scope) {
+        
+
             Context.getObject($routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
-
                     Context.setNestedObject(null);
+                    $scope.object = ViewModelFactory.domainObjectViewModel(object);
+                    $scope.objectTemplate = svrPath + "Content/partials/object.html";
                     $scope.actionTemplate = svrPath + "Content/partials/actions.html";
                     $scope.propertiesTemplate = svrPath + "Content/partials/viewProperties.html";
-
-                    $scope.object = ViewModelFactory.domainObjectViewModel(object);
                 }, function (error) {
                     setError(error);
                 });
@@ -248,6 +261,7 @@ module Spiro.Angular {
 
         // tested
         handlers.handleEditObject = function ($scope) {
+            
 
             Context.getObject($routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
@@ -256,8 +270,8 @@ module Spiro.Angular {
                     $q.all(detailPromises).then(function (details: PropertyRepresentation[]) {
                         Context.setNestedObject(null);
                         $scope.actionTemplate = "";
-                        $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
 
+                        $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
                         $scope.object = ViewModelFactory.domainObjectViewModel(object, details, <(ovm: DomainObjectViewModel) => void > _.partial(handlers.updateObject, $scope, object));
 
                     }, function (error) {

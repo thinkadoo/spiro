@@ -1,13 +1,7 @@
-﻿<div class="object-view" ng-class="object.color">
-    <div class="header">
-        <div class="title">{{object.title}}</div>
-        <div class="type"></div>
-        <div class="messages">{{object.message}}</div>
-    </div>
-    <div class="properties-pane" ng-include="propertiesTemplate"></div>
-    <div class="actions-pane" ng-include="actionTemplate"></div>
-    <div class="dialog-pane" ng-controller="DialogController" ng-include="dialogTemplate"></div>
-    <div class="collection-pane" ng-controller="CollectionController" ng-include="collectionTemplate"></div>
-    <div class="object-pane"  ng-controller="NestedObjectController" ng-include="nestedTemplate"></div>
-    <div class="app-bar"  ng-controller="AppBarController" ng-include="appBar.template"></div>
+﻿<div class="header">
+    <div class="title">{{object.title}}</div>
+    <div class="type"></div>
+    <div class="messages">{{object.message}}</div>
 </div>
+<div class="properties-pane" ng-include="propertiesTemplate"></div>
+<div class="actions-pane" ng-include="actionTemplate"></div>

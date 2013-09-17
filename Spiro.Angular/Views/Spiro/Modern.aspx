@@ -17,10 +17,7 @@
 <body style="cursor: auto;" class="spiro" >
 
   
-    <div id="main"  ng-view>
-        <div class="object-view" ng-controller="ServicesController" ng-view>
-        </div>
-    </div>
+    <div id="main" ng-view ng-controller="BackgroundController" ng-class="backgroundColor" ></div>
 
     <script type="text/javascript">
         var appPath = "http://mvc.nakedobjects.net:1081/RestDemo";

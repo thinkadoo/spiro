@@ -6,6 +6,10 @@
     /// <reference path="spiro.angular.app.ts" />
     // tested
     (function (Angular) {
+        Angular.app.controller('BackgroundController', function ($scope, $location, Color) {
+            $scope.backgroundColor = Color.toColorFromHref($location.absUrl());
+        });
+
         Angular.app.controller('ServicesController', function ($scope, Handlers) {
             Handlers.handleServices($scope);
         });

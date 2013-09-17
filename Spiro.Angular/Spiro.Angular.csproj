@@ -204,6 +204,9 @@
     <Content Include="Content\jasmine\jasmine_favicon.png" />
     <Content Include="Content\partials\appbar.html" />
     <Content Include="Content\partials\actions.html" />
+    <Content Include="Content\partials\objectPage.html" />
+    <Content Include="Content\partials\servicesPage.html" />
+    <Content Include="Content\partials\servicePage.html" />
     <Content Include="Content\partials\editProperties.html" />
     <Content Include="Content\partials\error.html" />
     <Content Include="Content\partials\nestedCollection.html" />
@@ -220,7 +223,7 @@
     <Content Include="Scripts\spiro.angular.services.color.js">
       <DependentUpon>spiro.angular.services.color.ts</DependentUpon>
     </Content>
-      <Content Include="Scripts\spiro.angular.services.color.js.map">
+    <Content Include="Scripts\spiro.angular.services.color.js.map">
       <DependentUpon>spiro.angular.services.color.ts</DependentUpon>
     </Content>
     <Content Include="Scripts\spiro.angular.services.context.js.map">

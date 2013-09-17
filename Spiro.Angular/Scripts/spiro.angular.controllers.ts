@@ -8,6 +8,10 @@ module Spiro.Angular {
 
     declare var svrPath: string;
 
+    app.controller('BackgroundController', function ($scope, $location : ng.ILocationService, Color : IColor) {
+        $scope.backgroundColor = Color.toColorFromHref($location.absUrl()); 
+    });
+
     app.controller('ServicesController', function ($scope : ng.IScope, Handlers: IHandlers) {
         Handlers.handleServices($scope);
     });

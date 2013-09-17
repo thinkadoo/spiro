@@ -11,16 +11,16 @@ module Spiro.Angular {
     app.config(function ($routeProvider: ng.IRouteProvider) {
         $routeProvider.
             when('/services', {
-                templateUrl: svrPath + 'Content/partials/services.html',
-                controller: 'ServicesController'
+                templateUrl: svrPath + 'Content/partials/servicesPage.html',
+                controller: 'BackgroundController'
             }).
             when('/services/:sid', {
-                templateUrl: svrPath + 'Content/partials/service.html',
-                controller: 'ServiceController'
+                templateUrl: svrPath + 'Content/partials/servicePage.html',
+                controller: 'BackgroundController'
             }).
             when('/objects/:dt/:id', {
-                templateUrl: svrPath + 'Content/partials/object.html',
-                controller: 'ObjectController'
+                templateUrl: svrPath + 'Content/partials/objectPage.html',
+                controller: 'BackgroundController'
             }).
             otherwise({
                 redirectTo: '/services'
