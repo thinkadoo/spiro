@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 
@@ -132,8 +133,12 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
                 Assert.AreEqual("Search For Orders", title);
 
-                br.FindElements(By.CssSelector(".parameter-value > input"))[0].SendKeys("1/1/2003");
-                br.FindElements(By.CssSelector(".parameter-value > input"))[1].SendKeys("1/12/2003");
+                br.FindElements(By.CssSelector(".parameter-value input"))[0].SendKeys("1 Jan 2003");
+                br.FindElements(By.CssSelector(".parameter-value input"))[1].SendKeys("1 Dec 2003" + Keys.Escape);
+
+                Thread.Sleep(2000); // need to wait for datepicker :-(
+
+                wait.Until(d => br.FindElement(By.ClassName("show")));
 
                 Click(br.FindElement(By.ClassName("show")));
 
@@ -176,8 +181,12 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
             Assert.AreEqual("Search For Orders", title);
 
-            br.FindElements(By.CssSelector(".parameter-value > input"))[0].SendKeys("1/1/2003");
-            br.FindElements(By.CssSelector(".parameter-value > input"))[1].SendKeys("1/12/2003");
+            br.FindElements(By.CssSelector(".parameter-value input"))[0].SendKeys("1 Jan 2003");
+            br.FindElements(By.CssSelector(".parameter-value input"))[1].SendKeys("1 Dec 2003" + Keys.Escape);
+
+            Thread.Sleep(2000); // need to wait for datepicker :-(
+
+            wait.Until(d => br.FindElement(By.ClassName("go")));
 
             Click(br.FindElement(By.ClassName("go")));
 

@@ -21,14 +21,13 @@ files = [
  
   'Spiro.Angular/Scripts/spiro.angular.app.js',
   'Spiro.Angular/Scripts/spiro.angular.viewmodels.js',
-   'Spiro.Angular/Scripts/spiro.angular.services.handlers.js',
+  'Spiro.Angular/Scripts/spiro.angular.services.handlers.js',
   'Spiro.Angular/Scripts/spiro.angular.controllers.js',
-
-  'Spiro.Angular/Scripts/spiro.angular.services.context.js',
- 
+  'Spiro.Angular/Scripts/spiro.angular.services.context.js', 
   'Spiro.Angular/Scripts/spiro.angular.services.representationloader.js',
   'Spiro.Angular/Scripts/spiro.angular.services.urlhelper.js',
   'Spiro.Angular/Scripts/spiro.angular.services.viewmodelfactory.js',
+  'Spiro.Angular/Scripts/spiro.angular.services.color.js',
   
   'Spiro.Angular/Tests/specs/testData.js',
   'Spiro.Angular/Tests/specs/controllers.js',

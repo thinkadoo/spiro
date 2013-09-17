@@ -111,6 +111,7 @@
     <script type="text/javascript" src="<%= Url.Content("~/Scripts/spiro.angular.services.urlhelper.js") %>"></script>
     <script type="text/javascript" src="<%= Url.Content("~/Scripts/spiro.angular.services.context.js") %>"></script>
     <script type="text/javascript" src="<%= Url.Content("~/Scripts/spiro.angular.services.handlers.js") %>"></script>
+    <script type="text/javascript" src="<%= Url.Content("~/Scripts/spiro.angular.services.color.js") %>"></script>
    
 </body>
 </html>

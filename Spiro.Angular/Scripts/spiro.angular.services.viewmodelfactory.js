@@ -6,7 +6,7 @@ var Spiro;
     /// <reference path="spiro.angular.viewmodels.ts" />
     /// <reference path="spiro.angular.app.ts" />
     (function (Angular) {
-        Angular.app.service('ViewModelFactory', function ($routeParams, $location, $q, $controller, UrlHelper, RepLoader) {
+        Angular.app.service('ViewModelFactory', function ($routeParams, $location, $q, $controller, UrlHelper, RepLoader, Color) {
             var viewModelFactory = this;
 
             viewModelFactory.errorViewModel = function (errorRep) {
@@ -22,7 +22,7 @@ var Spiro;
                 var linkViewModel = new Angular.LinkViewModel();
                 linkViewModel.title = linkRep.title();
                 linkViewModel.href = UrlHelper.toAppUrl(linkRep.href());
-                linkViewModel.color = Spiro.Angular.toColorFromHref(linkRep.href());
+                linkViewModel.color = Color.toColorFromHref(linkRep.href());
                 return linkViewModel;
             };
 
@@ -30,7 +30,7 @@ var Spiro;
                 var linkViewModel = new Angular.LinkViewModel();
                 linkViewModel.title = linkRep.title();
                 linkViewModel.href = UrlHelper.toItemUrl(parentHref, linkRep.href());
-                linkViewModel.color = Spiro.Angular.toColorFromHref(linkRep.href());
+                linkViewModel.color = Color.toColorFromHref(linkRep.href());
                 return linkViewModel;
             };
 
@@ -136,7 +136,7 @@ var Spiro;
                 propertyViewModel.target = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : UrlHelper.toAppUrl(propertyRep.value().link().href());
                 propertyViewModel.reference = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : propertyRep.value().link().href();
 
-                propertyViewModel.color = Spiro.Angular.toColorFromType(propertyRep.extensions().returnType);
+                propertyViewModel.color = Color.toColorFromType(propertyRep.extensions().returnType);
                 propertyViewModel.id = id;
                 propertyViewModel.isEditable = !propertyRep.disabledReason();
 
@@ -158,7 +158,7 @@ var Spiro;
                 collectionViewModel.pluralName = collectionRep.extensions().pluralName;
 
                 collectionViewModel.href = UrlHelper.toCollectionUrl(collectionRep.detailsLink().href());
-                collectionViewModel.color = Spiro.Angular.toColorFromType(collectionRep.extensions().elementType);
+                collectionViewModel.color = Color.toColorFromType(collectionRep.extensions().elementType);
 
                 collectionViewModel.items = [];
 
@@ -174,7 +174,7 @@ var Spiro;
                 collectionViewModel.pluralName = collectionRep.extensions().pluralName;
 
                 collectionViewModel.href = UrlHelper.toCollectionUrl(collectionRep.selfLink().href());
-                collectionViewModel.color = Spiro.Angular.toColorFromType(collectionRep.extensions().elementType);
+                collectionViewModel.color = Color.toColorFromType(collectionRep.extensions().elementType);
 
                 var i = 0;
                 collectionViewModel.items = _.map(links, function (link) {
@@ -234,7 +234,7 @@ var Spiro;
                 serviceViewModel.actions = _.map(actions, function (action) {
                     return viewModelFactory.actionViewModel(action);
                 });
-                serviceViewModel.color = Spiro.Angular.toColorFromType(serviceRep.serviceId());
+                serviceViewModel.color = Color.toColorFromType(serviceRep.serviceId());
                 serviceViewModel.href = UrlHelper.toAppUrl(serviceRep.getUrl());
                 serviceViewModel.closeNestedObject = UrlHelper.toAppUrl(serviceRep.getUrl(), ["property", "collectionItem", "resultObject"]);
                 serviceViewModel.closeCollection = UrlHelper.toAppUrl(serviceRep.getUrl(), ["collection", "resultCollection"]);
@@ -252,7 +252,7 @@ var Spiro;
 
                 objectViewModel.cancelEdit = UrlHelper.toAppUrl(objectRep.getUrl());
 
-                objectViewModel.color = Spiro.Angular.toColorFromType(objectRep.domainType());
+                objectViewModel.color = Color.toColorFromType(objectRep.domainType());
 
                 objectViewModel.doSave = save ? function () {
                     return save(objectViewModel);

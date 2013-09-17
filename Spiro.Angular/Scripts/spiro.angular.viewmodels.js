@@ -9,47 +9,6 @@ var Spiro;
     /// <reference path="spiro.models.ts" />
     /// <reference path="spiro.angular.app.ts" />
     (function (Angular) {
-        function hashCode(toHash) {
-            var hash = 0, i, char;
-            if (toHash.length == 0)
-                return hash;
-            for (i = 0; i < toHash.length; i++) {
-                char = toHash.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash;
-            }
-            return hash;
-        }
-        ;
-
-        function getColourMapValues(dt) {
-            var map = dt ? colourMap[dt] : defaultColour;
-            if (!map) {
-                var hash = Math.abs(hashCode(dt));
-                var index = hash % 18;
-                map = defaultColourArray[index];
-                colourMap[dt] = map;
-            }
-            return map;
-        }
-
-        function typeFromUrl(url) {
-            var typeRegex = /(objects|services)\/([\w|\.]+)/;
-            var results = (typeRegex).exec(url);
-            return (results && results.length > 2) ? results[2] : "";
-        }
-
-        function toColorFromHref(href) {
-            var type = typeFromUrl(href);
-            return "bg-color-" + getColourMapValues(type)["backgroundColor"];
-        }
-        Angular.toColorFromHref = toColorFromHref;
-
-        function toColorFromType(type) {
-            return "bg-color-" + getColourMapValues(type)["backgroundColor"];
-        }
-        Angular.toColorFromType = toColorFromType;
-
         var ChoiceViewModel = (function () {
             function ChoiceViewModel() {
             }

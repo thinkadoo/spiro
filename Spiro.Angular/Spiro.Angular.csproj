@@ -216,11 +216,18 @@
     <Content Include="Content\partials\viewProperties.html" />
     <Content Include="fonts\iconFont.svg" />
     <Content Include="fonts\license.txt" />
-    <Content Include="Scripts\spiro.angular.services.context.js.map" >
+    <TypeScriptCompile Include="Scripts\spiro.angular.services.color.ts" />
+    <Content Include="Scripts\spiro.angular.services.color.js">
+      <DependentUpon>spiro.angular.services.color.ts</DependentUpon>
+    </Content>
+      <Content Include="Scripts\spiro.angular.services.color.js.map">
+      <DependentUpon>spiro.angular.services.color.ts</DependentUpon>
+    </Content>
+    <Content Include="Scripts\spiro.angular.services.context.js.map">
       <DependentUpon>spiro.angular.services.context.ts</DependentUpon>
     </Content>
-    <Content Include="Scripts\spiro.angular.services.handlers.js.map" >
-       <DependentUpon>spiro.angular.services.handlers.ts</DependentUpon>
+    <Content Include="Scripts\spiro.angular.services.handlers.js.map">
+      <DependentUpon>spiro.angular.services.handlers.ts</DependentUpon>
     </Content>
     <TypeScriptCompile Include="Scripts\spiro.angular.services.context.ts" />
     <Content Include="Scripts\spiro.angular.services.context.js">
@@ -230,13 +237,13 @@
     <Content Include="Scripts\spiro.angular.services.handlers.js">
       <DependentUpon>spiro.angular.services.handlers.ts</DependentUpon>
     </Content>
-    <Content Include="Scripts\spiro.angular.services.representationloader.js.map" >
+    <Content Include="Scripts\spiro.angular.services.representationloader.js.map">
       <DependentUpon>spiro.angular.services.representationloader.ts</DependentUpon>
     </Content>
-    <Content Include="Scripts\spiro.angular.services.urlhelper.js.map" >
+    <Content Include="Scripts\spiro.angular.services.urlhelper.js.map">
       <DependentUpon>spiro.angular.services.urlhelper.ts</DependentUpon>
     </Content>
-    <Content Include="Scripts\spiro.angular.services.viewmodelfactory.js.map" >
+    <Content Include="Scripts\spiro.angular.services.viewmodelfactory.js.map">
       <DependentUpon>spiro.angular.services.viewmodelfactory.ts</DependentUpon>
     </Content>
     <TypeScriptCompile Include="Scripts\spiro.angular.directives.ts" />
@@ -265,7 +272,7 @@
     <TypeScriptCompile Include="Scripts\spiro.angular.services.representationloader.ts" />
     <TypeScriptCompile Include="Scripts\spiro.angular.services.viewmodelfactory.ts" />
     <TypeScriptCompile Include="Scripts\spiro.angular.services.urlhelper.ts" />
-    <Content Include="Scripts\spiro.angular.services.representationloader.js" >
+    <Content Include="Scripts\spiro.angular.services.representationloader.js">
       <DependentUpon>spiro.angular.services.representationloader.ts</DependentUpon>
     </Content>
     <Content Include="Scripts\spiro.angular.services.urlhelper.js">

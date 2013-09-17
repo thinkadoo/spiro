@@ -22,7 +22,7 @@ module Spiro.Angular {
         domainObjectViewModel(objectRep: DomainObjectRepresentation, details?: PropertyRepresentation[], save?: (ovm: DomainObjectViewModel) => void): DomainObjectViewModel;
     }
 
-    app.service('ViewModelFactory', function ($routeParams, $location, $q, $controller, UrlHelper: IUrlHelper, RepLoader: IRepLoader) {
+    app.service('ViewModelFactory', function ($routeParams, $location, $q, $controller, UrlHelper: IUrlHelper, RepLoader: IRepLoader, Color : IColor) {
 
         var viewModelFactory = <VMFInterface>this;
 
@@ -39,7 +39,7 @@ module Spiro.Angular {
             var linkViewModel = new LinkViewModel();
             linkViewModel.title = linkRep.title();
             linkViewModel.href = UrlHelper.toAppUrl(linkRep.href());
-            linkViewModel.color = Spiro.Angular.toColorFromHref(linkRep.href());
+            linkViewModel.color = Color.toColorFromHref(linkRep.href());
             return linkViewModel;
         };
 
@@ -47,7 +47,7 @@ module Spiro.Angular {
             var linkViewModel = new LinkViewModel();
             linkViewModel.title = linkRep.title();
             linkViewModel.href = UrlHelper.toItemUrl(parentHref, linkRep.href());
-            linkViewModel.color = Spiro.Angular.toColorFromHref(linkRep.href());
+            linkViewModel.color = Color.toColorFromHref(linkRep.href());
             return linkViewModel;
         };
 
@@ -149,7 +149,7 @@ module Spiro.Angular {
             propertyViewModel.target = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : UrlHelper.toAppUrl(propertyRep.value().link().href());
             propertyViewModel.reference = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : propertyRep.value().link().href();
 
-            propertyViewModel.color = Spiro.Angular.toColorFromType(propertyRep.extensions().returnType);
+            propertyViewModel.color = Color.toColorFromType(propertyRep.extensions().returnType);
             propertyViewModel.id = id;
             propertyViewModel.isEditable = !propertyRep.disabledReason();
 
@@ -171,7 +171,7 @@ module Spiro.Angular {
             collectionViewModel.pluralName = collectionRep.extensions().pluralName;
 
             collectionViewModel.href = UrlHelper.toCollectionUrl(collectionRep.detailsLink().href());
-            collectionViewModel.color = Spiro.Angular.toColorFromType(collectionRep.extensions().elementType);
+            collectionViewModel.color = Color.toColorFromType(collectionRep.extensions().elementType);
 
             collectionViewModel.items = [];
 
@@ -187,7 +187,7 @@ module Spiro.Angular {
             collectionViewModel.pluralName = collectionRep.extensions().pluralName;
 
             collectionViewModel.href = UrlHelper.toCollectionUrl(collectionRep.selfLink().href());
-            collectionViewModel.color = Spiro.Angular.toColorFromType(collectionRep.extensions().elementType);
+            collectionViewModel.color = Color.toColorFromType(collectionRep.extensions().elementType);
 
             var i = 0;
             collectionViewModel.items = _.map(links, (link) => { return viewModelFactory.itemViewModel(link, collectionViewModel.href, i++); });
@@ -242,16 +242,13 @@ module Spiro.Angular {
             serviceViewModel.serviceId = serviceRep.serviceId();
             serviceViewModel.title = serviceRep.title();
             serviceViewModel.actions = _.map(actions, (action) => { return viewModelFactory.actionViewModel(action); });
-            serviceViewModel.color = Spiro.Angular.toColorFromType(serviceRep.serviceId());
+            serviceViewModel.color = Color.toColorFromType(serviceRep.serviceId());
             serviceViewModel.href = UrlHelper.toAppUrl(serviceRep.getUrl());
             serviceViewModel.closeNestedObject = UrlHelper.toAppUrl(serviceRep.getUrl(), ["property", "collectionItem", "resultObject"]);
             serviceViewModel.closeCollection = UrlHelper.toAppUrl(serviceRep.getUrl(), ["collection", "resultCollection"]);
 
             return serviceViewModel;
         };
-
-
-
 
         viewModelFactory.domainObjectViewModel = function (objectRep: DomainObjectRepresentation, details?: PropertyRepresentation[], save?: (ovm: DomainObjectViewModel) => void) {
             var objectViewModel = new DomainObjectViewModel();
@@ -263,7 +260,7 @@ module Spiro.Angular {
 
             objectViewModel.cancelEdit = UrlHelper.toAppUrl(objectRep.getUrl());
 
-            objectViewModel.color = Spiro.Angular.toColorFromType(objectRep.domainType());
+            objectViewModel.color = Color.toColorFromType(objectRep.domainType());
 
             objectViewModel.doSave = save ? () => save(objectViewModel) : () => { };
 
