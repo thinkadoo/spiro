@@ -21,15 +21,15 @@ var Spiro;
             }
             ;
 
-            function getColourMapValues(dt) {
-                var map = dt ? colourMap[dt] : defaultColour;
-                if (!map) {
+            function getColorMapValues(dt) {
+                var color = dt ? colorMap[dt] : defaultColor;
+                if (!color) {
                     var hash = Math.abs(hashCode(dt));
                     var index = hash % 18;
-                    map = defaultColourArray[index];
-                    colourMap[dt] = map;
+                    color = defaultColorArray[index];
+                    colorMap[dt] = color;
                 }
-                return map;
+                return color;
             }
 
             function typeFromUrl(url) {
@@ -40,11 +40,11 @@ var Spiro;
 
             color.toColorFromHref = function (href) {
                 var type = typeFromUrl(href);
-                return "bg-color-" + getColourMapValues(type)["backgroundColor"];
+                return "bg-color-" + getColorMapValues(type);
             };
 
             color.toColorFromType = function (type) {
-                return "bg-color-" + getColourMapValues(type)["backgroundColor"];
+                return "bg-color-" + getColorMapValues(type);
             };
         });
     })(Spiro.Angular || (Spiro.Angular = {}));

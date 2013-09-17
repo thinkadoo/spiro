@@ -6,21 +6,17 @@
 
 module Spiro.Angular {
 
-    interface ColourMapItemInterface {
+    interface ColorMapInterface {
         [index: string]: string;
     }
 
-    interface ColourMapInterface {
-        [index: string]: ColourMapItemInterface;
-    }
-
-    declare var colourMap: ColourMapInterface;
-    declare var defaultColourArray: ColourMapItemInterface[];
-    declare var defaultColour: ColourMapItemInterface;
+    declare var colorMap: ColorMapInterface;
+    declare var defaultColorArray: string[];
+    declare var defaultColor: string;
 
     export interface IColor {
         toColorFromHref(href: string)
-        toColorFromType(type);
+        toColorFromType(type : string);
     }
 
     app.service('Color', function () {
@@ -38,15 +34,15 @@ module Spiro.Angular {
             return hash;
         };
 
-        function getColourMapValues(dt: string) {
-            var map = dt ? colourMap[dt] : defaultColour;
-            if (!map) {
+        function getColorMapValues(dt: string) {
+            var color = dt ? colorMap[dt] : defaultColor;
+            if (!color) {
                 var hash = Math.abs(hashCode(dt));
                 var index = hash % 18;
-                map = defaultColourArray[index];
-                colourMap[dt] = map;
+                color = defaultColorArray[index];
+                colorMap[dt] = color;
             }
-            return map;
+            return color;
         }
 
         function typeFromUrl(url: string): string {
@@ -57,11 +53,11 @@ module Spiro.Angular {
 
         color.toColorFromHref = function (href: string) {
             var type = typeFromUrl(href);
-            return "bg-color-" + getColourMapValues(type)["backgroundColor"];
+            return "bg-color-" + getColorMapValues(type);
         }
 
-        color.toColorFromType = function (type) {
-            return "bg-color-" + getColourMapValues(type)["backgroundColor"];
+        color.toColorFromType = function (type : string) {
+            return "bg-color-" + getColorMapValues(type);
         }
     });
 }

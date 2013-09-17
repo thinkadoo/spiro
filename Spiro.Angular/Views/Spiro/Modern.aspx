@@ -27,70 +27,65 @@
         var svrPath = "<%=Url.Content("~")%>";
     </script>
 
-<%--    Colour definitions & Mappings.  Here you may specifiy the colour(s) for any object type in your model.  Where a
-    type is not specified in this map, Spiro will assign a colour to that type, arbitrarily but consistently --%>
+<%--    Color definitions & Mappings.  Here you may specifiy the color(s) for any object type in your model.  Where a
+    type is not specified in this map, Spiro will assign a color to that type, arbitrarily but consistently --%>
     <script type="text/javascript">
-        var colourMap = {
-            "AdventureWorksModel.CustomerRepository": { "backgroundColor": "redLight" },
-            "AdventureWorksModel.Store": { "backgroundColor": "red" },
-            "AdventureWorksModel.Individual": { "backgroundColor": "red" },
-
-            "AdventureWorksModel.OrderRepository": { "backgroundColor": "green" },
-            "AdventureWorksModel.SalesOrderHeader": { "backgroundColor": "greenDark" },
-            "AdventureWorksModel.SalesOrderDetail": { "backgroundColor": "green" },
-
-            "AdventureWorksModel.ProductRepository": { "backgroundColor": "orange" },
-            "AdventureWorksModel.Product": { "backgroundColor": "orangeDark" },
-            "AdventureWorksModel.ProductInventory": { "backgroundColor": "orange" },
-            "AdventureWorksModel.ProductReview": { "backgroundColor": "orange" },
-            "AdventureWorksModel.ProductModel": { "backgroundColor": "yellow" },
-            "AdventureWorksModel.ProductCategory": { "backgroundColor": "redLight" },
-            "AdventureWorksModel.ProductSubCategory": { "backgroundColor": "red" },
-
-            "AdventureWorksModel.EmployeeRepository": { "backgroundColor": "blue" },
-            "AdventureWorksModel.Employee": { "backgroundColor": "blueDark" },
-            "AdventureWorksModel.EmployeePayHistory": { "backgroundColor": "blue" },
-            "AdventureWorksModel.EmployeeDepartmentHistory": { "backgroundColor": "blue" },
-
-            "AdventureWorksModel.SalesRepository": { "backgroundColor": "purple" },
-            "AdventureWorksModel.SalesPerson": { "backgroundColor": "purple" },
-
-            "AdventureWorksModel.SpecialOfferRepository": { "backgroundColor": "pink" },
-            "AdventureWorksModel.SpecialOffer": { "backgroundColor": "pinkDark" },
-            "AdventureWorksModel.ContactRepository": { "backgroundColor": "teal" },
-            "AdventureWorksModel.Contact": { "backgroundColor": "teal" },
-            "AdventureWorksModel.VendorRepository": { "backgroundColor": "greenDark" },
-            "AdventureWorksModel.Vendor": { "backgroundColor": "greenDark" },
-            "AdventureWorksModel.PurchaseOrderRepository": { "backgroundColor": "grayDark" },
-            "AdventureWorksModel.PurchaseOrder": { "backgroundColor": "grayDark" },
-            "AdventureWorksModel.WorkOrderRepository": { "backgroundColor": "orangeDark" },
-            "AdventureWorksModel.WorkOrder": { "backgroundColor": "orangeDark" },
-            "AdventureWorksModel.OrderContributedActions": { "backgroundColor": "darkBlue", "foregroundColor": "darkBlue" },
-            "AdventureWorksModel.CustomerContributedActions": { "backgroundColor": "darkBlue", "foregroundColor": "darkBlue" }
+        var colorMap = {
+            "AdventureWorksModel.CustomerRepository": "redLight",
+            "AdventureWorksModel.Store": "red",
+            "AdventureWorksModel.Individual": "red",
+            "AdventureWorksModel.OrderRepository": "green",
+            "AdventureWorksModel.SalesOrderHeader": "greenDark",
+            "AdventureWorksModel.SalesOrderDetail": "green",
+            "AdventureWorksModel.ProductRepository": "orange",
+            "AdventureWorksModel.Product": "orangeDark",
+            "AdventureWorksModel.ProductInventory": "orange",
+            "AdventureWorksModel.ProductReview": "orange",
+            "AdventureWorksModel.ProductModel": "yellow",
+            "AdventureWorksModel.ProductCategory": "redLight",
+            "AdventureWorksModel.ProductSubCategory": "red",
+            "AdventureWorksModel.EmployeeRepository": "blue",
+            "AdventureWorksModel.Employee": "blueDark",
+            "AdventureWorksModel.EmployeePayHistory": "blue",
+            "AdventureWorksModel.EmployeeDepartmentHistory": "blue",
+            "AdventureWorksModel.SalesRepository": "purple",
+            "AdventureWorksModel.SalesPerson": "purple",
+            "AdventureWorksModel.SpecialOfferRepository": "pink",
+            "AdventureWorksModel.SpecialOffer": "pinkDark",
+            "AdventureWorksModel.ContactRepository": "teal",
+            "AdventureWorksModel.Contact": "teal",
+            "AdventureWorksModel.VendorRepository": "greenDark",
+            "AdventureWorksModel.Vendor": "greenDark",
+            "AdventureWorksModel.PurchaseOrderRepository": "grayDark",
+            "AdventureWorksModel.PurchaseOrder": "grayDark",
+            "AdventureWorksModel.WorkOrderRepository": "orangeDark",
+            "AdventureWorksModel.WorkOrder": "orangeDark",
+            "AdventureWorksModel.OrderContributedActions": "darkBlue",
+            "AdventureWorksModel.CustomerContributedActions": "darkBlue"
         };
         
-        var defaultColourArray = [
-            { "foregroundColor": "white", "backgroundColor": "blue" }, //0
-            { "foregroundColor": "white", "backgroundColor": "blueLight" }, //1
-            { "foregroundColor": "white", "backgroundColor": "blueDark" }, //2
-            { "foregroundColor": "white", "backgroundColor": "green" }, //3
-            { "foregroundColor": "white", "backgroundColor": "greenLight" }, //4
-            { "foregroundColor": "white", "backgroundColor": "greenDark" }, //5
-            { "foregroundColor": "white", "backgroundColor": "red" }, //6
-            { "foregroundColor": "white", "backgroundColor": "yellow"}, //7
-            { "foregroundColor": "white", "backgroundColor": "orange"}, //8
-            { "foregroundColor": "white", "backgroundColor": "orange"}, //9
-            { "foregroundColor": "white", "backgroundColor": "orangeDark"}, //10
-            { "foregroundColor": "white", "backgroundColor": "pink"}, //11
-            { "foregroundColor": "white", "backgroundColor": "pinkDark"}, //12
-            { "foregroundColor": "white", "backgroundColor": "purple"}, //13
-            { "foregroundColor": "white", "backgroundColor": "grayDark"}, //14
-            { "foregroundColor": "white", "backgroundColor": "magenta"}, //15
-            { "foregroundColor": "white", "backgroundColor": "teal"}, //16
-            { "foregroundColor": "white", "backgroundColor": "redLight"} //17
+        var defaultColorArray = [
+           "blue", //0
+           "blueLight", //1
+           "blueDark", //2
+           "green", //3
+           "greenLight", //4
+           "greenDark", //5
+           "red", //6
+           "yellow", //7
+           "orange", //8
+           "orange", //9
+           "orangeDark", //10
+           "pink", //11
+           "pinkDark", //12
+           "purple", //13
+           "grayDark", //14
+           "magenta", //15
+           "teal", //16
+           "redLight" //17
         ];
 
-        var defaultColour = { "foregroundColor": "white", "backgroundColor": "darkBlue", "borderColor": "blue" };
+        var defaultColor = "darkBlue";
     </script>
     
     <script type="text/javascript" src="<%= Url.Content("~/Scripts/underscore.js") %>"></script>
