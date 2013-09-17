@@ -8,8 +8,12 @@ module Spiro.Angular {
 
     declare var svrPath: string;
 
-    app.controller('BackgroundController', function ($scope, $location : ng.ILocationService, Color : IColor) {
+    app.controller('BackgroundController', function ($scope, $location : ng.ILocationService, Color : IColor, UrlHelper : IUrlHelper) {
         $scope.backgroundColor = Color.toColorFromHref($location.absUrl()); 
+
+
+        $scope.closeNestedObject = UrlHelper.toAppUrl($location.path(), ["property", "collectionItem", "resultObject"]);
+        $scope.closeCollection = UrlHelper.toAppUrl($location.path(), ["collection", "resultCollection"]);
     });
 
     app.controller('ServicesController', function ($scope : ng.IScope, Handlers: IHandlers) {

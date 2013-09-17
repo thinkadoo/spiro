@@ -236,8 +236,6 @@ var Spiro;
                 });
                 serviceViewModel.color = Color.toColorFromType(serviceRep.serviceId());
                 serviceViewModel.href = UrlHelper.toAppUrl(serviceRep.getUrl());
-                serviceViewModel.closeNestedObject = UrlHelper.toAppUrl(serviceRep.getUrl(), ["property", "collectionItem", "resultObject"]);
-                serviceViewModel.closeCollection = UrlHelper.toAppUrl(serviceRep.getUrl(), ["collection", "resultCollection"]);
 
                 return serviceViewModel;
             };
@@ -246,9 +244,6 @@ var Spiro;
                 var objectViewModel = new Angular.DomainObjectViewModel();
 
                 objectViewModel.href = UrlHelper.toAppUrl(objectRep.getUrl());
-
-                objectViewModel.closeNestedObject = UrlHelper.toAppUrl(objectRep.getUrl(), ["property", "collectionItem", "resultObject"]);
-                objectViewModel.closeCollection = UrlHelper.toAppUrl(objectRep.getUrl(), ["collection", "resultCollection"]);
 
                 objectViewModel.cancelEdit = UrlHelper.toAppUrl(objectRep.getUrl());
 

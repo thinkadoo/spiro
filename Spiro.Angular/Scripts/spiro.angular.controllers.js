@@ -6,8 +6,11 @@
     /// <reference path="spiro.angular.app.ts" />
     // tested
     (function (Angular) {
-        Angular.app.controller('BackgroundController', function ($scope, $location, Color) {
+        Angular.app.controller('BackgroundController', function ($scope, $location, Color, UrlHelper) {
             $scope.backgroundColor = Color.toColorFromHref($location.absUrl());
+
+            $scope.closeNestedObject = UrlHelper.toAppUrl($location.path(), ["property", "collectionItem", "resultObject"]);
+            $scope.closeCollection = UrlHelper.toAppUrl($location.path(), ["collection", "resultCollection"]);
         });
 
         Angular.app.controller('ServicesController', function ($scope, Handlers) {

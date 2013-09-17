@@ -177,8 +177,7 @@ module Spiro.Angular {
         color: string; 
         href: string; 
 
-        closeNestedObject: string; 
-        closeCollection: string; 
+     
 
     } 
 
@@ -193,8 +192,7 @@ module Spiro.Angular {
         href: string; 
         message: string; 
    
-        closeNestedObject: string; 
-        closeCollection: string; 
+       
         cancelEdit: string; 
 
         doSave(): void {}

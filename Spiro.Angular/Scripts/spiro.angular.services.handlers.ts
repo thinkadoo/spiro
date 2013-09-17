@@ -150,9 +150,7 @@ module Spiro.Angular {
         };
 
         // tested
-        handlers.handleServices = function ($scope) {
-
-           
+        handlers.handleServices = function ($scope) {       
             Context.getServices().
                 then(function (services: DomainServicesRepresentation) {
                     $scope.services = ViewModelFactory.servicesViewModel(services);
@@ -162,13 +160,10 @@ module Spiro.Angular {
                 }, function (error) {
                     setError(error);
                 });
-
         };
 
         // tested
         handlers.handleService = function ($scope) {
-         
-
             Context.getObject($routeParams.sid).
                 then(function (service: DomainObjectRepresentation) {
                     $scope.object = ViewModelFactory.serviceViewModel(service);
