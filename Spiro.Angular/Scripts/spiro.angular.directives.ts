@@ -11,7 +11,7 @@ module Spiro.Angular {
     }
 
     // based on code in AngularJs, Green and Seshadri, O'Reilly
-    app.directive('datepicker', function ($filter : ng.IFilterService) : ng.IDirective {
+    app.directive('nogDatepicker', function ($filter : ng.IFilterService) : ng.IDirective {
             return {
                 // Enforce the angularJS default of restricting the directive to
                 // attributes only

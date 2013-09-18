@@ -32,7 +32,7 @@
                         
                             <div ng-switch-when="string" ng-switch="parameter.format">
                                 <div ng-switch-when="date-time">
-                                    <input  type='text'  ng-model="$parent.parameter.value" datepicker/>
+                                    <input  type='text'  ng-model="$parent.parameter.value" nog-datepicker/>
                                 </div>
                                 <input ng-switch-default type='text' placeholder='{{parameter.dflt}}' ng-model="parameter.value" />
                             </div>

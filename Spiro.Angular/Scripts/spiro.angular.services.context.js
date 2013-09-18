@@ -17,14 +17,14 @@ var Spiro;
             }
 
             // exposed for testing
-            this.getDomainObject = function (type, id) {
+            context.getDomainObject = function (type, id) {
                 var object = new Spiro.DomainObjectRepresentation();
                 object.hateoasUrl = appPath + "/objects/" + type + "/" + id;
                 return RepLoader.populate(object);
             };
 
             // exposed for testing
-            this.getService = function (type) {
+            context.getService = function (type) {
                 var delay = $q.defer();
 
                 this.getServices().then(function (services) {

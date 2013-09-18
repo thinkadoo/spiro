@@ -7,7 +7,7 @@
     // tested
     (function (Angular) {
         // based on code in AngularJs, Green and Seshadri, O'Reilly
-        Angular.app.directive('datepicker', function ($filter) {
+        Angular.app.directive('nogDatepicker', function ($filter) {
             return {
                 // Enforce the angularJS default of restricting the directive to
                 // attributes only

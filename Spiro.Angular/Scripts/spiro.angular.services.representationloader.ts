@@ -7,9 +7,8 @@
 
 module Spiro.Angular {
 
-    export interface IRepLoader<T> {
-        populate: (m: HateoasModel, ignoreCache?: boolean, r?: HateoasModel) => ng.IPromise<T>;
-        isLoading($scope): boolean; 
+    export interface IRepLoader {
+        populate: <T>(m: HateoasModel, ignoreCache?: boolean, r?: HateoasModel) => ng.IPromise<T>;
     }
 
     // TODO investigate using transformations to transform results 
@@ -46,7 +45,7 @@ module Spiro.Angular {
             return data;
         }
 
-        this.populate = function (model: HateoasModel, ignoreCache?: boolean, expected?: HateoasModel) {
+        repLoader.populate = function<T> (model: HateoasModel, ignoreCache?: boolean, expected?: HateoasModel) {
 
             var response = expected || model;
             var useCache = !ignoreCache;

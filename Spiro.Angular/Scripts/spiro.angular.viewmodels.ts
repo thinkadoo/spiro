@@ -67,6 +67,7 @@ module Spiro.Angular {
            return null; 
         }
 
+        // todo move up to Value view model ?
         getValue(): Value {
             if (this.type === "scalar") {
 
@@ -130,6 +131,7 @@ module Spiro.Angular {
         choices: ChoiceViewModel[]; 
         hasChoices: boolean; 
 
+         // todo move up to Value view model ?
         getValue() : Value {
             if (this.type === "scalar") {
 

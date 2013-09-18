@@ -73,6 +73,7 @@ var Spiro;
                 return null;
             };
 
+            // todo move up to Value view model ?
             ParameterViewModel.prototype.getValue = function () {
                 if (this.type === "scalar") {
                     if (this.returnType === "boolean" && !(this.value == null)) {
@@ -128,6 +129,7 @@ var Spiro;
             function PropertyViewModel() {
                 _super.apply(this, arguments);
             }
+            // todo move up to Value view model ?
             PropertyViewModel.prototype.getValue = function () {
                 if (this.type === "scalar") {
                     if (this.returnType === "boolean" && !(this.value == null)) {

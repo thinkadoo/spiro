@@ -50,7 +50,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
         [TestMethod]
         public virtual void GoToService() {
             GoToServiceFromHomePage("Customers");
-            Assert.AreEqual("Customers", br.FindElement(By.CssSelector("div.object-view > div.header > div.title")).Text);
+            Assert.AreEqual("Customers", br.FindElement(By.CssSelector("div.object-view > div > div.header > div.title")).Text);
         }
     }
 

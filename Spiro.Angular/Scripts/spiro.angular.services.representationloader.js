@@ -37,7 +37,7 @@ var Spiro;
                 return data;
             }
 
-            this.populate = function (model, ignoreCache, expected) {
+            repLoader.populate = function (model, ignoreCache, expected) {
                 var response = expected || model;
                 var useCache = !ignoreCache;
 

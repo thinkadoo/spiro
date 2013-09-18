@@ -20,9 +20,14 @@ module Spiro.Angular {
         setError: (object: ErrorRepresentation) => void;
     }
 
+    interface IContextInternal extends  IContext{
+        getDomainObject: (type: string, id: string) => ng.IPromise<DomainObjectRepresentation>;
+        getService: (type: string) => ng.IPromise<DomainObjectRepresentation>;
+    }
+
     app.service('Context', function ($q : ng.IQService, RepLoader: IRepLoader) {
 
-        var context = <IContext>this; 
+        var context = <IContextInternal>this; 
 
         var currentHome: HomePageRepresentation = null;
 
@@ -32,15 +37,15 @@ module Spiro.Angular {
         }
 
         // exposed for testing
-        this.getDomainObject = function (type: string, id: string) {
+        context.getDomainObject = function (type: string, id: string): ng.IPromise<DomainObjectRepresentation> {
             var object = new DomainObjectRepresentation();
             object.hateoasUrl = appPath + "/objects/" + type + "/" + id;
-            return RepLoader.populate(object);
+            return RepLoader.populate<DomainObjectRepresentation>(object);
         };
 
         // exposed for testing
-        this.getService = function (type: string) {
-            var delay = $q.defer();
+        context.getService = function (type: string): ng.IPromise<DomainObjectRepresentation> {
+            var delay = $q.defer<DomainObjectRepresentation>();
 
             this.getServices().
                 then(function (services: DomainServicesRepresentation) {
@@ -57,14 +62,14 @@ module Spiro.Angular {
 
 
         context.getHome = function () {
-            var delay = $q.defer();
+            var delay = $q.defer<HomePageRepresentation>();
 
             if (currentHome) {
                 delay.resolve(currentHome);
             }
             else {
                 var home = new HomePageRepresentation();
-                RepLoader.populate(home).then(function (home: HomePageRepresentation) {
+                RepLoader.populate<HomePageRepresentation>(home).then(function (home: HomePageRepresentation) {
                     currentHome = home;
                     delay.resolve(home);
                 });
@@ -76,7 +81,7 @@ module Spiro.Angular {
         var currentServices: DomainServicesRepresentation = null;
 
         context.getServices = function () {
-            var delay = $q.defer();
+            var delay = $q.defer<DomainServicesRepresentation>();
 
             if (currentServices) {
                 delay.resolve(currentServices);
@@ -85,7 +90,7 @@ module Spiro.Angular {
                 this.getHome().
                     then(function (home: HomePageRepresentation) {
                         var ds = home.getDomainServices();
-                        return RepLoader.populate(ds);
+                        return RepLoader.populate<DomainServicesRepresentation>(ds);
                     }).
                     then(function (services: DomainServicesRepresentation) {
                         currentServices = services;
@@ -99,7 +104,7 @@ module Spiro.Angular {
         var currentObject: DomainObjectRepresentation = null;
 
         context.getObject = function (type: string, id?: string) {
-            var delay = $q.defer();
+            var delay = $q.defer<DomainObjectRepresentation>();
 
             if (currentObject && isSameObject(currentObject, type, id)) {
                 delay.resolve(currentObject);
@@ -123,7 +128,7 @@ module Spiro.Angular {
         var currentNestedObject: DomainObjectRepresentation = null;
 
         context.getNestedObject = function (type: string, id: string) {
-            var delay = $q.defer();
+            var delay = $q.defer<DomainObjectRepresentation>();
 
             if (currentNestedObject && isSameObject(currentNestedObject, type, id)) {
                 delay.resolve(currentNestedObject);
@@ -132,7 +137,7 @@ module Spiro.Angular {
                 var object = new DomainObjectRepresentation();
                 object.hateoasUrl = appPath + "/objects/" + type + "/" + id;
 
-                RepLoader.populate(object).
+                RepLoader.populate<DomainObjectRepresentation>(object).
                     then(function (object: DomainObjectRepresentation) {
                         currentNestedObject = object;
                         delay.resolve(object);
@@ -159,7 +164,7 @@ module Spiro.Angular {
         var currentCollection: ListRepresentation = null;
 
         context.getCollection = function () {
-            var delay = $q.defer();
+            var delay = $q.defer<ListRepresentation>();
             delay.resolve(currentCollection);
             return delay.promise;
         };

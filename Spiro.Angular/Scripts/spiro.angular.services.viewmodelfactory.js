@@ -6,7 +6,7 @@ var Spiro;
     /// <reference path="spiro.angular.viewmodels.ts" />
     /// <reference path="spiro.angular.app.ts" />
     (function (Angular) {
-        Angular.app.service('ViewModelFactory', function ($routeParams, $location, $q, $controller, UrlHelper, RepLoader, Color) {
+        Angular.app.service('ViewModelFactory', function ($location, UrlHelper, RepLoader, Color) {
             var viewModelFactory = this;
 
             viewModelFactory.errorViewModel = function (errorRep) {

@@ -18,7 +18,7 @@ module Spiro.Angular {
         toItemUrl(href: string, itemHref: string): string;
     }
 
-    app.service('UrlHelper', function ($routeParams) {
+    app.service('UrlHelper', function ($routeParams : ISpiroRouteParams) {
 
         var helper = <IUrlHelper>this;
 

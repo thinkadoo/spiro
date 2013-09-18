@@ -32,7 +32,7 @@ module Spiro.Angular {
     }
 
     // TODO rename 
-    app.service("Handlers", function ($routeParams: ISpiroRouteParams, $location: ng.ILocationService, $q: ng.IQService, $cacheFactory: ng.ICacheFactoryService, RepLoader: IRepLoader, Context: IContext, ViewModelFactory: VMFInterface, UrlHelper: IUrlHelper) {
+    app.service("Handlers", function ($routeParams: ISpiroRouteParams, $location: ng.ILocationService, $q: ng.IQService, $cacheFactory: ng.ICacheFactoryService, RepLoader: IRepLoader, Context: IContext, ViewModelFactory: IViewModelFactory, UrlHelper: IUrlHelper) {
 
         var handlers = <IHandlersInternal>this;
 

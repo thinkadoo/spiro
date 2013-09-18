@@ -47,7 +47,7 @@
                         
                         <div ng-switch-when="string" ng-switch="property.format">
                             <div ng-switch-when="date-time">
-                                <input  type='text'  ng-model="$parent.property.value" datepicker/>
+                                <input  type='text'  ng-model="$parent.property.value" nog-datepicker/>
                             </div>
                             <input ng-switch-default type='text' placeholder='{{property.value}}' ng-model="property.value" />
                         </div>

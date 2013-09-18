@@ -6,7 +6,7 @@
 
 
 module Spiro.Angular {
-    export interface VMFInterface {
+    export interface IViewModelFactory {
         errorViewModel(errorRep: ErrorRepresentation): ErrorViewModel;
         linkViewModel(linkRep: Link): LinkViewModel;
         itemViewModel(linkRep: Link, parentHref: string, index: number): ItemViewModel;
@@ -22,9 +22,9 @@ module Spiro.Angular {
         domainObjectViewModel(objectRep: DomainObjectRepresentation, details?: PropertyRepresentation[], save?: (ovm: DomainObjectViewModel) => void): DomainObjectViewModel;
     }
 
-    app.service('ViewModelFactory', function ($routeParams, $location, $q, $controller, UrlHelper: IUrlHelper, RepLoader: IRepLoader, Color : IColor) {
+    app.service('ViewModelFactory', function ($location : ng.ILocationService, UrlHelper: IUrlHelper, RepLoader: IRepLoader, Color : IColor) {
 
-        var viewModelFactory = <VMFInterface>this;
+        var viewModelFactory = <IViewModelFactory>this;
 
         viewModelFactory.errorViewModel = function (errorRep: ErrorRepresentation) {
             var errorViewModel = new ErrorViewModel();
