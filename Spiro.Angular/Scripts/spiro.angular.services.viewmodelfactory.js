@@ -6,7 +6,7 @@ var Spiro;
     /// <reference path="spiro.angular.viewmodels.ts" />
     /// <reference path="spiro.angular.app.ts" />
     (function (Angular) {
-        Angular.app.service('ViewModelFactory', function ($location, UrlHelper, RepLoader, Color) {
+        Angular.app.service('ViewModelFactory', function ($q, $location, UrlHelper, RepLoader, Color) {
             var viewModelFactory = this;
 
             viewModelFactory.errorViewModel = function (errorRep) {
@@ -67,24 +67,23 @@ var Spiro;
                     });
                 }
 
-                parmViewModel.autoComplete = function () {
+                parmViewModel.autoComplete = function (request) {
                     var object = new Spiro.DomainObjectRepresentation();
 
-                    object.hateoasUrl = appPath + "/objects/" + parmRep.extensions().returnType + "/" + parmViewModel.search;
+                    object.hateoasUrl = appPath + "/objects/" + parmRep.extensions().returnType + "/" + request;
 
-                    RepLoader.populate(object).then(function (d) {
+                    return RepLoader.populate(object).then(function (d) {
+                        var delay = $q.defer();
+
                         var l = d.selfLink();
                         l.set("title", d.title());
                         var v = new Spiro.Value(l);
 
                         var cvm = Angular.ChoiceViewModel.create(v);
 
-                        parmViewModel.choice = cvm;
-                        parmViewModel.choices = [cvm];
-                    }, function () {
-                        // not found
-                        parmViewModel.choice = null;
-                        parmViewModel.choices = [];
+                        delay.resolve(cvm);
+
+                        return delay.promise;
                     });
                 };
 
@@ -145,6 +144,27 @@ var Spiro;
                         return Angular.ChoiceViewModel.create(v);
                     });
                     propertyViewModel.hasChoices = propertyViewModel.choices.length > 0;
+                    propertyViewModel.choice = null;
+
+                    propertyViewModel.autoComplete = function (request) {
+                        var object = new Spiro.DomainObjectRepresentation();
+
+                        object.hateoasUrl = appPath + "/objects/" + propertyRep.extensions().returnType + "/" + request;
+
+                        return RepLoader.populate(object).then(function (d) {
+                            var delay = $q.defer();
+
+                            var l = d.selfLink();
+                            l.set("title", d.title());
+                            var v = new Spiro.Value(l);
+
+                            var cvm = Angular.ChoiceViewModel.create(v);
+
+                            delay.resolve(cvm);
+
+                            return delay.promise;
+                        });
+                    };
                 }
 
                 return propertyViewModel;

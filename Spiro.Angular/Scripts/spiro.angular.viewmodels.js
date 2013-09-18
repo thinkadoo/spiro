@@ -47,6 +47,9 @@ var Spiro;
         var MessageViewModel = (function () {
             function MessageViewModel() {
             }
+            MessageViewModel.prototype.clearMessage = function () {
+                this.message = "";
+            };
             return MessageViewModel;
         })();
         Angular.MessageViewModel = MessageViewModel;
@@ -56,25 +59,11 @@ var Spiro;
             function ValueViewModel() {
                 _super.apply(this, arguments);
             }
-            return ValueViewModel;
-        })(MessageViewModel);
-        Angular.ValueViewModel = ValueViewModel;
-
-        var ParameterViewModel = (function (_super) {
-            __extends(ParameterViewModel, _super);
-            function ParameterViewModel() {
-                _super.apply(this, arguments);
-            }
-            ParameterViewModel.prototype.clearMessage = function () {
-                this.message = "";
-            };
-
-            ParameterViewModel.prototype.autoComplete = function (any) {
+            ValueViewModel.prototype.autoComplete = function (any) {
                 return null;
             };
 
-            // todo move up to Value view model ?
-            ParameterViewModel.prototype.getValue = function () {
+            ValueViewModel.prototype.getValue = function () {
                 if (this.type === "scalar") {
                     if (this.returnType === "boolean" && !(this.value == null)) {
                         return new Spiro.Value(this.value);
@@ -93,6 +82,15 @@ var Spiro;
 
                 return new Spiro.Value({ href: this.reference });
             };
+            return ValueViewModel;
+        })(MessageViewModel);
+        Angular.ValueViewModel = ValueViewModel;
+
+        var ParameterViewModel = (function (_super) {
+            __extends(ParameterViewModel, _super);
+            function ParameterViewModel() {
+                _super.apply(this, arguments);
+            }
             return ParameterViewModel;
         })(ValueViewModel);
         Angular.ParameterViewModel = ParameterViewModel;
@@ -129,22 +127,6 @@ var Spiro;
             function PropertyViewModel() {
                 _super.apply(this, arguments);
             }
-            // todo move up to Value view model ?
-            PropertyViewModel.prototype.getValue = function () {
-                if (this.type === "scalar") {
-                    if (this.returnType === "boolean" && !(this.value == null)) {
-                        return new Spiro.Value(this.value);
-                    }
-
-                    return new Spiro.Value(this.value || "");
-                }
-
-                if (this.reference === "") {
-                    return new Spiro.Value("");
-                }
-
-                return new Spiro.Value({ href: this.reference });
-            };
             return PropertyViewModel;
         })(ValueViewModel);
         Angular.PropertyViewModel = PropertyViewModel;
@@ -170,13 +152,15 @@ var Spiro;
         })();
         Angular.ServiceViewModel = ServiceViewModel;
 
-        var DomainObjectViewModel = (function () {
+        var DomainObjectViewModel = (function (_super) {
+            __extends(DomainObjectViewModel, _super);
             function DomainObjectViewModel() {
+                _super.apply(this, arguments);
             }
             DomainObjectViewModel.prototype.doSave = function () {
             };
             return DomainObjectViewModel;
-        })();
+        })(MessageViewModel);
         Angular.DomainObjectViewModel = DomainObjectViewModel;
     })(Spiro.Angular || (Spiro.Angular = {}));
     var Angular = Spiro.Angular;

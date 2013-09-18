@@ -22,7 +22,7 @@ module Spiro.Angular {
         domainObjectViewModel(objectRep: DomainObjectRepresentation, details?: PropertyRepresentation[], save?: (ovm: DomainObjectViewModel) => void): DomainObjectViewModel;
     }
 
-    app.service('ViewModelFactory', function ($location : ng.ILocationService, UrlHelper: IUrlHelper, RepLoader: IRepLoader, Color : IColor) {
+    app.service('ViewModelFactory', function ($q : ng.IQService, $location : ng.ILocationService, UrlHelper: IUrlHelper, RepLoader: IRepLoader, Color : IColor) {
 
         var viewModelFactory = <IViewModelFactory>this;
 
@@ -83,13 +83,14 @@ module Spiro.Angular {
                 parmViewModel.choice = _.find(parmViewModel.choices, (c) => c.name == previousValue);
             }
 
-            parmViewModel.autoComplete = function (): any {
+            parmViewModel.autoComplete = function (request): any {
 
                 var object = new DomainObjectRepresentation();
 
-                object.hateoasUrl = appPath + "/objects/" + parmRep.extensions().returnType + "/" + parmViewModel.search;
+                object.hateoasUrl = appPath + "/objects/" + parmRep.extensions().returnType + "/" + request;
 
-                RepLoader.populate(object).then((d: DomainObjectRepresentation) => {
+                return RepLoader.populate(object).then((d: DomainObjectRepresentation) => {
+                    var delay = $q.defer<ChoiceViewModel>();
 
                     var l = d.selfLink();
                     l.set("title", d.title());
@@ -97,14 +98,10 @@ module Spiro.Angular {
 
                     var cvm = ChoiceViewModel.create(v);
 
-                    parmViewModel.choice = cvm;
-                    parmViewModel.choices = [cvm];
-                }, () => {
-                        // not found 
-                        parmViewModel.choice = null;
-                        parmViewModel.choices = [];
-                    }
-                    );
+                    delay.resolve(cvm);
+
+                    return delay.promise;
+                });
             }
 
             return parmViewModel;
@@ -158,6 +155,28 @@ module Spiro.Angular {
                     return ChoiceViewModel.create(v);
                 });
                 propertyViewModel.hasChoices = propertyViewModel.choices.length > 0;
+                propertyViewModel.choice = null; 
+
+                propertyViewModel.autoComplete = function (request): any {
+
+                    var object = new DomainObjectRepresentation();
+
+                    object.hateoasUrl = appPath + "/objects/" + propertyRep.extensions().returnType + "/" + request;
+
+                    return RepLoader.populate(object).then((d: DomainObjectRepresentation) => {
+                        var delay = $q.defer<ChoiceViewModel>();
+
+                        var l = d.selfLink();
+                        l.set("title", d.title());
+                        var v = new Value(l);
+
+                        var cvm = ChoiceViewModel.create(v);
+
+                        delay.resolve(cvm);
+
+                        return delay.promise;
+                    });
+                }
             }
 
             return propertyViewModel;

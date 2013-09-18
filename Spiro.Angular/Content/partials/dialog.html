@@ -12,16 +12,10 @@
                     <div class='parameter-value input-control text' ng-switch="parameter.hasChoices">
                      
                         <input type='hidden' value='{{parameter.reference}}' ng-model="parameter.reference" />
-                                        
-                        <!--  <input ng-switch-when="false" type='text' ng-change="parameter.autoComplete()"   ng-model="parameter.choice"  typeahead="c as c.name for c in parameter.getChoices()"  />-->
-                                  
-                        <input ng-switch-when="false" type='text' ng-change="parameter.autoComplete()"  ng-model="parameter.search" />
+                                                                       
+                        <input ng-switch-when="false" type='text' ng-model="$parent.parameter.choice" select="parameter.autoComplete(request)" nog-autocomplete/>
                         
-                        <select  ng-switch-when="true" ng-model="parameter.choice" ng-options="c as c.name for c in parameter.choices" />
-                      
-
-                        <!-- <select ng-switch-when="true" ng-model="parameter.choice" ng-options="c as c.name for c in parameter.choices" />-->
-                       
+                        <select  ng-switch-when="true" ng-model="parameter.choice" ng-options="c as c.name for c in parameter.choices" />                                 
                     </div>
                 </div>
                        

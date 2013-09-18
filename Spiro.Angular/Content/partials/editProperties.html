@@ -15,9 +15,9 @@
                 <div ng-switch-when="true" class='property-value input-control text' ng-switch="property.hasChoices">
                     <input type='hidden' value='{{property.reference}}' ng-model="property.reference" />
                     
-                    <input ng-switch-when="false" type='text' value='{{property.value}}' placeholder='{{property.value}}' ng-model="property.value" />
+                    <input ng-switch-when="false" type='text' ng-model="$parent.property.choice" select="property.autoComplete(request)" nog-autocomplete/>
                     
-                    <select ng-switch-when="true" ng-model="property.reference" ng-options="c.value as c.name for c in property.choices"/>
+                    <select ng-switch-when="true" ng-model="property.choice" ng-options="c as c.name for c in property.choices"/>
 
                     <div class='error'>{{property.message}}</div>
                 </div>

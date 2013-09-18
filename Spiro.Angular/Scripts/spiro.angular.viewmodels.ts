@@ -39,35 +39,27 @@ module Spiro.Angular {
      
         message: string;
        
+        clearMessage() {
+            this.message = "";
+        }
     }
 
     export class ValueViewModel extends MessageViewModel {
         value: Object;    
         id: string; 
-    }
-
-    export class ParameterViewModel extends ValueViewModel{
-
-        title: string;
-        dflt: string; 
-        choices: ChoiceViewModel[]; 
+        choices: ChoiceViewModel[];
         hasChoices: boolean;
-        type: string; 
-        reference: string; 
+        type: string;
+        reference: string;
         choice: ChoiceViewModel; 
-        search: string; 
-        format: string;
         returnType: string;
+        title: string;
+        format: string;
 
-        clearMessage() {
-            this.message = "";
+        autoComplete(any): any {
+            return null;
         }
 
-        autoComplete (any) : any {
-           return null; 
-        }
-
-        // todo move up to Value view model ?
         getValue(): Value {
             if (this.type === "scalar") {
 
@@ -79,7 +71,7 @@ module Spiro.Angular {
             }
 
             if (this.hasChoices || this.choice) {
-                return new Value({ href: this.choice.value, title : this.choice.name });
+                return new Value({ href: this.choice.value, title: this.choice.name });
             }
 
             if (this.reference === "") {
@@ -89,6 +81,10 @@ module Spiro.Angular {
             return new Value({ href: this.reference });
         }
 
+    }
+
+    export class ParameterViewModel extends ValueViewModel{
+        dflt: string;       
     } 
 
     export class ActionViewModel {
@@ -117,74 +113,36 @@ module Spiro.Angular {
     
     export class PropertyViewModel extends ValueViewModel {
 
-        title: string;
-       
-        type: string;
-        returnType: string;
-        format: string;
         href: string;
         target: string;
-        color: string; 
-      
-        isEditable: boolean;
-        reference: string; 
-        choices: ChoiceViewModel[]; 
-        hasChoices: boolean; 
-
-         // todo move up to Value view model ?
-        getValue() : Value {
-            if (this.type === "scalar") {
-
-                if (this.returnType === "boolean" && !(this.value == null)) {
-                    return new Value(this.value);
-                }
-
-                return new Value(this.value || "");
-            }
-
-            if (this.reference === "") {
-                return new Value("");
-            }
-
-            return new Value({ href: this.reference });
-        }
+        color: string;       
+        isEditable: boolean;    
     } 
 
     export class CollectionViewModel {
-
         title: string;
         size: number;
         pluralName: string;
         href: string;
         color: string; 
         items: LinkViewModel[]; 
-        
-       
     } 
 
     export class ServicesViewModel {
-        
         title: string; 
         color: string; 
-        items: LinkViewModel[]; 
-            
-       
+        items: LinkViewModel[];       
     } 
 
     export class ServiceViewModel {
-
         title: string;
         serviceId: string;
         actions: ActionViewModel[];
         color: string; 
         href: string; 
-
-     
-
     } 
 
-    export class DomainObjectViewModel {
-
+    export class DomainObjectViewModel extends MessageViewModel{
         title: string;
         domainType: string; 
         properties: PropertyViewModel[];
@@ -192,13 +150,7 @@ module Spiro.Angular {
         actions: ActionViewModel[];
         color: string; 
         href: string; 
-        message: string; 
-   
-       
         cancelEdit: string; 
-
         doSave(): void {}
-        
-       
     } 
 }

@@ -59,4 +59,63 @@ module Spiro.Angular {
             };
         });
 
+    app.directive('nogAutocomplete', function ($filter: ng.IFilterService, $parse): ng.IDirective {
+        return {
+            // Enforce the angularJS default of restricting the directive to
+            // attributes only
+            restrict: 'A',
+            // Always use along with an ng-model
+            require: '?ngModel',
+            // This method needs to be defined and passed in from the
+            // passed in to the directive from the view controller
+            scope: {
+                select: '&'        // Bind the select function we refer to the right scope
+            },
+            link: function (scope: ISelectScope, element, attrs, ngModel: ng.INgModelController) {
+                if (!ngModel) return;
+
+             
+                var optionsObj: { autoFocus?: boolean; minLength?: number; source?: Function; select?: Function} = {};
+
+                var model = $parse(attrs.nogAutocomplete); 
+
+                ngModel.$render = function () {
+                   
+                };
+             
+                var updateModel = function (cvm : ChoiceViewModel) {
+                    scope.$apply(function () {
+                     
+                        ngModel.$parsers.push((val) => { return cvm; });
+
+                        ngModel.$setViewValue(cvm.name);
+
+                        element.val(cvm.name);
+                    });
+                };
+
+
+                optionsObj.source = (request, response) => {
+                  
+                    var test = scope.select({ request: request.term });
+
+                    test.then(function (cvm: ChoiceViewModel) {
+                        response([{ "label": cvm.name, "value": cvm }]);
+                    });
+                };
+
+                optionsObj.select = (event, ui) => {
+                    updateModel(ui.item.value);
+                    return false; 
+                };
+
+                optionsObj.autoFocus = true;
+                optionsObj.minLength = 2; 
+
+                element.autocomplete(optionsObj);
+            }
+        };
+    });
+
+
 }

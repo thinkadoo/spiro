@@ -56,6 +56,62 @@
                 }
             };
         });
+
+        Angular.app.directive('nogAutocomplete', function ($filter, $parse) {
+            return {
+                // Enforce the angularJS default of restricting the directive to
+                // attributes only
+                restrict: 'A',
+                // Always use along with an ng-model
+                require: '?ngModel',
+                // This method needs to be defined and passed in from the
+                // passed in to the directive from the view controller
+                scope: {
+                    select: '&'
+                },
+                link: function (scope, element, attrs, ngModel) {
+                    if (!ngModel)
+                        return;
+
+                    var optionsObj = {};
+
+                    var model = $parse(attrs.nogAutocomplete);
+
+                    ngModel.$render = function () {
+                    };
+
+                    var updateModel = function (cvm) {
+                        scope.$apply(function () {
+                            ngModel.$parsers.push(function (val) {
+                                return cvm;
+                            });
+
+                            ngModel.$setViewValue(cvm.name);
+
+                            element.val(cvm.name);
+                        });
+                    };
+
+                    optionsObj.source = function (request, response) {
+                        var test = scope.select({ request: request.term });
+
+                        test.then(function (cvm) {
+                            response([{ "label": cvm.name, "value": cvm }]);
+                        });
+                    };
+
+                    optionsObj.select = function (event, ui) {
+                        updateModel(ui.item.value);
+                        return false;
+                    };
+
+                    optionsObj.autoFocus = true;
+                    optionsObj.minLength = 2;
+
+                    element.autocomplete(optionsObj);
+                }
+            };
+        });
     })(Spiro.Angular || (Spiro.Angular = {}));
     var Angular = Spiro.Angular;
 })(Spiro || (Spiro = {}));

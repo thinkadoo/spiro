@@ -88,7 +88,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
                 Assert.AreEqual("Find Customer By Account Number", title);
 
-                br.FindElement(By.CssSelector(".parameter-value  input")).SendKeys("AW00022262");
+                br.FindElement(By.CssSelector(".parameter-value  input")).SendKeys("00022262");
 
                 Click(br.FindElement(By.ClassName("show")));
 
@@ -147,7 +147,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
             Assert.AreEqual("Find Customer By Account Number", title);
 
-            br.FindElement(By.CssSelector(".parameter-value  input")).SendKeys("AW00022262");
+            br.FindElement(By.CssSelector(".parameter-value  input")).SendKeys("00022262");
 
             Click(br.FindElement(By.ClassName("go")));
 
