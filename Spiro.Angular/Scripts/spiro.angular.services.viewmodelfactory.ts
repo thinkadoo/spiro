@@ -155,7 +155,17 @@ module Spiro.Angular {
                     return ChoiceViewModel.create(v);
                 });
                 propertyViewModel.hasChoices = propertyViewModel.choices.length > 0;
-                propertyViewModel.choice = null; 
+
+
+                if (propertyViewModel.hasChoices) {
+                    propertyViewModel.choice = _.find(propertyViewModel.choices, (c) => c.name == propertyRep.value().toString());
+                }
+                else if (propertyViewModel.type === "ref") {
+                    propertyViewModel.choice = ChoiceViewModel.create(propertyRep.value());
+                }
+                else {
+                    propertyViewModel.choice = null; 
+                }
 
                 propertyViewModel.autoComplete = function (request): any {
 

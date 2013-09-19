@@ -80,27 +80,35 @@ module Spiro.Angular {
                 var model = $parse(attrs.nogAutocomplete); 
 
                 ngModel.$render = function () {
-                   
+                    var cvm = ngModel.$modelValue; 
+
+                    if (cvm) {
+                        ngModel.$parsers.push((val) => { return cvm; });
+                        ngModel.$setViewValue(cvm.name);
+                        element.val(cvm.name);
+                    }
                 };
              
-                var updateModel = function (cvm : ChoiceViewModel) {
+                var updateModel = function (cvm: ChoiceViewModel) {
                     scope.$apply(function () {
-                     
+
                         ngModel.$parsers.push((val) => { return cvm; });
-
                         ngModel.$setViewValue(cvm.name);
-
                         element.val(cvm.name);
                     });
                 };
 
 
                 optionsObj.source = (request, response) => {
-                  
+
                     var test = scope.select({ request: request.term });
 
-                    test.then(function (cvm: ChoiceViewModel) {
-                        response([{ "label": cvm.name, "value": cvm }]);
+                    scope.$apply(function () {
+                        test.then(function (cvm: ChoiceViewModel) {
+                            response([{ "label": cvm.name, "value": cvm }]);
+                        }, function () {
+                            response([]);
+                        });
                     });
                 };
 

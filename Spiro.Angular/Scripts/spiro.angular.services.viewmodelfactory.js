@@ -144,7 +144,16 @@ var Spiro;
                         return Angular.ChoiceViewModel.create(v);
                     });
                     propertyViewModel.hasChoices = propertyViewModel.choices.length > 0;
-                    propertyViewModel.choice = null;
+
+                    if (propertyViewModel.hasChoices) {
+                        propertyViewModel.choice = _.find(propertyViewModel.choices, function (c) {
+                            return c.name == propertyRep.value().toString();
+                        });
+                    } else if (propertyViewModel.type === "ref") {
+                        propertyViewModel.choice = Angular.ChoiceViewModel.create(propertyRep.value());
+                    } else {
+                        propertyViewModel.choice = null;
+                    }
 
                     propertyViewModel.autoComplete = function (request) {
                         var object = new Spiro.DomainObjectRepresentation();

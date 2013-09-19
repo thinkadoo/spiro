@@ -78,6 +78,15 @@
                     var model = $parse(attrs.nogAutocomplete);
 
                     ngModel.$render = function () {
+                        var cvm = ngModel.$modelValue;
+
+                        if (cvm) {
+                            ngModel.$parsers.push(function (val) {
+                                return cvm;
+                            });
+                            ngModel.$setViewValue(cvm.name);
+                            element.val(cvm.name);
+                        }
                     };
 
                     var updateModel = function (cvm) {
@@ -85,9 +94,7 @@
                             ngModel.$parsers.push(function (val) {
                                 return cvm;
                             });
-
                             ngModel.$setViewValue(cvm.name);
-
                             element.val(cvm.name);
                         });
                     };
@@ -95,8 +102,12 @@
                     optionsObj.source = function (request, response) {
                         var test = scope.select({ request: request.term });
 
-                        test.then(function (cvm) {
-                            response([{ "label": cvm.name, "value": cvm }]);
+                        scope.$apply(function () {
+                            test.then(function (cvm) {
+                                response([{ "label": cvm.name, "value": cvm }]);
+                            }, function () {
+                                response([]);
+                            });
                         });
                     };
 
