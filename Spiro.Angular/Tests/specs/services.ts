@@ -1056,6 +1056,7 @@ describe('Services', function () {
 
                     spyOn(testObject, 'domainType').andReturn("test");
                     spyOn(testObject, 'instanceId').andReturn("1");
+                    spyOn(testObject, 'persistLink').andReturn(null);
 
                     $routeParams.action = "anAction";
                 }));
