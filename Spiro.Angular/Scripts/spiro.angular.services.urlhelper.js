@@ -88,6 +88,31 @@ var Spiro;
             helper.toObjectPath = function (obj) {
                 return "objects/" + obj.domainType() + "/" + obj.instanceId();
             };
+
+            helper.updateParms = function (result, dvm) {
+                var resultParm = "";
+                var actionParm = "";
+
+                function getActionParm() {
+                    if (dvm) {
+                        return dvm.show ? "&action=" + helper.action(dvm) : "";
+                    }
+                    return "";
+                }
+
+                if (result instanceof Spiro.DomainObjectRepresentation) {
+                    var obj = result;
+                    resultParm = "resultObject=" + obj.domainType() + "-" + obj.instanceId();
+                    actionParm = getActionParm();
+                }
+
+                if (result instanceof Spiro.ListRepresentation) {
+                    resultParm = "resultCollection=" + helper.action(dvm);
+                    actionParm = getActionParm();
+                }
+
+                return resultParm + actionParm;
+            };
         });
     })(Spiro.Angular || (Spiro.Angular = {}));
     var Angular = Spiro.Angular;

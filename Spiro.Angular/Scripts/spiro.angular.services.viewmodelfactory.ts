@@ -12,7 +12,7 @@ module Spiro.Angular {
         itemViewModel(linkRep: Link, parentHref: string, index: number): ItemViewModel;
         parameterViewModel(parmRep: Parameter, id: string, previousValue: string): ParameterViewModel;
         actionViewModel(actionRep: ActionMember): ActionViewModel;
-        dialogViewModel(actionRep: ActionRepresentation, invoke: (dvm: DialogViewModel, show: boolean) => void): DialogViewModel;
+        dialogViewModel(actionRep: ActionRepresentation, invoke: (dvm: DialogViewModel) => void): DialogViewModel;
         propertyViewModel(propertyRep: PropertyMember, id: string, propertyDetails?: PropertyRepresentation): PropertyViewModel;
         collectionViewModel(collection: CollectionMember): CollectionViewModel;
         collectionViewModel(collection: CollectionRepresentation): CollectionViewModel;
@@ -114,7 +114,7 @@ module Spiro.Angular {
             return actionViewModel;
         };
 
-        viewModelFactory.dialogViewModel = function (actionRep: ActionRepresentation, invoke: (dvm: DialogViewModel, show: boolean) => void) {
+        viewModelFactory.dialogViewModel = function (actionRep: ActionRepresentation, invoke: (dvm: DialogViewModel) => void) {
             var dialogViewModel = new DialogViewModel();
             var parameters = actionRep.parameters();
             var parms = UrlHelper.actionParms();
@@ -129,8 +129,14 @@ module Spiro.Angular {
             var i = 0;
             dialogViewModel.parameters = _.map(parameters, (parm, id?) => { return viewModelFactory.parameterViewModel(parm, id, parms[i++]); });
 
-            dialogViewModel.doShow = () => invoke(dialogViewModel, true);
-            dialogViewModel.doInvoke = () => invoke(dialogViewModel, false);
+            dialogViewModel.doShow = () => {
+                dialogViewModel.show = true;
+                invoke(dialogViewModel)
+            };
+            dialogViewModel.doInvoke = () => {
+                dialogViewModel.show = false;
+                invoke(dialogViewModel)
+            };
 
             return dialogViewModel;
         };

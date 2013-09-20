@@ -1066,8 +1066,9 @@ describe('Services', function () {
 
                     beforeEach(inject(function (Handlers: Spiro.Angular.IHandlers) {
                         testViewModel.parameters = [];
+                        testViewModel.show = true;
 
-                        (<any>Handlers).setResult(testActionResult, testViewModel, true);
+                        (<any>Handlers).setResult(testActionResult, testViewModel);
                     }));
 
                     it('should set nested object and search', function () {
@@ -1080,6 +1081,7 @@ describe('Services', function () {
                 describe('without show flag', function () {
 
                     beforeEach(inject(function (Handlers: Spiro.Angular.IHandlers) {
+              
                         (<any>Handlers).setResult(testActionResult);
                     }));
 
@@ -1179,8 +1181,9 @@ describe('Services', function () {
                     populate = spyOnPromise(RepLoader, 'populate', testActionResult);
                     setResult = spyOn(Handlers, 'setResult');
                     testViewModel.parameters = testParameters;
+                    testViewModel.show = true;
                     
-                    (<any>Handlers).invokeAction($scope, testAction, testViewModel, false);
+                    (<any>Handlers).invokeAction($scope, testAction, testViewModel);
                 }));
 
                 it('should set result', function () {
@@ -1195,7 +1198,7 @@ describe('Services', function () {
                     expect(clearMessages).toHaveBeenCalled();
                     expect(populate).toHaveBeenCalledWith(testActionResult, true);
 
-                    expect(setResult).toHaveBeenCalledWith(testActionResult, testViewModel, false);
+                    expect(setResult).toHaveBeenCalledWith(testActionResult, testViewModel);
                 });
             });
 

@@ -259,7 +259,7 @@ var Spiro;
             }
 
             // expose for testing
-            handlers.setResult = function (result, dvm, show) {
+            handlers.setResult = function (result, dvm) {
                 if (result.result().isNull()) {
                     if (dvm) {
                         dvm.message = "no result found";
@@ -267,8 +267,7 @@ var Spiro;
                     return;
                 }
 
-                var resultParm = "";
-                var actionParm = "";
+                var parms = "";
 
                 if (result.resultType() === "object" && result.result().object().persistLink()) {
                     var resultObject = result.result().object();
@@ -290,20 +289,16 @@ var Spiro;
                     // set the nested object here and then update the url. That should reload the page but pick up this object
                     // so we don't hit the server again.
                     Context.setNestedObject(resultObject);
-                    resultParm = "resultObject=" + resultObject.domainType() + "-" + resultObject.instanceId();
-                    actionParm = show ? "&action=" + UrlHelper.action(dvm) : "";
+                    parms = UrlHelper.updateParms(resultObject, dvm);
                 }
 
                 if (result.resultType() === "list") {
                     var resultList = result.result().list();
-
                     Context.setCollection(resultList);
-
-                    resultParm = "resultCollection=" + UrlHelper.action(dvm);
-                    actionParm = show ? "&action=" + UrlHelper.action(dvm) : "";
+                    parms = UrlHelper.updateParms(resultList, dvm);
                 }
 
-                $location.search(resultParm + actionParm);
+                $location.search(parms);
             };
 
             handlers.setInvokeUpdateError = function ($scope, error, vms, vm) {
@@ -326,7 +321,7 @@ var Spiro;
                 }
             };
 
-            handlers.invokeAction = function ($scope, action, dvm, show) {
+            handlers.invokeAction = function ($scope, action, dvm) {
                 dvm.clearMessages();
 
                 var invoke = action.getInvoke();
@@ -338,7 +333,7 @@ var Spiro;
                 });
 
                 RepLoader.populate(invoke, true).then(function (result) {
-                    handlers.setResult(result, dvm, show);
+                    handlers.setResult(result, dvm);
                 }, function (error) {
                     handlers.setInvokeUpdateError($scope, error, parameters, dvm);
                 });

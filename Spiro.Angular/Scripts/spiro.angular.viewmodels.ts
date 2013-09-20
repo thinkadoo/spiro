@@ -101,6 +101,7 @@ module Spiro.Angular {
         message: string;
         close: string; 
         isQuery: boolean; 
+        show: boolean; 
 
         parameters: ParameterViewModel[];
 

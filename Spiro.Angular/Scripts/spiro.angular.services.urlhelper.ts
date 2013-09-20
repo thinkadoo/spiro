@@ -18,7 +18,10 @@ module Spiro.Angular {
         toItemUrl(href: string, itemHref: string): string;
 
         toObjectPath(obj: DomainObjectRepresentation): string;
-        toTransientObjectPath(obj: DomainObjectRepresentation): string; 
+        toTransientObjectPath(obj: DomainObjectRepresentation): string;
+
+        updateParms(resultObj: DomainObjectRepresentation, dvm?: DialogViewModel) : string;
+        updateParms(resultList: ListRepresentation, dvm?: DialogViewModel) : string;
     }
 
     app.service('UrlHelper', function ($routeParams : ISpiroRouteParams) {
@@ -102,6 +105,32 @@ module Spiro.Angular {
 
         helper.toObjectPath = function (obj : DomainObjectRepresentation) {
             return "objects/" + obj.domainType() + "/" + obj.instanceId();  
+        }
+
+        helper.updateParms = function (result: Object, dvm?: DialogViewModel) : string {
+
+            var resultParm = "";
+            var actionParm = "";
+
+            function getActionParm() {
+                if (dvm) {
+                    return dvm.show ? "&action=" + helper.action(dvm) : "";
+                }
+                return ""; 
+            }
+
+            if (result instanceof DomainObjectRepresentation) {
+                var obj = <DomainObjectRepresentation>result;
+                resultParm = "resultObject=" + obj.domainType() + "-" + obj.instanceId();  // todo add some parm handling code 
+                actionParm = getActionParm();
+            }
+
+            if (result instanceof ListRepresentation) {
+                resultParm = "resultCollection=" + helper.action(dvm);
+                actionParm = getActionParm();
+            }
+
+            return resultParm + actionParm;
         }
     });
 

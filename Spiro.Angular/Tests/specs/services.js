@@ -957,8 +957,9 @@ describe('Services', function () {
                 describe('with show flag', function () {
                     beforeEach(inject(function (Handlers) {
                         testViewModel.parameters = [];
+                        testViewModel.show = true;
 
-                        (Handlers).setResult(testActionResult, testViewModel, true);
+                        (Handlers).setResult(testActionResult, testViewModel);
                     }));
 
                     it('should set nested object and search', function () {
@@ -1057,8 +1058,9 @@ describe('Services', function () {
                     populate = spyOnPromise(RepLoader, 'populate', testActionResult);
                     setResult = spyOn(Handlers, 'setResult');
                     testViewModel.parameters = testParameters;
+                    testViewModel.show = true;
 
-                    (Handlers).invokeAction($scope, testAction, testViewModel, false);
+                    (Handlers).invokeAction($scope, testAction, testViewModel);
                 }));
 
                 it('should set result', function () {
@@ -1073,7 +1075,7 @@ describe('Services', function () {
                     expect(clearMessages).toHaveBeenCalled();
                     expect(populate).toHaveBeenCalledWith(testActionResult, true);
 
-                    expect(setResult).toHaveBeenCalledWith(testActionResult, testViewModel, false);
+                    expect(setResult).toHaveBeenCalledWith(testActionResult, testViewModel);
                 });
             });
 

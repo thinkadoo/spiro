@@ -26,9 +26,9 @@ module Spiro.Angular {
     }
 
     interface IHandlersInternal extends IHandlers {
-        setResult(result: ActionResultRepresentation, dvm?: DialogViewModel, show?: boolean);
+        setResult(result: ActionResultRepresentation, dvm?: DialogViewModel);
         setInvokeUpdateError($scope, error: any, vms: ValueViewModel[], vm: MessageViewModel);
-        invokeAction($scope, action: Spiro.ActionRepresentation, dvm: DialogViewModel, show: boolean);
+        invokeAction($scope, action: Spiro.ActionRepresentation, dvm: DialogViewModel);
         updateObject($scope, object: DomainObjectRepresentation, ovm: DomainObjectViewModel);
         saveObject($scope, object: DomainObjectRepresentation, ovm: DomainObjectViewModel);
     }
@@ -74,7 +74,7 @@ module Spiro.Angular {
                 }).
                 then(function (action: ActionRepresentation) {
                     if (action.extensions().hasParams) {      
-                        $scope.dialog = ViewModelFactory.dialogViewModel(action, <(dvm: DialogViewModel, show: boolean) => void > _.partial(handlers.invokeAction, $scope, action));
+                        $scope.dialog = ViewModelFactory.dialogViewModel(action, <(dvm: DialogViewModel) => void > _.partial(handlers.invokeAction, $scope, action));
                         $scope.dialogTemplate = dialogTemplate;
                     }
                 }, function (error) {
@@ -331,7 +331,7 @@ module Spiro.Angular {
 
         // expose for testing 
 
-        handlers.setResult = function (result: ActionResultRepresentation, dvm?: DialogViewModel, show?: boolean) {
+        handlers.setResult = function (result: ActionResultRepresentation, dvm?: DialogViewModel) {
             if (result.result().isNull()) {
                 if (dvm) {
                     dvm.message = "no result found";
@@ -339,8 +339,7 @@ module Spiro.Angular {
                 return;
             }
 
-            var resultParm = "";
-            var actionParm = "";
+            var parms = "";
 
             // transient object
             if (result.resultType() === "object" && result.result().object().persistLink()) {
@@ -365,20 +364,16 @@ module Spiro.Angular {
                 // so we don't hit the server again. 
 
                 Context.setNestedObject(resultObject);
-                resultParm = "resultObject=" + resultObject.domainType() + "-" + resultObject.instanceId();  // todo add some parm handling code 
-                actionParm = show ? "&action=" + UrlHelper.action(dvm) : "";
+                parms = UrlHelper.updateParms(resultObject, dvm); 
             }
 
             if (result.resultType() === "list") {
                 var resultList = result.result().list();
-
                 Context.setCollection(resultList);
-
-                resultParm = "resultCollection=" + UrlHelper.action(dvm);
-                actionParm = show ? "&action=" + UrlHelper.action(dvm) : "";
+                parms = UrlHelper.updateParms(resultList, dvm);
             }
 
-            $location.search(resultParm + actionParm);
+            $location.search(parms);
         };
 
         handlers.setInvokeUpdateError = function ($scope, error: any, vms: ValueViewModel[], vm: MessageViewModel) {
@@ -403,7 +398,7 @@ module Spiro.Angular {
             }
         };
 
-        handlers.invokeAction = function ($scope, action: Spiro.ActionRepresentation, dvm: DialogViewModel, show: boolean) {
+        handlers.invokeAction = function ($scope, action: Spiro.ActionRepresentation, dvm: DialogViewModel) {
             dvm.clearMessages();
 
             var invoke = action.getInvoke();
@@ -414,7 +409,7 @@ module Spiro.Angular {
 
             RepLoader.populate(invoke, true).
                 then(function (result: ActionResultRepresentation) {
-                    handlers.setResult(result, dvm, show);
+                    handlers.setResult(result, dvm);
                 }, function (error: any) {
                     handlers.setInvokeUpdateError($scope, error, parameters, dvm);
                 });

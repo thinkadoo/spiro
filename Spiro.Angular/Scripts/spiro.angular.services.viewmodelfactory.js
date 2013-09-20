@@ -115,10 +115,12 @@ var Spiro;
                 });
 
                 dialogViewModel.doShow = function () {
-                    return invoke(dialogViewModel, true);
+                    dialogViewModel.show = true;
+                    invoke(dialogViewModel);
                 };
                 dialogViewModel.doInvoke = function () {
-                    return invoke(dialogViewModel, false);
+                    dialogViewModel.show = false;
+                    invoke(dialogViewModel);
                 };
 
                 return dialogViewModel;
