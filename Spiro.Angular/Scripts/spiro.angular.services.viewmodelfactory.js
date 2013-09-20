@@ -275,7 +275,7 @@ var Spiro;
 
                 objectViewModel.href = UrlHelper.toAppUrl(objectRep.getUrl());
 
-                objectViewModel.cancelEdit = isTransient ? UrlHelper.toAppUrl($location.path()) : UrlHelper.toAppUrl(objectRep.getUrl());
+                objectViewModel.cancelEdit = isTransient ? "" : UrlHelper.toAppUrl(objectRep.getUrl());
 
                 objectViewModel.color = Color.toColorFromType(objectRep.domainType());
 

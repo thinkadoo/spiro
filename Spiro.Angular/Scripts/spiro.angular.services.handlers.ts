@@ -269,10 +269,14 @@ module Spiro.Angular {
                         $scope.backgroundColor = Color.toColorFromType(object.domainType());
 
                         Context.setNestedObject(null);
-                        $scope.object = ViewModelFactory.domainObjectViewModel(object, null, <(ovm: DomainObjectViewModel) => void> _.partial(handlers.saveObject, $scope, object));
+                        var obj = ViewModelFactory.domainObjectViewModel(object, null, <(ovm: DomainObjectViewModel) => void> _.partial(handlers.saveObject, $scope, object));
+                        obj.cancelEdit = "#" + Context.getPreviousUrl(); 
+
+                        $scope.object = obj;
                         $scope.objectTemplate = svrPath + "Content/partials/object.html";
                         $scope.actionTemplate = "";
                         $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
+
                     }
                     else {
                         // transient has disappreared - return to previous page 
@@ -351,8 +355,8 @@ module Spiro.Angular {
                 resultObject.hateoasUrl = "/" + domainType + "/0";
 
                 Context.setTransientObject(resultObject);
-             
-                //resultParm = "resultTransient=" + UrlHelper.action(dvm);
+
+                Context.setPreviousUrl($location.path()); 
                 $location.path("objects/" + domainType);
             }
 

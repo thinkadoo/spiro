@@ -155,6 +155,16 @@ var Spiro;
             context.setTransientObject = function (t) {
                 currentTransient = t;
             };
+
+            var previousUrl = null;
+
+            context.getPreviousUrl = function () {
+                return previousUrl;
+            };
+
+            context.setPreviousUrl = function (url) {
+                previousUrl = url;
+            };
         });
     })(Spiro.Angular || (Spiro.Angular = {}));
     var Angular = Spiro.Angular;

@@ -21,6 +21,10 @@ module Spiro.Angular {
 
         getTransientObject: () => ng.IPromise<DomainObjectRepresentation>;
         setTransientObject: (object: DomainObjectRepresentation) => void;
+
+
+        getPreviousUrl: () => string;
+        setPreviousUrl: (url : string) => void;
     }
 
     interface IContextInternal extends  IContext{
@@ -187,6 +191,17 @@ module Spiro.Angular {
         context.setTransientObject = function (t: DomainObjectRepresentation) {
             currentTransient = t;
         };
+
+        var previousUrl :string = null; 
+
+        context.getPreviousUrl = function () {
+            return previousUrl;
+        }
+
+        context.setPreviousUrl = function (url : string) {
+            previousUrl = url;
+        }
+
     });
 
 }

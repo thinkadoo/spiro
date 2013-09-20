@@ -204,7 +204,10 @@ var Spiro;
                         $scope.backgroundColor = Color.toColorFromType(object.domainType());
 
                         Context.setNestedObject(null);
-                        $scope.object = ViewModelFactory.domainObjectViewModel(object, null, _.partial(handlers.saveObject, $scope, object));
+                        var obj = ViewModelFactory.domainObjectViewModel(object, null, _.partial(handlers.saveObject, $scope, object));
+                        obj.cancelEdit = "#" + Context.getPreviousUrl();
+
+                        $scope.object = obj;
                         $scope.objectTemplate = svrPath + "Content/partials/object.html";
                         $scope.actionTemplate = "";
                         $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
@@ -277,7 +280,7 @@ var Spiro;
 
                     Context.setTransientObject(resultObject);
 
-                    //resultParm = "resultTransient=" + UrlHelper.action(dvm);
+                    Context.setPreviousUrl($location.path());
                     $location.path("objects/" + domainType);
                 }
 
