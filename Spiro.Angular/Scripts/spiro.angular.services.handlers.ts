@@ -451,7 +451,7 @@ module Spiro.Angular {
                 then(function (updatedObject: DomainObjectRepresentation) {
 
                     Context.setObject(updatedObject);
-                    $location.path("#/" + updatedObject.domainType() + "/" + updatedObject.instanceId());
+                    $location.path("objects/" + updatedObject.domainType() + "/" + updatedObject.instanceId());
                 }, function (error: any) {
                     handlers.setInvokeUpdateError($scope, error, properties, ovm);
                 });

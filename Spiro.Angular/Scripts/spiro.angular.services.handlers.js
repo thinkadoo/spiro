@@ -377,7 +377,7 @@ var Spiro;
 
                 RepLoader.populate(persist, true, new Spiro.DomainObjectRepresentation()).then(function (updatedObject) {
                     Context.setObject(updatedObject);
-                    $location.path("#/" + updatedObject.domainType() + "/" + updatedObject.instanceId());
+                    $location.path("objects/" + updatedObject.domainType() + "/" + updatedObject.instanceId());
                 }, function (error) {
                     handlers.setInvokeUpdateError($scope, error, properties, ovm);
                 });
