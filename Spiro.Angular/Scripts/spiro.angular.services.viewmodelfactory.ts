@@ -194,14 +194,14 @@ module Spiro.Angular {
             return propertyViewModel;
         };
 
-        function create(collectionRep: CollectionMember, UrlHelper: IUrlHelper) {
+        function create(collectionRep: CollectionMember) {
             var collectionViewModel = new CollectionViewModel();
 
             collectionViewModel.title = collectionRep.extensions().friendlyName;
             collectionViewModel.size = collectionRep.size();
             collectionViewModel.pluralName = collectionRep.extensions().pluralName;
 
-            collectionViewModel.href = UrlHelper.toCollectionUrl(collectionRep.detailsLink().href());
+            collectionViewModel.href = collectionRep.detailsLink() ? UrlHelper.toCollectionUrl(collectionRep.detailsLink().href()) : "";
             collectionViewModel.color = Color.toColorFromType(collectionRep.extensions().elementType);
 
             collectionViewModel.items = [];
@@ -209,7 +209,7 @@ module Spiro.Angular {
             return collectionViewModel;
         }
 
-        function createFromDetails(collectionRep: CollectionRepresentation, UrlHelper: IUrlHelper) {
+        function createFromDetails(collectionRep: CollectionRepresentation) {
             var collectionViewModel = new CollectionViewModel();
             var links = collectionRep.value().models;
 
@@ -226,16 +226,12 @@ module Spiro.Angular {
             return collectionViewModel;
         }
 
-        function createFromList(listRep: ListRepresentation, UrlHelper: IUrlHelper, $location) {
+        function createFromList(listRep: ListRepresentation) {
             var collectionViewModel = new CollectionViewModel();
             var links = listRep.value().models;
-
-            //collectionViewModel.title = listRep.extensions().friendlyName;
+          
             collectionViewModel.size = links.length;
             collectionViewModel.pluralName = "Objects";
-
-            //collectionViewModel.href = toCollectionUrl(collectionRep.selfLink().href(), $routeParams);
-            //collectionViewModel.color = toColorFromType(listRep.extensions().elementType);
 
             var i = 0;
             collectionViewModel.items = _.map(links, (link) => { return viewModelFactory.itemViewModel(link, $location.path(), i++); });
@@ -243,17 +239,15 @@ module Spiro.Angular {
             return collectionViewModel;
         }
 
-
-
         viewModelFactory.collectionViewModel = function (collection: any) {
             if (collection instanceof CollectionMember) {
-                return create(<CollectionMember>collection, UrlHelper);
+                return create(<CollectionMember>collection);
             }
             if (collection instanceof CollectionRepresentation) {
-                return createFromDetails(<CollectionRepresentation>collection, UrlHelper);
+                return createFromDetails(<CollectionRepresentation>collection);
             }
             if (collection instanceof ListRepresentation) {
-                return createFromList(<ListRepresentation>collection, UrlHelper, $location);
+                return createFromList(<ListRepresentation>collection);
             }
             return null;
         };

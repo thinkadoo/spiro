@@ -22,6 +22,10 @@ module Spiro.Angular {
                 templateUrl: svrPath + 'Content/partials/objectPage.html',
                 controller: 'BackgroundController'
             }).
+            when('/objects/:dt', {
+                templateUrl: svrPath + 'Content/partials/transientObjectPage.html',
+                controller: 'BackgroundController'
+            }).
             otherwise({
                 redirectTo: '/services'
             });

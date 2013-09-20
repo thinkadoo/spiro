@@ -264,13 +264,20 @@ module Spiro.Angular {
             Context.getTransientObject().
                 then(function (object: DomainObjectRepresentation) {
 
-                    $scope.backgroundColor = Color.toColorFromType(object.domainType());
+                    if (object) {
 
-                    Context.setNestedObject(null);
-                    $scope.object = ViewModelFactory.domainObjectViewModel(object, null, <(ovm: DomainObjectViewModel) => void> _.partial(handlers.saveObject, $scope, object));
-                    $scope.objectTemplate = svrPath + "Content/partials/object.html";
-                    $scope.actionTemplate = "";
-                    $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
+                        $scope.backgroundColor = Color.toColorFromType(object.domainType());
+
+                        Context.setNestedObject(null);
+                        $scope.object = ViewModelFactory.domainObjectViewModel(object, null, <(ovm: DomainObjectViewModel) => void> _.partial(handlers.saveObject, $scope, object));
+                        $scope.objectTemplate = svrPath + "Content/partials/object.html";
+                        $scope.actionTemplate = "";
+                        $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
+                    }
+                    else {
+                        // transient has disappreared - return to previous page 
+                        parent.history.back();
+                    }
 
                 }, function (error) {
                     setError(error);
@@ -337,14 +344,16 @@ module Spiro.Angular {
             // transient object
             if (result.resultType() === "object" && result.result().object().persistLink()) {
                 var resultObject = result.result().object();
+                var domainType = resultObject.extensions().domainType
 
-                resultObject.set("domainType", resultObject.extensions().domainType);
+                resultObject.set("domainType", domainType );
                 resultObject.set("instanceId", "0");
-                resultObject.hateoasUrl = "/" + resultObject.extensions().domainType + "/0";
+                resultObject.hateoasUrl = "/" + domainType + "/0";
 
                 Context.setTransientObject(resultObject);
              
-                resultParm = "resultTransient=" + UrlHelper.action(dvm);
+                //resultParm = "resultTransient=" + UrlHelper.action(dvm);
+                $location.path("objects/" + domainType);
             }
 
             // persistent object
@@ -441,13 +450,8 @@ module Spiro.Angular {
             RepLoader.populate(persist, true, new DomainObjectRepresentation()).
                 then(function (updatedObject: DomainObjectRepresentation) {
 
-                    // This is a kludge because updated object has no self link.
-                    //var rawLinks = (<any>object).get("links");
-                    //(<any>updatedObject).set("links", rawLinks);
-
-
                     Context.setObject(updatedObject);
-                    $location.search("");
+                    $location.path("#/" + updatedObject.domainType() + "/" + updatedObject.instanceId());
                 }, function (error: any) {
                     handlers.setInvokeUpdateError($scope, error, properties, ovm);
                 });

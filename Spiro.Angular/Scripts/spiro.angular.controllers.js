@@ -53,11 +53,13 @@
         Angular.app.controller('ObjectController', function ($scope, $routeParams, Handlers) {
             if ($routeParams.editMode) {
                 Handlers.handleEditObject($scope);
-            } else if ($routeParams.resultTransient) {
-                Handlers.handleTransientObject($scope);
             } else {
                 Handlers.handleObject($scope);
             }
+        });
+
+        Angular.app.controller('TransientObjectController', function ($scope, $routeParams, Handlers) {
+            Handlers.handleTransientObject($scope);
         });
 
         Angular.app.controller('ErrorController', function ($scope, Handlers) {

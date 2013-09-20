@@ -204,6 +204,7 @@
     <Content Include="Content\jasmine\jasmine_favicon.png" />
     <Content Include="Content\partials\appbar.html" />
     <Content Include="Content\partials\actions.html" />
+    <Content Include="Content\partials\transientObjectPage.html" />
     <Content Include="Content\partials\objectPage.html" />
     <Content Include="Content\partials\servicesPage.html" />
     <Content Include="Content\partials\servicePage.html" />

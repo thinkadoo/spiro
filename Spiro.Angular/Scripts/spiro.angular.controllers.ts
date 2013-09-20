@@ -63,12 +63,13 @@ module Spiro.Angular {
         if ($routeParams.editMode) {
             Handlers.handleEditObject($scope);
         }
-        else if ($routeParams.resultTransient) {
-            Handlers.handleTransientObject($scope);
-        }
         else {
             Handlers.handleObject($scope);
         }
+    });
+
+    app.controller('TransientObjectController', function ($scope: ng.IScope, $routeParams: ISpiroRouteParams, Handlers: IHandlers) {
+        Handlers.handleTransientObject($scope);
     });
 
     app.controller('ErrorController', function ($scope: ng.IScope, Handlers: IHandlers) {

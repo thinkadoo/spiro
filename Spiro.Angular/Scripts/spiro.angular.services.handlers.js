@@ -200,13 +200,18 @@ var Spiro;
 
             handlers.handleTransientObject = function ($scope) {
                 Context.getTransientObject().then(function (object) {
-                    $scope.backgroundColor = Color.toColorFromType(object.domainType());
+                    if (object) {
+                        $scope.backgroundColor = Color.toColorFromType(object.domainType());
 
-                    Context.setNestedObject(null);
-                    $scope.object = ViewModelFactory.domainObjectViewModel(object, null, _.partial(handlers.saveObject, $scope, object));
-                    $scope.objectTemplate = svrPath + "Content/partials/object.html";
-                    $scope.actionTemplate = "";
-                    $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
+                        Context.setNestedObject(null);
+                        $scope.object = ViewModelFactory.domainObjectViewModel(object, null, _.partial(handlers.saveObject, $scope, object));
+                        $scope.objectTemplate = svrPath + "Content/partials/object.html";
+                        $scope.actionTemplate = "";
+                        $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
+                    } else {
+                        // transient has disappreared - return to previous page
+                        parent.history.back();
+                    }
                 }, function (error) {
                     setError(error);
                 });
@@ -264,14 +269,16 @@ var Spiro;
 
                 if (result.resultType() === "object" && result.result().object().persistLink()) {
                     var resultObject = result.result().object();
+                    var domainType = resultObject.extensions().domainType;
 
-                    resultObject.set("domainType", resultObject.extensions().domainType);
+                    resultObject.set("domainType", domainType);
                     resultObject.set("instanceId", "0");
-                    resultObject.hateoasUrl = "/" + resultObject.extensions().domainType + "/0";
+                    resultObject.hateoasUrl = "/" + domainType + "/0";
 
                     Context.setTransientObject(resultObject);
 
-                    resultParm = "resultTransient=" + UrlHelper.action(dvm);
+                    //resultParm = "resultTransient=" + UrlHelper.action(dvm);
+                    $location.path("objects/" + domainType);
                 }
 
                 if (result.resultType() === "object" && !result.result().object().persistLink()) {
@@ -369,11 +376,8 @@ var Spiro;
                 });
 
                 RepLoader.populate(persist, true, new Spiro.DomainObjectRepresentation()).then(function (updatedObject) {
-                    // This is a kludge because updated object has no self link.
-                    //var rawLinks = (<any>object).get("links");
-                    //(<any>updatedObject).set("links", rawLinks);
                     Context.setObject(updatedObject);
-                    $location.search("");
+                    $location.path("#/" + updatedObject.domainType() + "/" + updatedObject.instanceId());
                 }, function (error) {
                     handlers.setInvokeUpdateError($scope, error, properties, ovm);
                 });

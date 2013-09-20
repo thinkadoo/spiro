@@ -182,14 +182,14 @@ var Spiro;
                 return propertyViewModel;
             };
 
-            function create(collectionRep, UrlHelper) {
+            function create(collectionRep) {
                 var collectionViewModel = new Angular.CollectionViewModel();
 
                 collectionViewModel.title = collectionRep.extensions().friendlyName;
                 collectionViewModel.size = collectionRep.size();
                 collectionViewModel.pluralName = collectionRep.extensions().pluralName;
 
-                collectionViewModel.href = UrlHelper.toCollectionUrl(collectionRep.detailsLink().href());
+                collectionViewModel.href = collectionRep.detailsLink() ? UrlHelper.toCollectionUrl(collectionRep.detailsLink().href()) : "";
                 collectionViewModel.color = Color.toColorFromType(collectionRep.extensions().elementType);
 
                 collectionViewModel.items = [];
@@ -197,7 +197,7 @@ var Spiro;
                 return collectionViewModel;
             }
 
-            function createFromDetails(collectionRep, UrlHelper) {
+            function createFromDetails(collectionRep) {
                 var collectionViewModel = new Angular.CollectionViewModel();
                 var links = collectionRep.value().models;
 
@@ -216,16 +216,13 @@ var Spiro;
                 return collectionViewModel;
             }
 
-            function createFromList(listRep, UrlHelper, $location) {
+            function createFromList(listRep) {
                 var collectionViewModel = new Angular.CollectionViewModel();
                 var links = listRep.value().models;
 
-                //collectionViewModel.title = listRep.extensions().friendlyName;
                 collectionViewModel.size = links.length;
                 collectionViewModel.pluralName = "Objects";
 
-                //collectionViewModel.href = toCollectionUrl(collectionRep.selfLink().href(), $routeParams);
-                //collectionViewModel.color = toColorFromType(listRep.extensions().elementType);
                 var i = 0;
                 collectionViewModel.items = _.map(links, function (link) {
                     return viewModelFactory.itemViewModel(link, $location.path(), i++);
@@ -236,13 +233,13 @@ var Spiro;
 
             viewModelFactory.collectionViewModel = function (collection) {
                 if (collection instanceof Spiro.CollectionMember) {
-                    return create(collection, UrlHelper);
+                    return create(collection);
                 }
                 if (collection instanceof Spiro.CollectionRepresentation) {
-                    return createFromDetails(collection, UrlHelper);
+                    return createFromDetails(collection);
                 }
                 if (collection instanceof Spiro.ListRepresentation) {
-                    return createFromList(collection, UrlHelper, $location);
+                    return createFromList(collection);
                 }
                 return null;
             };
