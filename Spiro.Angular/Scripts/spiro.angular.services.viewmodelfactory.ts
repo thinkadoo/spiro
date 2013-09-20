@@ -146,7 +146,10 @@ module Spiro.Angular {
             propertyViewModel.target = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : UrlHelper.toAppUrl(propertyRep.value().link().href());
             propertyViewModel.reference = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : propertyRep.value().link().href();
 
-            propertyViewModel.color = Color.toColorFromType(propertyRep.extensions().returnType);
+            // only set color if has value 
+            propertyViewModel.color = propertyViewModel.value ? Color.toColorFromType(propertyRep.extensions().returnType) : "";
+
+
             propertyViewModel.id = id;
             propertyViewModel.isEditable = !propertyRep.disabledReason();
             propertyViewModel.choices = [];

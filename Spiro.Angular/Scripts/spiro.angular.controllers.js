@@ -6,10 +6,7 @@
     /// <reference path="spiro.angular.app.ts" />
     // tested
     (function (Angular) {
-        Angular.app.controller('BackgroundController', function ($scope, $location, $routeParams, Color, UrlHelper) {
-            if ($routeParams.resultTransient) {
-                return;
-            }
+        Angular.app.controller('BackgroundController', function ($scope, $location, Color, UrlHelper) {
             $scope.backgroundColor = Color.toColorFromHref($location.absUrl());
             $scope.closeNestedObject = UrlHelper.toAppUrl($location.path(), ["property", "collectionItem", "resultObject"]);
             $scope.closeCollection = UrlHelper.toAppUrl($location.path(), ["collection", "resultCollection"]);
@@ -33,6 +30,7 @@
             if ($routeParams.action) {
                 Handlers.handleActionResult($scope);
             }
+
             if ($routeParams.property) {
                 Handlers.handleProperty($scope);
             } else if ($routeParams.collectionItem) {
@@ -58,7 +56,7 @@
             }
         });
 
-        Angular.app.controller('TransientObjectController', function ($scope, $routeParams, Handlers) {
+        Angular.app.controller('TransientObjectController', function ($scope, Handlers) {
             Handlers.handleTransientObject($scope);
         });
 

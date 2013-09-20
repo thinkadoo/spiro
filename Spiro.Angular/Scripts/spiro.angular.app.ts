@@ -40,9 +40,22 @@ module Spiro.Angular {
         resultCollection: string; 
         collection: string; 
         editMode: string; 
-        resultTransient: string; 
         dt: string; 
         id: string; 
         sid: string; 
     }
+
+    // templates 
+    export var nestedCollectionTemplate = svrPath + "Content/partials/nestedCollection.html";    
+    export var nestedObjectTemplate = svrPath + "Content/partials/nestedObject.html";   
+    export var dialogTemplate = svrPath + "Content/partials/dialog.html";
+    export var servicesTemplate = svrPath + "Content/partials/services.html";
+    export var serviceTemplate = svrPath + "Content/partials/service.html";
+    export var actionTemplate = svrPath + "Content/partials/actions.html";
+    export var errorTemplate = svrPath + "Content/partials/error.html";
+    export var appBarTemplate = svrPath + "Content/partials/appbar.html";
+    export var objectTemplate = svrPath + "Content/partials/object.html";
+    export var viewPropertiesTemplate = svrPath + "Content/partials/viewProperties.html";
+    export var editPropertiesTemplate = svrPath + "Content/partials/editProperties.html";
+
 }

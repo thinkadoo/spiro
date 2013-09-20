@@ -6,17 +6,10 @@
 // tested 
 module Spiro.Angular {
 
-    declare var svrPath: string;
-
-    app.controller('BackgroundController', function ($scope, $location: ng.ILocationService, $routeParams: ISpiroRouteParams, Color: IColor, UrlHelper: IUrlHelper) {
-
-        if ($routeParams.resultTransient) {
-            return;
-        }
+    app.controller('BackgroundController', function ($scope, $location: ng.ILocationService, Color: IColor, UrlHelper: IUrlHelper) {
         $scope.backgroundColor = Color.toColorFromHref($location.absUrl());
         $scope.closeNestedObject = UrlHelper.toAppUrl($location.path(), ["property", "collectionItem", "resultObject"]);
         $scope.closeCollection = UrlHelper.toAppUrl($location.path(), ["collection", "resultCollection"]);
-
     });
 
     app.controller('ServicesController', function ($scope : ng.IScope, Handlers: IHandlers) {
@@ -39,6 +32,7 @@ module Spiro.Angular {
         if ($routeParams.action) {
             Handlers.handleActionResult($scope);
         }
+        // action + one of  
         if ($routeParams.property) {
             Handlers.handleProperty($scope);
         }
@@ -68,7 +62,7 @@ module Spiro.Angular {
         }
     });
 
-    app.controller('TransientObjectController', function ($scope: ng.IScope, $routeParams: ISpiroRouteParams, Handlers: IHandlers) {
+    app.controller('TransientObjectController', function ($scope: ng.IScope, Handlers: IHandlers) {
         Handlers.handleTransientObject($scope);
     });
 

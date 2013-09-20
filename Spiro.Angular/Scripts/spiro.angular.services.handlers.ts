@@ -40,12 +40,10 @@ module Spiro.Angular {
 
         // tested
         handlers.handleCollectionResult = function ($scope) {
-         
             Context.getCollection().
                 then(function (list: ListRepresentation) {
                     $scope.collection = ViewModelFactory.collectionViewModel(list);
-                    $scope.collectionTemplate = svrPath + "Content/partials/nestedCollection.html";
-                 
+                    $scope.collectionTemplate = nestedCollectionTemplate;             
                 }, function (error) {
                     setError(error);
                 });
@@ -60,7 +58,7 @@ module Spiro.Angular {
                 }).
                 then(function (details: CollectionRepresentation) {
                     $scope.collection = ViewModelFactory.collectionViewModel(details);
-                    $scope.collectionTemplate = svrPath + "Content/partials/nestedCollection.html";
+                    $scope.collectionTemplate = nestedCollectionTemplate;
                 }, function (error) {
                     setError(error);
                 });
@@ -77,7 +75,7 @@ module Spiro.Angular {
                 then(function (action: ActionRepresentation) {
                     if (action.extensions().hasParams) {      
                         $scope.dialog = ViewModelFactory.dialogViewModel(action, <(dvm: DialogViewModel, show: boolean) => void > _.partial(handlers.invokeAction, $scope, action));
-                        $scope.dialogTemplate = svrPath + "Content/partials/dialog.html";
+                        $scope.dialogTemplate = dialogTemplate;
                     }
                 }, function (error) {
                     setError(error);
@@ -149,7 +147,7 @@ module Spiro.Angular {
             Context.getServices().
                 then(function (services: DomainServicesRepresentation) {
                     $scope.services = ViewModelFactory.servicesViewModel(services);
-                    $scope.servicesTemplate = svrPath + "Content/partials/services.html";
+                    $scope.servicesTemplate = servicesTemplate;
                     Context.setObject(null);
                     Context.setNestedObject(null);
                 }, function (error) {
@@ -162,8 +160,8 @@ module Spiro.Angular {
             Context.getObject($routeParams.sid).
                 then(function (service: DomainObjectRepresentation) {
                     $scope.object = ViewModelFactory.serviceViewModel(service);
-                    $scope.serviceTemplate = svrPath + "Content/partials/service.html";
-                    $scope.actionTemplate = svrPath + "Content/partials/actions.html";             
+                    $scope.serviceTemplate = serviceTemplate;
+                    $scope.actionTemplate = actionTemplate;           
                 }, function (error) {
                     setError(error);
                 });
@@ -180,7 +178,7 @@ module Spiro.Angular {
             Context.getNestedObject(dt, id).
                 then(function (object: DomainObjectRepresentation) {
                     $scope.result = ViewModelFactory.domainObjectViewModel(object); // todo rename result
-                    $scope.nestedTemplate = svrPath + "Content/partials/nestedObject.html";
+                    $scope.nestedTemplate = nestedObjectTemplate;
                     Context.setNestedObject(object);
                 }, function (error) {
                     setError(error);
@@ -189,13 +187,12 @@ module Spiro.Angular {
         };
 
         // tested
-        handlers.handleError = function ($scope) {
-            
+        handlers.handleError = function ($scope) {          
             var error = Context.getError();
             if (error) {
                 var evm = ViewModelFactory.errorViewModel(error);
                 $scope.error = evm;
-                $scope.errorTemplate = svrPath + "Content/partials/error.html";
+                $scope.errorTemplate = errorTemplate;
             }
         };
 
@@ -213,8 +210,8 @@ module Spiro.Angular {
                 }
             });
 
-         
-            $scope.appBar.template = svrPath + "Content/partials/appbar.html";
+
+            $scope.appBar.template = appBarTemplate;
 
             $scope.appBar.goHome = "#/";
 
@@ -234,11 +231,10 @@ module Spiro.Angular {
                 Context.getObject($routeParams.dt, $routeParams.id).
                     then(function (object: DomainObjectRepresentation) {
 
-                        $scope.appBar.hideEdit = !(object) || $routeParams.editMode || $routeParams.resultTransient || false;
+                        $scope.appBar.hideEdit = !(object) || $routeParams.editMode || false;
 
                         // rework to use viewmodel code
                         $scope.appBar.doEdit = "#" + $location.path() + "?editMode=true";
-
                     });
             }
         };
@@ -250,9 +246,9 @@ module Spiro.Angular {
                 then(function (object: DomainObjectRepresentation) {
                     Context.setNestedObject(null);
                     $scope.object = ViewModelFactory.domainObjectViewModel(object);
-                    $scope.objectTemplate = svrPath + "Content/partials/object.html";
-                    $scope.actionTemplate = svrPath + "Content/partials/actions.html";
-                    $scope.propertiesTemplate = svrPath + "Content/partials/viewProperties.html";
+                    $scope.objectTemplate = objectTemplate;
+                    $scope.actionTemplate = actionTemplate;
+                    $scope.propertiesTemplate = viewPropertiesTemplate;
                 }, function (error) {
                     setError(error);
                 });
@@ -273,9 +269,9 @@ module Spiro.Angular {
                         obj.cancelEdit = "#" + Context.getPreviousUrl(); 
 
                         $scope.object = obj;
-                        $scope.objectTemplate = svrPath + "Content/partials/object.html";
+                        $scope.objectTemplate = objectTemplate;
                         $scope.actionTemplate = "";
-                        $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
+                        $scope.propertiesTemplate = editPropertiesTemplate;
 
                     }
                     else {
@@ -300,9 +296,9 @@ module Spiro.Angular {
                     $q.all(detailPromises).then(function (details: PropertyRepresentation[]) {
                         Context.setNestedObject(null);
                         $scope.object = ViewModelFactory.domainObjectViewModel(object, details, <(ovm: DomainObjectViewModel) => void> _.partial(handlers.updateObject, $scope, object));
-                        $scope.objectTemplate = svrPath + "Content/partials/object.html";
+                        $scope.objectTemplate = objectTemplate;
                         $scope.actionTemplate = "";
-                        $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
+                        $scope.propertiesTemplate = editPropertiesTemplate;
                     }, function (error) {
                             setError(error);
                         });
@@ -316,7 +312,7 @@ module Spiro.Angular {
 
         function setNestedObject(object: DomainObjectRepresentation, $scope) {
             $scope.result = ViewModelFactory.domainObjectViewModel(object); // todo rename result
-            $scope.nestedTemplate = svrPath + "Content/partials/nestedObject.html";
+            $scope.nestedTemplate = nestedObjectTemplate;
             Context.setNestedObject(object);
         }
 
@@ -398,7 +394,7 @@ module Spiro.Angular {
             else if (error instanceof ErrorRepresentation) {
                 var evm = ViewModelFactory.errorViewModel(error);
                 $scope.error = evm;
-                $scope.dialogTemplate = svrPath + "Content/partials/error.html";
+                $scope.dialogTemplate = errorTemplate;
             }
             else {
                 vm.message = error;

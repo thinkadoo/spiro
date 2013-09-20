@@ -14,7 +14,7 @@ var Spiro;
             handlers.handleCollectionResult = function ($scope) {
                 Context.getCollection().then(function (list) {
                     $scope.collection = ViewModelFactory.collectionViewModel(list);
-                    $scope.collectionTemplate = svrPath + "Content/partials/nestedCollection.html";
+                    $scope.collectionTemplate = Angular.nestedCollectionTemplate;
                 }, function (error) {
                     setError(error);
                 });
@@ -27,7 +27,7 @@ var Spiro;
                     return RepLoader.populate(collectionDetails);
                 }).then(function (details) {
                     $scope.collection = ViewModelFactory.collectionViewModel(details);
-                    $scope.collectionTemplate = svrPath + "Content/partials/nestedCollection.html";
+                    $scope.collectionTemplate = Angular.nestedCollectionTemplate;
                 }, function (error) {
                     setError(error);
                 });
@@ -41,7 +41,7 @@ var Spiro;
                 }).then(function (action) {
                     if (action.extensions().hasParams) {
                         $scope.dialog = ViewModelFactory.dialogViewModel(action, _.partial(handlers.invokeAction, $scope, action));
-                        $scope.dialogTemplate = svrPath + "Content/partials/dialog.html";
+                        $scope.dialogTemplate = Angular.dialogTemplate;
                     }
                 }, function (error) {
                     setError(error);
@@ -105,7 +105,7 @@ var Spiro;
             handlers.handleServices = function ($scope) {
                 Context.getServices().then(function (services) {
                     $scope.services = ViewModelFactory.servicesViewModel(services);
-                    $scope.servicesTemplate = svrPath + "Content/partials/services.html";
+                    $scope.servicesTemplate = Angular.servicesTemplate;
                     Context.setObject(null);
                     Context.setNestedObject(null);
                 }, function (error) {
@@ -117,8 +117,8 @@ var Spiro;
             handlers.handleService = function ($scope) {
                 Context.getObject($routeParams.sid).then(function (service) {
                     $scope.object = ViewModelFactory.serviceViewModel(service);
-                    $scope.serviceTemplate = svrPath + "Content/partials/service.html";
-                    $scope.actionTemplate = svrPath + "Content/partials/actions.html";
+                    $scope.serviceTemplate = Angular.serviceTemplate;
+                    $scope.actionTemplate = Angular.actionTemplate;
                 }, function (error) {
                     setError(error);
                 });
@@ -132,7 +132,7 @@ var Spiro;
 
                 Context.getNestedObject(dt, id).then(function (object) {
                     $scope.result = ViewModelFactory.domainObjectViewModel(object);
-                    $scope.nestedTemplate = svrPath + "Content/partials/nestedObject.html";
+                    $scope.nestedTemplate = Angular.nestedObjectTemplate;
                     Context.setNestedObject(object);
                 }, function (error) {
                     setError(error);
@@ -145,7 +145,7 @@ var Spiro;
                 if (error) {
                     var evm = ViewModelFactory.errorViewModel(error);
                     $scope.error = evm;
-                    $scope.errorTemplate = svrPath + "Content/partials/error.html";
+                    $scope.errorTemplate = Angular.errorTemplate;
                 }
             };
 
@@ -161,7 +161,7 @@ var Spiro;
                     }
                 });
 
-                $scope.appBar.template = svrPath + "Content/partials/appbar.html";
+                $scope.appBar.template = Angular.appBarTemplate;
 
                 $scope.appBar.goHome = "#/";
 
@@ -177,7 +177,7 @@ var Spiro;
 
                 if ($routeParams.dt && $routeParams.id) {
                     Context.getObject($routeParams.dt, $routeParams.id).then(function (object) {
-                        $scope.appBar.hideEdit = !(object) || $routeParams.editMode || $routeParams.resultTransient || false;
+                        $scope.appBar.hideEdit = !(object) || $routeParams.editMode || false;
 
                         // rework to use viewmodel code
                         $scope.appBar.doEdit = "#" + $location.path() + "?editMode=true";
@@ -190,9 +190,9 @@ var Spiro;
                 Context.getObject($routeParams.dt, $routeParams.id).then(function (object) {
                     Context.setNestedObject(null);
                     $scope.object = ViewModelFactory.domainObjectViewModel(object);
-                    $scope.objectTemplate = svrPath + "Content/partials/object.html";
-                    $scope.actionTemplate = svrPath + "Content/partials/actions.html";
-                    $scope.propertiesTemplate = svrPath + "Content/partials/viewProperties.html";
+                    $scope.objectTemplate = Angular.objectTemplate;
+                    $scope.actionTemplate = Angular.actionTemplate;
+                    $scope.propertiesTemplate = Angular.viewPropertiesTemplate;
                 }, function (error) {
                     setError(error);
                 });
@@ -208,9 +208,9 @@ var Spiro;
                         obj.cancelEdit = "#" + Context.getPreviousUrl();
 
                         $scope.object = obj;
-                        $scope.objectTemplate = svrPath + "Content/partials/object.html";
+                        $scope.objectTemplate = Angular.objectTemplate;
                         $scope.actionTemplate = "";
-                        $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
+                        $scope.propertiesTemplate = Angular.editPropertiesTemplate;
                     } else {
                         // transient has disappreared - return to previous page
                         parent.history.back();
@@ -230,9 +230,9 @@ var Spiro;
                     $q.all(detailPromises).then(function (details) {
                         Context.setNestedObject(null);
                         $scope.object = ViewModelFactory.domainObjectViewModel(object, details, _.partial(handlers.updateObject, $scope, object));
-                        $scope.objectTemplate = svrPath + "Content/partials/object.html";
+                        $scope.objectTemplate = Angular.objectTemplate;
                         $scope.actionTemplate = "";
-                        $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
+                        $scope.propertiesTemplate = Angular.editPropertiesTemplate;
                     }, function (error) {
                         setError(error);
                     });
@@ -244,7 +244,7 @@ var Spiro;
             // helper functions
             function setNestedObject(object, $scope) {
                 $scope.result = ViewModelFactory.domainObjectViewModel(object);
-                $scope.nestedTemplate = svrPath + "Content/partials/nestedObject.html";
+                $scope.nestedTemplate = Angular.nestedObjectTemplate;
                 Context.setNestedObject(object);
             }
 
@@ -319,7 +319,7 @@ var Spiro;
                 } else if (error instanceof Spiro.ErrorRepresentation) {
                     var evm = ViewModelFactory.errorViewModel(error);
                     $scope.error = evm;
-                    $scope.dialogTemplate = svrPath + "Content/partials/error.html";
+                    $scope.dialogTemplate = Angular.errorTemplate;
                 } else {
                     vm.message = error;
                 }

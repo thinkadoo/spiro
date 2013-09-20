@@ -22,6 +22,19 @@
                 redirectTo: '/services'
             });
         });
+
+        // templates
+        Angular.nestedCollectionTemplate = svrPath + "Content/partials/nestedCollection.html";
+        Angular.nestedObjectTemplate = svrPath + "Content/partials/nestedObject.html";
+        Angular.dialogTemplate = svrPath + "Content/partials/dialog.html";
+        Angular.servicesTemplate = svrPath + "Content/partials/services.html";
+        Angular.serviceTemplate = svrPath + "Content/partials/service.html";
+        Angular.actionTemplate = svrPath + "Content/partials/actions.html";
+        Angular.errorTemplate = svrPath + "Content/partials/error.html";
+        Angular.appBarTemplate = svrPath + "Content/partials/appbar.html";
+        Angular.objectTemplate = svrPath + "Content/partials/object.html";
+        Angular.viewPropertiesTemplate = svrPath + "Content/partials/viewProperties.html";
+        Angular.editPropertiesTemplate = svrPath + "Content/partials/editProperties.html";
     })(Spiro.Angular || (Spiro.Angular = {}));
     var Angular = Spiro.Angular;
 })(Spiro || (Spiro = {}));

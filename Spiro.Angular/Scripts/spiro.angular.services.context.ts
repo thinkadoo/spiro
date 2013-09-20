@@ -18,11 +18,8 @@ module Spiro.Angular {
         setCollection: (list: ListRepresentation) => void;
         getError: () => ErrorRepresentation;
         setError: (object: ErrorRepresentation) => void;
-
         getTransientObject: () => ng.IPromise<DomainObjectRepresentation>;
         setTransientObject: (object: DomainObjectRepresentation) => void;
-
-
         getPreviousUrl: () => string;
         setPreviousUrl: (url : string) => void;
     }
