@@ -18,6 +18,9 @@ module Spiro.Angular {
         setCollection: (list: ListRepresentation) => void;
         getError: () => ErrorRepresentation;
         setError: (object: ErrorRepresentation) => void;
+
+        getTransientObject: () => ng.IPromise<DomainObjectRepresentation>;
+        setTransientObject: (object: DomainObjectRepresentation) => void;
     }
 
     interface IContextInternal extends  IContext{
@@ -173,6 +176,17 @@ module Spiro.Angular {
             currentCollection = c;
         };
 
+        var currentTransient: DomainObjectRepresentation = null;
+
+        context.getTransientObject = function () {
+            var delay = $q.defer<DomainObjectRepresentation>();
+            delay.resolve(currentTransient);
+            return delay.promise;
+        };
+
+        context.setTransientObject = function (t: DomainObjectRepresentation) {
+            currentTransient = t;
+        };
     });
 
 }

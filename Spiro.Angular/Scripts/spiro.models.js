@@ -1,25 +1,9 @@
-﻿//Copyright 2013 Naked Objects Group Ltd
-//Licensed under the Apache License, Version 2.0(the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-var __extends = this.__extends || function (d, b) {
+﻿var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-// ABOUT THIS FILE:
-// spiro.models defines a set of classes that correspond directly to the JSON representations returned by Restful Objects
-// resources.  These classes provide convenient methods for navigating the contents of those representations, and for
-// following links to other resources.
-/// <reference path="typings/jquery/jquery.d.ts" />
-/// <reference path="typings/underscore/underscore.d.ts" />
-/// <reference path="spiro.models.shims.ts" />
 var Spiro;
 (function (Spiro) {
     function isScalarType(typeName) {
@@ -226,11 +210,14 @@ var Spiro;
         ErrorMap.prototype.valuesMap = function () {
             var vs = {};
 
-            for (var v in this.attributes) {
-                if (this.attributes[v].hasOwnProperty("value")) {
+            // distinguish between value map and persist map
+            var map = this.attributes.members ? this.attributes.members : this.attributes;
+
+            for (var v in map) {
+                if (map[v].hasOwnProperty("value")) {
                     var ev = {
-                        value: new Value(this.attributes[v].value),
-                        invalidReason: this.attributes[v].invalidReason
+                        value: new Value(map[v].value),
+                        invalidReason: map[v].invalidReason
                     };
                     vs[v] = ev;
                 }

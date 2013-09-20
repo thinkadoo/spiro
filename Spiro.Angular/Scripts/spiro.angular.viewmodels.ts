@@ -71,7 +71,10 @@ module Spiro.Angular {
             }
 
             if (this.hasChoices || this.choice) {
-                return new Value({ href: this.choice.value, title: this.choice.name });
+                if (this.choice.value) {
+                    return new Value({ href: this.choice.value, title: this.choice.name });
+                }
+                return new Value("");
             }
 
             if (this.reference === "") {

@@ -143,6 +143,18 @@ var Spiro;
             context.setCollection = function (c) {
                 currentCollection = c;
             };
+
+            var currentTransient = null;
+
+            context.getTransientObject = function () {
+                var delay = $q.defer();
+                delay.resolve(currentTransient);
+                return delay.promise;
+            };
+
+            context.setTransientObject = function (t) {
+                currentTransient = t;
+            };
         });
     })(Spiro.Angular || (Spiro.Angular = {}));
     var Angular = Spiro.Angular;

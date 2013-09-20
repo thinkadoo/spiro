@@ -7,17 +7,14 @@ var Spiro;
     /// <reference path="spiro.angular.app.ts" />
     (function (Angular) {
         // TODO rename
-        Angular.app.service("Handlers", function ($routeParams, $location, $q, $cacheFactory, RepLoader, Context, ViewModelFactory, UrlHelper) {
+        Angular.app.service("Handlers", function ($routeParams, $location, $q, $cacheFactory, RepLoader, Context, ViewModelFactory, UrlHelper, Color) {
             var handlers = this;
 
             // tested
             handlers.handleCollectionResult = function ($scope) {
-                $scope.loading = true;
                 Context.getCollection().then(function (list) {
                     $scope.collection = ViewModelFactory.collectionViewModel(list);
                     $scope.collectionTemplate = svrPath + "Content/partials/nestedCollection.html";
-                    $scope.loading = false;
-                    ;
                 }, function (error) {
                     setError(error);
                 });
@@ -180,7 +177,7 @@ var Spiro;
 
                 if ($routeParams.dt && $routeParams.id) {
                     Context.getObject($routeParams.dt, $routeParams.id).then(function (object) {
-                        $scope.appBar.hideEdit = !(object) || $routeParams.editMode || false;
+                        $scope.appBar.hideEdit = !(object) || $routeParams.editMode || $routeParams.resultTransient || false;
 
                         // rework to use viewmodel code
                         $scope.appBar.doEdit = "#" + $location.path() + "?editMode=true";
@@ -196,6 +193,20 @@ var Spiro;
                     $scope.objectTemplate = svrPath + "Content/partials/object.html";
                     $scope.actionTemplate = svrPath + "Content/partials/actions.html";
                     $scope.propertiesTemplate = svrPath + "Content/partials/viewProperties.html";
+                }, function (error) {
+                    setError(error);
+                });
+            };
+
+            handlers.handleTransientObject = function ($scope) {
+                Context.getTransientObject().then(function (object) {
+                    $scope.backgroundColor = Color.toColorFromType(object.domainType());
+
+                    Context.setNestedObject(null);
+                    $scope.object = ViewModelFactory.domainObjectViewModel(object, null, _.partial(handlers.saveObject, $scope, object));
+                    $scope.objectTemplate = svrPath + "Content/partials/object.html";
+                    $scope.actionTemplate = "";
+                    $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
                 }, function (error) {
                     setError(error);
                 });
@@ -251,13 +262,24 @@ var Spiro;
                 var resultParm = "";
                 var actionParm = "";
 
-                if (result.resultType() === "object") {
+                if (result.resultType() === "object" && result.result().object().persistLink()) {
+                    var resultObject = result.result().object();
+
+                    resultObject.set("domainType", resultObject.extensions().domainType);
+                    resultObject.set("instanceId", "0");
+                    resultObject.hateoasUrl = "/" + resultObject.extensions().domainType + "/0";
+
+                    Context.setTransientObject(resultObject);
+
+                    resultParm = "resultTransient=" + UrlHelper.action(dvm);
+                }
+
+                if (result.resultType() === "object" && !result.result().object().persistLink()) {
                     var resultObject = result.result().object();
 
                     // set the nested object here and then update the url. That should reload the page but pick up this object
                     // so we don't hit the server again.
                     Context.setNestedObject(resultObject);
-
                     resultParm = "resultObject=" + resultObject.domainType() + "-" + resultObject.instanceId();
                     actionParm = show ? "&action=" + UrlHelper.action(dvm) : "";
                 }
@@ -273,7 +295,7 @@ var Spiro;
                 $location.search(resultParm + actionParm);
             };
 
-            this.setInvokeUpdateError = function ($scope, error, vms, vm) {
+            handlers.setInvokeUpdateError = function ($scope, error, vms, vm) {
                 if (error instanceof Spiro.ErrorMap) {
                     _.each(vms, function (vmi) {
                         var errorValue = error.valuesMap()[vmi.id];
@@ -293,7 +315,7 @@ var Spiro;
                 }
             };
 
-            this.invokeAction = function ($scope, action, dvm, show) {
+            handlers.invokeAction = function ($scope, action, dvm, show) {
                 dvm.clearMessages();
 
                 var invoke = action.getInvoke();
@@ -311,7 +333,7 @@ var Spiro;
                 });
             };
 
-            this.updateObject = function ($scope, object, ovm) {
+            handlers.updateObject = function ($scope, object, ovm) {
                 var update = object.getUpdateMap();
 
                 var properties = _.filter(ovm.properties, function (property) {
@@ -329,6 +351,27 @@ var Spiro;
                     // remove pre-changed object from cache
                     $cacheFactory.get('$http').remove(updatedObject.url());
 
+                    Context.setObject(updatedObject);
+                    $location.search("");
+                }, function (error) {
+                    handlers.setInvokeUpdateError($scope, error, properties, ovm);
+                });
+            };
+
+            handlers.saveObject = function ($scope, object, ovm) {
+                var persist = object.getPersistMap();
+
+                var properties = _.filter(ovm.properties, function (property) {
+                    return property.isEditable;
+                });
+                _.each(properties, function (property) {
+                    return persist.setMember(property.id, property.getValue());
+                });
+
+                RepLoader.populate(persist, true, new Spiro.DomainObjectRepresentation()).then(function (updatedObject) {
+                    // This is a kludge because updated object has no self link.
+                    //var rawLinks = (<any>object).get("links");
+                    //(<any>updatedObject).set("links", rawLinks);
                     Context.setObject(updatedObject);
                     $location.search("");
                 }, function (error) {

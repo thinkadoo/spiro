@@ -36,6 +36,7 @@ module Spiro.Angular {
         resultCollection: string; 
         collection: string; 
         editMode: string; 
+        resultTransient: string; 
         dt: string; 
         id: string; 
         sid: string; 

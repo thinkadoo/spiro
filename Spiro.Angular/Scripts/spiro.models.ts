@@ -17,11 +17,9 @@
 /// <reference path="typings/underscore/underscore.d.ts" />
 /// <reference path="spiro.models.shims.ts" />
 
-
+declare var appPath: any;
 
 module Spiro {
-
-    declare var appPath: any;
 
     function isScalarType(typeName: string) {
         return typeName === "string" || typeName === "number" || typeName === "boolean" || typeName === "integer";
@@ -278,12 +276,15 @@ module Spiro {
         valuesMap(): ErrorValueMap {
             var vs: ErrorValueMap = {};
 
-            for (var v in this.attributes) {
+            // distinguish between value map and persist map 
+            var map = this.attributes.members ? this.attributes.members : this.attributes;
 
-                if (this.attributes[v].hasOwnProperty("value")) {
+            for (var v in map) {
+
+                if (map[v].hasOwnProperty("value")) {
                     var ev: ErrorValue = {
-                        value: new Value(this.attributes[v].value),
-                        invalidReason: this.attributes[v].invalidReason
+                        value: new Value(map[v].value),
+                        invalidReason: map[v].invalidReason
                     };
                     vs[v] = ev;
                 }
@@ -803,7 +804,7 @@ module Spiro {
     // matches 14.4.2 
     export class CollectionMember extends Member {
         constructor(wrapped, parent) {
-            super(wrapped, parent);
+            super(wrapped, parent)
         }
 
         value(): DomainObjectRepresentation[] {

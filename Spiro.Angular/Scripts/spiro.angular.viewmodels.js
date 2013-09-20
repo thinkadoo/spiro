@@ -73,7 +73,10 @@ var Spiro;
                 }
 
                 if (this.hasChoices || this.choice) {
-                    return new Spiro.Value({ href: this.choice.value, title: this.choice.name });
+                    if (this.choice.value) {
+                        return new Spiro.Value({ href: this.choice.value, title: this.choice.name });
+                    }
+                    return new Spiro.Value("");
                 }
 
                 if (this.reference === "") {

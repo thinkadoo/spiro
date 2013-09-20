@@ -117,7 +117,7 @@
                     };
 
                     optionsObj.autoFocus = true;
-                    optionsObj.minLength = 2;
+                    optionsObj.minLength = 1;
 
                     element.autocomplete(optionsObj);
                 }

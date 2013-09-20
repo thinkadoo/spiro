@@ -20,6 +20,7 @@ module Spiro.Angular {
         handleService($scope): void;
         handleResult($scope): void;
         handleEditObject($scope): void;
+        handleTransientObject($scope): void;
         handleObject($scope): void;
         handleAppBar($scope): void;
     }
@@ -29,21 +30,22 @@ module Spiro.Angular {
         setInvokeUpdateError($scope, error: any, vms: ValueViewModel[], vm: MessageViewModel);
         invokeAction($scope, action: Spiro.ActionRepresentation, dvm: DialogViewModel, show: boolean);
         updateObject($scope, object: DomainObjectRepresentation, ovm: DomainObjectViewModel);
+        saveObject($scope, object: DomainObjectRepresentation, ovm: DomainObjectViewModel);
     }
 
     // TODO rename 
-    app.service("Handlers", function ($routeParams: ISpiroRouteParams, $location: ng.ILocationService, $q: ng.IQService, $cacheFactory: ng.ICacheFactoryService, RepLoader: IRepLoader, Context: IContext, ViewModelFactory: IViewModelFactory, UrlHelper: IUrlHelper) {
+    app.service("Handlers", function ($routeParams: ISpiroRouteParams, $location: ng.ILocationService, $q: ng.IQService, $cacheFactory: ng.ICacheFactoryService, RepLoader: IRepLoader, Context: IContext, ViewModelFactory: IViewModelFactory, UrlHelper: IUrlHelper, Color : IColor) {
 
         var handlers = <IHandlersInternal>this;
 
         // tested
         handlers.handleCollectionResult = function ($scope) {
-            $scope.loading = true;
+         
             Context.getCollection().
                 then(function (list: ListRepresentation) {
                     $scope.collection = ViewModelFactory.collectionViewModel(list);
                     $scope.collectionTemplate = svrPath + "Content/partials/nestedCollection.html";
-                    $scope.loading = false;;
+                 
                 }, function (error) {
                     setError(error);
                 });
@@ -232,7 +234,7 @@ module Spiro.Angular {
                 Context.getObject($routeParams.dt, $routeParams.id).
                     then(function (object: DomainObjectRepresentation) {
 
-                        $scope.appBar.hideEdit = !(object) || $routeParams.editMode || false;
+                        $scope.appBar.hideEdit = !(object) || $routeParams.editMode || $routeParams.resultTransient || false;
 
                         // rework to use viewmodel code
                         $scope.appBar.doEdit = "#" + $location.path() + "?editMode=true";
@@ -257,22 +259,43 @@ module Spiro.Angular {
 
         };
 
+        handlers.handleTransientObject = function ($scope) {
+
+            Context.getTransientObject().
+                then(function (object: DomainObjectRepresentation) {
+
+                    $scope.backgroundColor = Color.toColorFromType(object.domainType());
+
+                    Context.setNestedObject(null);
+                    $scope.object = ViewModelFactory.domainObjectViewModel(object, null, <(ovm: DomainObjectViewModel) => void> _.partial(handlers.saveObject, $scope, object));
+                    $scope.objectTemplate = svrPath + "Content/partials/object.html";
+                    $scope.actionTemplate = "";
+                    $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
+
+                }, function (error) {
+                    setError(error);
+                });
+        };
+
+
         // tested
         handlers.handleEditObject = function ($scope) {
-            
+
             Context.getObject($routeParams.dt, $routeParams.id).
                 then(function (object: DomainObjectRepresentation) {
+
                     var detailPromises = _.map(object.propertyMembers(), (pm: PropertyMember) => { return RepLoader.populate(pm.getDetails()) });
 
                     $q.all(detailPromises).then(function (details: PropertyRepresentation[]) {
-                        Context.setNestedObject(null);                        
-                        $scope.object = ViewModelFactory.domainObjectViewModel(object, details, <(ovm: DomainObjectViewModel) => void > _.partial(handlers.updateObject, $scope, object));
+                        Context.setNestedObject(null);
+                        $scope.object = ViewModelFactory.domainObjectViewModel(object, details, <(ovm: DomainObjectViewModel) => void> _.partial(handlers.updateObject, $scope, object));
                         $scope.objectTemplate = svrPath + "Content/partials/object.html";
-                        $scope.actionTemplate = "";  
+                        $scope.actionTemplate = "";
                         $scope.propertiesTemplate = svrPath + "Content/partials/editProperties.html";
                     }, function (error) {
-                        setError(error);
-                    });
+                            setError(error);
+                        });
+
                 }, function (error) {
                     setError(error);
                 });
@@ -311,13 +334,27 @@ module Spiro.Angular {
             var resultParm = "";
             var actionParm = "";
 
-            if (result.resultType() === "object") {
+            // transient object
+            if (result.resultType() === "object" && result.result().object().persistLink()) {
+                var resultObject = result.result().object();
+
+                resultObject.set("domainType", resultObject.extensions().domainType);
+                resultObject.set("instanceId", "0");
+                resultObject.hateoasUrl = "/" + resultObject.extensions().domainType + "/0";
+
+                Context.setTransientObject(resultObject);
+             
+                resultParm = "resultTransient=" + UrlHelper.action(dvm);
+            }
+
+            // persistent object
+            if (result.resultType() === "object" && !result.result().object().persistLink()) {
                 var resultObject = result.result().object();
 
                 // set the nested object here and then update the url. That should reload the page but pick up this object 
                 // so we don't hit the server again. 
-                Context.setNestedObject(resultObject);
 
+                Context.setNestedObject(resultObject);
                 resultParm = "resultObject=" + resultObject.domainType() + "-" + resultObject.instanceId();  // todo add some parm handling code 
                 actionParm = show ? "&action=" + UrlHelper.action(dvm) : "";
             }
@@ -333,7 +370,7 @@ module Spiro.Angular {
             $location.search(resultParm + actionParm);
         };
 
-        this.setInvokeUpdateError = function ($scope, error: any, vms: ValueViewModel[], vm: MessageViewModel) {
+        handlers.setInvokeUpdateError = function ($scope, error: any, vms: ValueViewModel[], vm: MessageViewModel) {
             if (error instanceof ErrorMap) {
                 _.each(vms, (vmi) => {
                     var errorValue = error.valuesMap()[vmi.id];
@@ -355,7 +392,7 @@ module Spiro.Angular {
             }
         };
 
-        this.invokeAction = function ($scope, action: Spiro.ActionRepresentation, dvm: DialogViewModel, show: boolean) {
+        handlers.invokeAction = function ($scope, action: Spiro.ActionRepresentation, dvm: DialogViewModel, show: boolean) {
             dvm.clearMessages();
 
             var invoke = action.getInvoke();
@@ -372,7 +409,7 @@ module Spiro.Angular {
                 });
         };
 
-        this.updateObject = function ($scope, object: DomainObjectRepresentation, ovm: DomainObjectViewModel) {
+        handlers.updateObject = function ($scope, object: DomainObjectRepresentation, ovm: DomainObjectViewModel) {
             var update = object.getUpdateMap();
 
             var properties = _.filter(ovm.properties, (property) => property.isEditable);
@@ -387,6 +424,27 @@ module Spiro.Angular {
 
                     // remove pre-changed object from cache
                     $cacheFactory.get('$http').remove(updatedObject.url());
+
+                    Context.setObject(updatedObject);
+                    $location.search("");
+                }, function (error: any) {
+                    handlers.setInvokeUpdateError($scope, error, properties, ovm);
+                });
+        };
+
+        handlers.saveObject = function ($scope, object: DomainObjectRepresentation, ovm: DomainObjectViewModel) {
+            var persist = object.getPersistMap();
+
+            var properties = _.filter(ovm.properties, (property) => property.isEditable);
+            _.each(properties, (property) => persist.setMember(property.id, property.getValue()));
+
+            RepLoader.populate(persist, true, new DomainObjectRepresentation()).
+                then(function (updatedObject: DomainObjectRepresentation) {
+
+                    // This is a kludge because updated object has no self link.
+                    //var rawLinks = (<any>object).get("links");
+                    //(<any>updatedObject).set("links", rawLinks);
+
 
                     Context.setObject(updatedObject);
                     $location.search("");

@@ -131,50 +131,53 @@ var Spiro;
                 propertyViewModel.type = propertyRep.isScalar() ? "scalar" : "ref";
                 propertyViewModel.returnType = propertyRep.extensions().returnType;
                 propertyViewModel.format = propertyRep.extensions().format;
-                propertyViewModel.href = propertyRep.isScalar() ? "" : UrlHelper.toPropertyUrl(propertyRep.detailsLink().href());
+                propertyViewModel.href = propertyRep.isScalar() || propertyRep.detailsLink() == null ? "" : UrlHelper.toPropertyUrl(propertyRep.detailsLink().href());
                 propertyViewModel.target = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : UrlHelper.toAppUrl(propertyRep.value().link().href());
                 propertyViewModel.reference = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : propertyRep.value().link().href();
 
                 propertyViewModel.color = Color.toColorFromType(propertyRep.extensions().returnType);
                 propertyViewModel.id = id;
                 propertyViewModel.isEditable = !propertyRep.disabledReason();
+                propertyViewModel.choices = [];
+                propertyViewModel.hasChoices = false;
 
                 if (propertyDetails) {
                     propertyViewModel.choices = _.map(propertyDetails.choices(), function (v) {
                         return Angular.ChoiceViewModel.create(v);
                     });
-                    propertyViewModel.hasChoices = propertyViewModel.choices.length > 0;
-
-                    if (propertyViewModel.hasChoices) {
-                        propertyViewModel.choice = _.find(propertyViewModel.choices, function (c) {
-                            return c.name == propertyRep.value().toString();
-                        });
-                    } else if (propertyViewModel.type === "ref") {
-                        propertyViewModel.choice = Angular.ChoiceViewModel.create(propertyRep.value());
-                    } else {
-                        propertyViewModel.choice = null;
-                    }
-
-                    propertyViewModel.autoComplete = function (request) {
-                        var object = new Spiro.DomainObjectRepresentation();
-
-                        object.hateoasUrl = appPath + "/objects/" + propertyRep.extensions().returnType + "/" + request;
-
-                        return RepLoader.populate(object).then(function (d) {
-                            var delay = $q.defer();
-
-                            var l = d.selfLink();
-                            l.set("title", d.title());
-                            var v = new Spiro.Value(l);
-
-                            var cvm = Angular.ChoiceViewModel.create(v);
-
-                            delay.resolve(cvm);
-
-                            return delay.promise;
-                        });
-                    };
                 }
+
+                propertyViewModel.hasChoices = propertyViewModel.choices.length > 0;
+
+                if (propertyViewModel.hasChoices) {
+                    propertyViewModel.choice = _.find(propertyViewModel.choices, function (c) {
+                        return c.name == propertyRep.value().toString();
+                    });
+                } else if (propertyViewModel.type === "ref") {
+                    propertyViewModel.choice = Angular.ChoiceViewModel.create(propertyRep.value());
+                } else {
+                    propertyViewModel.choice = null;
+                }
+
+                propertyViewModel.autoComplete = function (request) {
+                    var object = new Spiro.DomainObjectRepresentation();
+
+                    object.hateoasUrl = appPath + "/objects/" + propertyRep.extensions().returnType + "/" + request;
+
+                    return RepLoader.populate(object).then(function (d) {
+                        var delay = $q.defer();
+
+                        var l = d.selfLink();
+                        l.set("title", d.title());
+                        var v = new Spiro.Value(l);
+
+                        var cvm = Angular.ChoiceViewModel.create(v);
+
+                        delay.resolve(cvm);
+
+                        return delay.promise;
+                    });
+                };
 
                 return propertyViewModel;
             };
@@ -271,10 +274,11 @@ var Spiro;
 
             viewModelFactory.domainObjectViewModel = function (objectRep, details, save) {
                 var objectViewModel = new Angular.DomainObjectViewModel();
+                var isTransient = !!objectRep.persistLink();
 
                 objectViewModel.href = UrlHelper.toAppUrl(objectRep.getUrl());
 
-                objectViewModel.cancelEdit = UrlHelper.toAppUrl(objectRep.getUrl());
+                objectViewModel.cancelEdit = isTransient ? UrlHelper.toAppUrl($location.path()) : UrlHelper.toAppUrl(objectRep.getUrl());
 
                 objectViewModel.color = Color.toColorFromType(objectRep.domainType());
 
@@ -288,7 +292,7 @@ var Spiro;
                 var actions = objectRep.actionMembers();
 
                 objectViewModel.domainType = objectRep.domainType();
-                objectViewModel.title = objectRep.title();
+                objectViewModel.title = isTransient ? "Unsaved " + objectRep.extensions().friendlyName : objectRep.title();
 
                 objectViewModel.message = "";
 

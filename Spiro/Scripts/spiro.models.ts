@@ -276,12 +276,15 @@ module Spiro {
         valuesMap(): ErrorValueMap {
             var vs: ErrorValueMap = {};
 
-            for (var v in this.attributes) {
+            // distinguish between value map and persist map 
+            var map = this.attributes.members ? this.attributes.members : this.attributes;
 
-                if (this.attributes[v].hasOwnProperty("value")) {
+            for (var v in map) {
+
+                if (map[v].hasOwnProperty("value")) {
                     var ev: ErrorValue = {
-                        value: new Value(this.attributes[v].value),
-                        invalidReason: this.attributes[v].invalidReason
+                        value: new Value(map[v].value),
+                        invalidReason: map[v].invalidReason
                     };
                     vs[v] = ev;
                 }
