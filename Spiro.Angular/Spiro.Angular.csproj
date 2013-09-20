@@ -214,8 +214,6 @@
     <Content Include="Content\partials\dialog.html" />
     <Content Include="Content\partials\object.html" />
     <Content Include="Content\partials\nestedObject.html" />
-    <Content Include="Content\partials\refproperty.html" />
-    <Content Include="Content\partials\scalarproperty.html" />
     <Content Include="Content\partials\service.html" />
     <Content Include="Content\partials\viewProperties.html" />
     <Content Include="fonts\iconFont.svg" />

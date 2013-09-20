@@ -234,7 +234,8 @@ module Spiro.Angular {
                         $scope.appBar.hideEdit = !(object) || $routeParams.editMode || false;
 
                         // rework to use viewmodel code
-                        $scope.appBar.doEdit = "#" + $location.path() + "?editMode=true";
+                       
+                        $scope.appBar.doEdit = UrlHelper.toAppUrl($location.path()) + "?editMode=true";
                     });
             }
         };
@@ -266,7 +267,7 @@ module Spiro.Angular {
 
                         Context.setNestedObject(null);
                         var obj = ViewModelFactory.domainObjectViewModel(object, null, <(ovm: DomainObjectViewModel) => void> _.partial(handlers.saveObject, $scope, object));
-                        obj.cancelEdit = "#" + Context.getPreviousUrl(); 
+                        obj.cancelEdit =  UrlHelper.toAppUrl(Context.getPreviousUrl()); 
 
                         $scope.object = obj;
                         $scope.objectTemplate = objectTemplate;
@@ -353,7 +354,7 @@ module Spiro.Angular {
                 Context.setTransientObject(resultObject);
 
                 Context.setPreviousUrl($location.path()); 
-                $location.path("objects/" + domainType);
+                $location.path(UrlHelper.toTransientObjectPath(resultObject));
             }
 
             // persistent object
@@ -376,6 +377,7 @@ module Spiro.Angular {
                 resultParm = "resultCollection=" + UrlHelper.action(dvm);
                 actionParm = show ? "&action=" + UrlHelper.action(dvm) : "";
             }
+
             $location.search(resultParm + actionParm);
         };
 
@@ -451,7 +453,7 @@ module Spiro.Angular {
                 then(function (updatedObject: DomainObjectRepresentation) {
 
                     Context.setObject(updatedObject);
-                    $location.path("objects/" + updatedObject.domainType() + "/" + updatedObject.instanceId());
+                    $location.path(UrlHelper.toObjectPath(updatedObject));
                 }, function (error: any) {
                     handlers.setInvokeUpdateError($scope, error, properties, ovm);
                 });

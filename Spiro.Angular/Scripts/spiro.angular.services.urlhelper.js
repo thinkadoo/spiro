@@ -80,6 +80,14 @@ var Spiro;
                 var itemResults = (itemUrlRegex).exec(itemHref);
                 return (parentResults && parentResults.length > 2) ? "#/" + parentResults[1] + "/" + parentResults[2] + "?collectionItem=" + itemResults[2] + "/" + itemResults[3] + helper.getOtherParms(["property", "collectionItem", "resultObject"]) : "";
             };
+
+            helper.toTransientObjectPath = function (obj) {
+                return "objects/" + obj.domainType();
+            };
+
+            helper.toObjectPath = function (obj) {
+                return "objects/" + obj.domainType() + "/" + obj.instanceId();
+            };
         });
     })(Spiro.Angular || (Spiro.Angular = {}));
     var Angular = Spiro.Angular;

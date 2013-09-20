@@ -180,7 +180,7 @@ var Spiro;
                         $scope.appBar.hideEdit = !(object) || $routeParams.editMode || false;
 
                         // rework to use viewmodel code
-                        $scope.appBar.doEdit = "#" + $location.path() + "?editMode=true";
+                        $scope.appBar.doEdit = UrlHelper.toAppUrl($location.path()) + "?editMode=true";
                     });
                 }
             };
@@ -205,7 +205,7 @@ var Spiro;
 
                         Context.setNestedObject(null);
                         var obj = ViewModelFactory.domainObjectViewModel(object, null, _.partial(handlers.saveObject, $scope, object));
-                        obj.cancelEdit = "#" + Context.getPreviousUrl();
+                        obj.cancelEdit = UrlHelper.toAppUrl(Context.getPreviousUrl());
 
                         $scope.object = obj;
                         $scope.objectTemplate = Angular.objectTemplate;
@@ -281,7 +281,7 @@ var Spiro;
                     Context.setTransientObject(resultObject);
 
                     Context.setPreviousUrl($location.path());
-                    $location.path("objects/" + domainType);
+                    $location.path(UrlHelper.toTransientObjectPath(resultObject));
                 }
 
                 if (result.resultType() === "object" && !result.result().object().persistLink()) {
@@ -302,6 +302,7 @@ var Spiro;
                     resultParm = "resultCollection=" + UrlHelper.action(dvm);
                     actionParm = show ? "&action=" + UrlHelper.action(dvm) : "";
                 }
+
                 $location.search(resultParm + actionParm);
             };
 
@@ -380,7 +381,7 @@ var Spiro;
 
                 RepLoader.populate(persist, true, new Spiro.DomainObjectRepresentation()).then(function (updatedObject) {
                     Context.setObject(updatedObject);
-                    $location.path("objects/" + updatedObject.domainType() + "/" + updatedObject.instanceId());
+                    $location.path(UrlHelper.toObjectPath(updatedObject));
                 }, function (error) {
                     handlers.setInvokeUpdateError($scope, error, properties, ovm);
                 });

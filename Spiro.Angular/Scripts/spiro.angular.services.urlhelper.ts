@@ -16,6 +16,9 @@ module Spiro.Angular {
         toPropertyUrl(href: string): string;
         toCollectionUrl(href: string): string;
         toItemUrl(href: string, itemHref: string): string;
+
+        toObjectPath(obj: DomainObjectRepresentation): string;
+        toTransientObjectPath(obj: DomainObjectRepresentation): string; 
     }
 
     app.service('UrlHelper', function ($routeParams : ISpiroRouteParams) {
@@ -91,6 +94,14 @@ module Spiro.Angular {
             var parentResults = (parentUrlRegex).exec(href);
             var itemResults = (itemUrlRegex).exec(itemHref);
             return (parentResults && parentResults.length > 2) ? "#/" + parentResults[1] + "/" + parentResults[2] + "?collectionItem=" + itemResults[2] + "/" + itemResults[3] + helper.getOtherParms(["property", "collectionItem", "resultObject"]) : "";
+        }
+
+        helper.toTransientObjectPath = function (obj: DomainObjectRepresentation) {
+            return "objects/" + obj.domainType(); 
+        }
+
+        helper.toObjectPath = function (obj : DomainObjectRepresentation) {
+            return "objects/" + obj.domainType() + "/" + obj.instanceId();  
         }
     });
 

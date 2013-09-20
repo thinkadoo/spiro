@@ -1010,7 +1010,7 @@ describe('Services', function () {
 
                 it('should enable edit button', function () {
                     expect($scope.appBar.hideEdit).toBe(false);
-                    expect($scope.appBar.doEdit).toEqual("#aPath?editMode=true");
+                    expect($scope.appBar.doEdit).toEqual("?editMode=true");
                 });
 
             });
