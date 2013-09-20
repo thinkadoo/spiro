@@ -18,6 +18,7 @@ files = [
   'Spiro.Angular/Scripts/spiro.models.helpers.js',
   'Spiro.Angular/Scripts/spiro.models.shims.js',
   'Spiro.Angular/Scripts/spiro.models.js',
+  'Spiro.Angular/Tests/specs/testData.js',
  
   'Spiro.Angular/Scripts/spiro.angular.app.js',
   'Spiro.Angular/Scripts/spiro.angular.viewmodels.js',
@@ -29,7 +30,7 @@ files = [
   'Spiro.Angular/Scripts/spiro.angular.services.viewmodelfactory.js',
   'Spiro.Angular/Scripts/spiro.angular.services.color.js',
   
-  'Spiro.Angular/Tests/specs/testData.js',
+  
   'Spiro.Angular/Tests/specs/controllers.js',
   'Spiro.Angular/Tests/specs/services.js'
 
