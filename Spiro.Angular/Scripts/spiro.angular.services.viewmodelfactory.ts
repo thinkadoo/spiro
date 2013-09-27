@@ -26,6 +26,27 @@ module Spiro.Angular {
 
         var viewModelFactory = <IViewModelFactory>this;
 
+        // TODO move to handlers ? + other functions in here 
+        function autocomplete(list : ListRepresentation, searchTerm : string) : ng.IPromise<ChoiceViewModel[]> {
+           
+            list.attributes = {}; // kludge todo fix 
+
+            list.setSearchTerm(searchTerm);
+
+            return RepLoader.populate(list).then((l: ListRepresentation) => {
+                var delay = $q.defer<ChoiceViewModel[]>();
+
+                var cvms = _.map(l.value().models, (ll: Link) => {
+                    var v = new Value(ll);
+                    return ChoiceViewModel.create(v);
+                });
+
+                delay.resolve(cvms);
+                return delay.promise;
+            });
+        }; 
+
+
         viewModelFactory.errorViewModel = function (errorRep: ErrorRepresentation) {
             var errorViewModel = new ErrorViewModel();
             errorViewModel.message = errorRep.message() || "An Error occurred";
@@ -83,26 +104,29 @@ module Spiro.Angular {
                 parmViewModel.choice = _.find(parmViewModel.choices, (c) => c.name == previousValue);
             }
 
-            parmViewModel.autoComplete = function (request): any {
+            var list = parmRep.getAutoCompletes();
 
-                var object = new DomainObjectRepresentation();
+            parmViewModel.autoComplete = <any> _.partial(autocomplete, list); 
 
-                object.hateoasUrl = appPath + "/objects/" + parmRep.extensions().returnType + "/" + request;
+            //parmViewModel.autoComplete = function (request): any {
 
-                return RepLoader.populate(object).then((d: DomainObjectRepresentation) => {
-                    var delay = $q.defer<ChoiceViewModel>();
+            //    var list = parmRep.getAutoCompletes();
+            //    list.attributes = {}; // kludge todo fix 
 
-                    var l = d.selfLink();
-                    l.set("title", d.title());
-                    var v = new Value(l);
+            //    list.setSearchTerm(request);
 
-                    var cvm = ChoiceViewModel.create(v);
+            //    return RepLoader.populate(list).then((l: ListRepresentation) => {
+            //        var delay = $q.defer<ChoiceViewModel[]>();
 
-                    delay.resolve(cvm);
+            //        var cvms = _.map(l.value().models, (ll: Link) => {
+            //            var v = new Value(ll);
+            //            return ChoiceViewModel.create(v);
+            //        });
 
-                    return delay.promise;
-                });
-            }
+            //        delay.resolve(cvms);
+            //        return delay.promise;
+            //    });
+            //}
 
             return parmViewModel;
         };
@@ -159,15 +183,15 @@ module Spiro.Angular {
             propertyViewModel.id = id;
             propertyViewModel.isEditable = !propertyRep.disabledReason();
             propertyViewModel.choices = [];
-            propertyViewModel.hasChoices = false; 
+            propertyViewModel.hasChoices = propertyRep.hasChoices();
+            propertyViewModel.hasAutocomplete = propertyRep.hasAutoComplete();
+             
 
-            if (propertyDetails) {
+            if (propertyDetails && propertyViewModel.hasChoices) {
                 propertyViewModel.choices = _.map(propertyDetails.choices(), (v) => {
                     return ChoiceViewModel.create(v);
                 });             
             }
-
-            propertyViewModel.hasChoices = propertyViewModel.choices.length > 0;
 
             if (propertyViewModel.hasChoices) {
                 propertyViewModel.choice = _.find(propertyViewModel.choices, (c) => c.name == propertyRep.value().toString());
@@ -179,25 +203,9 @@ module Spiro.Angular {
                 propertyViewModel.choice = null;
             }
 
-            propertyViewModel.autoComplete = function (request): any {
-
-                var object = new DomainObjectRepresentation();
-
-                object.hateoasUrl = appPath + "/objects/" + propertyRep.extensions().returnType + "/" + request;
-
-                return RepLoader.populate(object).then((d: DomainObjectRepresentation) => {
-                    var delay = $q.defer<ChoiceViewModel>();
-
-                    var l = d.selfLink();
-                    l.set("title", d.title());
-                    var v = new Value(l);
-
-                    var cvm = ChoiceViewModel.create(v);
-
-                    delay.resolve(cvm);
-
-                    return delay.promise;
-                });
+            if (propertyViewModel.hasAutocomplete && propertyDetails) {
+                var list = propertyDetails.getAutoCompletes(); 
+                propertyViewModel.autoComplete = <any> _.partial(autocomplete, list);            
             }
 
             return propertyViewModel;

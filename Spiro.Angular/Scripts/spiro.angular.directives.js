@@ -100,11 +100,13 @@
                     };
 
                     optionsObj.source = function (request, response) {
-                        var test = scope.select({ request: request.term });
+                        var autocompletes = scope.select({ request: request.term });
 
                         scope.$apply(function () {
-                            test.then(function (cvm) {
-                                response([{ "label": cvm.name, "value": cvm }]);
+                            autocompletes.then(function (cvms) {
+                                response(_.map(cvms, function (cvm) {
+                                    return { "label": cvm.name, "value": cvm };
+                                }));
                             }, function () {
                                 response([]);
                             });

@@ -448,6 +448,14 @@ var Spiro;
             return null;
         };
 
+        Parameter.prototype.autocompleteLink = function () {
+            return this.links().linkByRel("urn:org.restfulobjects:rels/autocomplete");
+        };
+
+        Parameter.prototype.getAutoCompletes = function () {
+            return this.autocompleteLink().getTarget();
+        };
+
         Parameter.prototype.default = function () {
             return new Value(this.wrapped.default);
         };
@@ -618,6 +626,10 @@ var Spiro;
             return this.links().linkByRel("up");
         };
 
+        PropertyRepresentation.prototype.autocompleteLink = function () {
+            return this.links().linkByRel("urn:org.restfulobjects:rels/autocomplete");
+        };
+
         PropertyRepresentation.prototype.modifyMap = function () {
             return this.modifyLink().arguments();
         };
@@ -647,6 +659,10 @@ var Spiro;
                 return new ClearMap(this);
             }
             return null;
+        };
+
+        PropertyRepresentation.prototype.getAutoCompletes = function () {
+            return this.autocompleteLink().getTarget();
         };
 
         // properties
@@ -743,6 +759,14 @@ var Spiro;
 
         PropertyMember.prototype.getDetails = function () {
             return this.detailsLink().getTarget();
+        };
+
+        PropertyMember.prototype.hasChoices = function () {
+            return this.wrapped.hasChoices;
+        };
+
+        PropertyMember.prototype.hasAutoComplete = function () {
+            return this.wrapped.hasAutocomplete;
         };
         return PropertyMember;
     })(Member);
@@ -977,6 +1001,11 @@ var Spiro;
         // list of links to services
         ListRepresentation.prototype.value = function () {
             return Links.WrapLinks(this.get("value"));
+        };
+
+        // when used for autocomplete
+        ListRepresentation.prototype.setSearchTerm = function (term) {
+            this.set("arguments", { "x-ro-search-term": { "value": term } });
         };
         return ListRepresentation;
     })(ResourceRepresentation);

@@ -101,11 +101,13 @@ module Spiro.Angular {
 
                 optionsObj.source = (request, response) => {
 
-                    var test = scope.select({ request: request.term });
+                    var autocompletes = scope.select({ request: request.term });
 
                     scope.$apply(function () {
-                        test.then(function (cvm: ChoiceViewModel) {
-                            response([{ "label": cvm.name, "value": cvm }]);
+                        autocompletes.then(function (cvms: ChoiceViewModel[]) {
+                            response(_.map(cvms, (cvm) => {
+                                return { "label": cvm.name, "value": cvm };
+                            }));
                         }, function () {
                             response([]);
                         });

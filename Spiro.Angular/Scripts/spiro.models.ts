@@ -508,6 +508,14 @@ module Spiro {
             return null;
         }
 
+        autocompleteLink(): Link {
+            return this.links().linkByRel("urn:org.restfulobjects:rels/autocomplete");
+        }
+
+        getAutoCompletes(): ListRepresentation {
+            return <ListRepresentation> this.autocompleteLink().getTarget();
+        }
+
         default(): Value {
             return new Value(this.wrapped.default);
         }
@@ -676,6 +684,10 @@ module Spiro {
             return this.links().linkByRel("up");
         }
 
+        autocompleteLink(): Link {
+            return this.links().linkByRel("urn:org.restfulobjects:rels/autocomplete");
+        }
+
         private modifyMap() {
             return this.modifyLink().arguments();
         }
@@ -705,6 +717,10 @@ module Spiro {
                 return new ClearMap(this);
             }
             return null;
+        }
+
+        getAutoCompletes(): ListRepresentation {
+            return <ListRepresentation> this.autocompleteLink().getTarget();
         }
 
         // properties 
@@ -798,6 +814,14 @@ module Spiro {
 
         getDetails(): PropertyRepresentation {
             return <PropertyRepresentation> this.detailsLink().getTarget();
+        }
+
+        hasChoices(): boolean {
+            return this.wrapped.hasChoices; 
+        }
+
+        hasAutoComplete(): boolean {
+            return this.wrapped.hasAutocomplete; 
         }
     }
 
@@ -1050,6 +1074,11 @@ module Spiro {
         // list of links to services 
         value(): Links {
             return Links.WrapLinks(this.get("value"));
+        }
+
+        // when used for autocomplete 
+        setSearchTerm(term: string) {
+            this.set("arguments", { "x-ro-search-term": { "value": term } });
         }
     }
 
