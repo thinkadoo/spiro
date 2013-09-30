@@ -6,6 +6,7 @@ var __extends = this.__extends || function (d, b) {
 };
 var Spiro;
 (function (Spiro) {
+    /// <reference path="typings/angularjs/angular.d.ts" />
     /// <reference path="spiro.models.ts" />
     /// <reference path="spiro.angular.app.ts" />
     (function (Angular) {
@@ -59,7 +60,7 @@ var Spiro;
             function ValueViewModel() {
                 _super.apply(this, arguments);
             }
-            ValueViewModel.prototype.autoComplete = function (any) {
+            ValueViewModel.prototype.autoComplete = function (searchTerm) {
                 return null;
             };
 

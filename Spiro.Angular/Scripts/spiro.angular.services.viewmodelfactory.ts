@@ -108,7 +108,7 @@ module Spiro.Angular {
 
             if (parmViewModel.hasAutocomplete) {
                 var list = parmRep.getAutoCompletes();
-                parmViewModel.autoComplete = <any> _.partial(autocomplete, list);
+                parmViewModel.autoComplete = <(st : string) => ng.IPromise<ChoiceViewModel[]>> _.partial(autocomplete, list);
             }
 
             return parmViewModel;
@@ -187,8 +187,13 @@ module Spiro.Angular {
             }
 
             if (propertyViewModel.hasAutocomplete && propertyDetails) {
-                var list = propertyDetails.getAutoCompletes(); 
-                propertyViewModel.autoComplete = <any> _.partial(autocomplete, list);            
+                var list = propertyDetails.getAutoCompletes();
+                propertyViewModel.autoComplete = <(st: string) => ng.IPromise<ChoiceViewModel[]>> _.partial(autocomplete, list);
+            }
+            else {
+                propertyViewModel.autoComplete = (st: string) => {
+                    return $q.when(<ChoiceViewModel[]>[]);
+                };
             }
 
             return propertyViewModel;

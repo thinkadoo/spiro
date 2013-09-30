@@ -1005,7 +1005,7 @@ var Spiro;
 
         // when used for autocomplete
         ListRepresentation.prototype.setSearchTerm = function (term) {
-            this.set("arguments", { "x-ro-search-term": { "value": term } });
+            this.set("x-ro-search-term", { "value": term });
         };
         return ListRepresentation;
     })(ResourceRepresentation);

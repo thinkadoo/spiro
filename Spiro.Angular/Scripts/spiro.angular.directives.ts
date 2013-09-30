@@ -48,6 +48,7 @@ module Spiro.Angular {
                         }
                     };
 
+
                     ngModel.$render = function () {
                         var formattedDate = $filter('date')(ngModel.$viewValue, 'd MMM yyyy'); // angularjs format
 
@@ -75,7 +76,7 @@ module Spiro.Angular {
                 if (!ngModel) return;
 
              
-                var optionsObj: { autoFocus?: boolean; minLength?: number; source?: Function; select?: Function} = {};
+                var optionsObj: { autoFocus?: boolean; minLength?: number; source?: Function; select?: Function; focus?: Function} = {};
 
                 var model = $parse(attrs.nogAutocomplete); 
 
@@ -98,7 +99,6 @@ module Spiro.Angular {
                     });
                 };
 
-
                 optionsObj.source = (request, response) => {
 
                     var autocompletes = scope.select({ request: request.term });
@@ -117,6 +117,11 @@ module Spiro.Angular {
                 optionsObj.select = (event, ui) => {
                     updateModel(ui.item.value);
                     return false; 
+                };
+
+                optionsObj.focus = (event, ui) => {
+                    updateModel(ui.item.value);
+                    return false;
                 };
 
                 optionsObj.autoFocus = true;

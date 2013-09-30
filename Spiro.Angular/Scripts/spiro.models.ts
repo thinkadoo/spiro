@@ -1078,7 +1078,7 @@ module Spiro {
 
         // when used for autocomplete 
         setSearchTerm(term: string) {
-            this.set("arguments", { "x-ro-search-term": { "value": term } });
+            this.set("x-ro-search-term", { "value": term });
         }
     }
 

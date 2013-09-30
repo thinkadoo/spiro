@@ -1,3 +1,4 @@
+/// <reference path="typings/angularjs/angular.d.ts" />
 /// <reference path="spiro.models.ts" />
 /// <reference path="spiro.angular.app.ts" />
 
@@ -57,7 +58,7 @@ module Spiro.Angular {
         title: string;
         format: string;
 
-        autoComplete(any): any {
+        autoComplete(searchTerm: string): ng.IPromise<ChoiceViewModel[]> {
             return null;
         }
 

@@ -118,6 +118,11 @@
                         return false;
                     };
 
+                    optionsObj.focus = function (event, ui) {
+                        updateModel(ui.item.value);
+                        return false;
+                    };
+
                     optionsObj.autoFocus = true;
                     optionsObj.minLength = 1;
 

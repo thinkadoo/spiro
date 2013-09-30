@@ -94,20 +94,6 @@ var Spiro;
                     parmViewModel.autoComplete = _.partial(autocomplete, list);
                 }
 
-                //parmViewModel.autoComplete = function (request): any {
-                //    var list = parmRep.getAutoCompletes();
-                //    list.attributes = {}; // kludge todo fix
-                //    list.setSearchTerm(request);
-                //    return RepLoader.populate(list).then((l: ListRepresentation) => {
-                //        var delay = $q.defer<ChoiceViewModel[]>();
-                //        var cvms = _.map(l.value().models, (ll: Link) => {
-                //            var v = new Value(ll);
-                //            return ChoiceViewModel.create(v);
-                //        });
-                //        delay.resolve(cvms);
-                //        return delay.promise;
-                //    });
-                //}
                 return parmViewModel;
             };
 
@@ -186,6 +172,10 @@ var Spiro;
                 if (propertyViewModel.hasAutocomplete && propertyDetails) {
                     var list = propertyDetails.getAutoCompletes();
                     propertyViewModel.autoComplete = _.partial(autocomplete, list);
+                } else {
+                    propertyViewModel.autoComplete = function (st) {
+                        return $q.when([]);
+                    };
                 }
 
                 return propertyViewModel;
