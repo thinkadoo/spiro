@@ -67,9 +67,9 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             br.Navigate().GoToUrl(store555Url);
 
             wait.Until(d => d.FindElements(By.ClassName("property")).Count == 8);
-            ReadOnlyCollection<IWebElement> properties = br.FindElements(By.ClassName("property"));
+            ReadOnlyCollection<IWebElement> properties = br.FindElements(By.CssSelector("div.property a"));
 
-            Click(properties[2]);
+            Click(properties[0]);
 
             wait.Until(d => d.FindElement(By.ClassName("nested-object")));
 
@@ -84,9 +84,9 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             br.Navigate().GoToUrl(store555Url);
 
             wait.Until(d => d.FindElements(By.ClassName("property")).Count == 8);
-            ReadOnlyCollection<IWebElement> properties = br.FindElements(By.ClassName("property"));
+            ReadOnlyCollection<IWebElement> properties = br.FindElements(By.CssSelector("div.property a"));
 
-            Click(properties[7]);
+            Click(properties[3]);
 
             wait.Until(d => d.FindElement(By.ClassName("list-view")));
 
@@ -102,7 +102,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             br.Navigate().GoToUrl(store555Url);
 
             wait.Until(d => d.FindElements(By.ClassName("action")).Count == 8);
-            ReadOnlyCollection<IWebElement> actions = br.FindElements(By.ClassName("action"));
+            ReadOnlyCollection<IWebElement> actions = br.FindElements(By.CssSelector("div.action-button a"));
 
             // click on action to open dialog 
             Click(actions[4]); // Search For Orders
@@ -126,7 +126,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
             var showObject = new Action(() => {
                 // click on action to open dialog 
-                Click(br.FindElements(By.ClassName("action"))[4]); // Search for orders
+                Click(br.FindElements(By.CssSelector("div.action-button a"))[4]); // Search for orders
 
                 wait.Until(d => d.FindElement(By.ClassName("action-dialog")));
                 string title = br.FindElement(By.CssSelector("div.action-dialog > div.title")).Text;
@@ -174,7 +174,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             wait.Until(d => d.FindElements(By.ClassName("action")).Count == 8);
 
             // click on action to open dialog 
-            Click(br.FindElements(By.ClassName("action"))[4]); // Fisearch for orders
+            Click(br.FindElements(By.CssSelector("div.action-button a"))[4]); // Fisearch for orders
 
             wait.Until(d => d.FindElement(By.ClassName("action-dialog")));
             string title = br.FindElement(By.CssSelector("div.action-dialog > div.title")).Text;
@@ -204,7 +204,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
             wait.Until(d => d.FindElements(By.ClassName("action")).Count == 8);
 
-            IWebElement action = br.FindElements(By.ClassName("action"))[5];
+            IWebElement action = br.FindElements(By.CssSelector("div.action-button a"))[5];
 
             // click on action to get object 
             Click(action); // last order
@@ -240,7 +240,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             br.Navigate().GoToUrl(store555Url);
 
             wait.Until(d => d.FindElements(By.ClassName("action")).Count == 8);
-            ReadOnlyCollection<IWebElement> actions = br.FindElements(By.ClassName("action"));
+            ReadOnlyCollection<IWebElement> actions = br.FindElements(By.CssSelector("div.action-button a"));
 
             // click on action to get collection 
             Click(actions[7]); // recent orders
@@ -259,7 +259,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
             var selectItem = new Action(() => {
                 wait.Until(d => d.FindElements(By.ClassName("action")).Count == 8);
-                ReadOnlyCollection<IWebElement> actions = br.FindElements(By.ClassName("action"));
+                ReadOnlyCollection<IWebElement> actions = br.FindElements(By.CssSelector("div.action-button a"));
 
                 // click on action to get object 
                 Click(actions[7]); // recent orders
@@ -267,7 +267,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
                 wait.Until(d => d.FindElement(By.ClassName("list-view")));
 
                 // select item
-                Click(br.FindElement(By.CssSelector("div.list-item")));
+                Click(br.FindElement(By.CssSelector("div.list-item a")));
 
                 wait.Until(d => br.FindElement(By.ClassName("nested-object")));
             });
@@ -302,7 +302,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             br.Navigate().GoToUrl(store555Url);
 
             wait.Until(d => d.FindElements(By.ClassName("action")).Count == 8);
-            ReadOnlyCollection<IWebElement> actions = br.FindElements(By.ClassName("action"));
+            ReadOnlyCollection<IWebElement> actions = br.FindElements(By.CssSelector("div.action-button a"));
 
             // click on action to get object 
             Click(actions[7]); //recent orders
@@ -310,7 +310,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             wait.Until(d => d.FindElement(By.ClassName("list-view")));
 
             // select item
-            Click(br.FindElement(By.CssSelector("div.list-item")));
+            Click(br.FindElement(By.CssSelector("div.list-item a")));
 
             wait.Until(d => br.FindElement(By.ClassName("nested-object")));
 

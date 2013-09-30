@@ -87,9 +87,12 @@ var Spiro;
                     });
                 }
 
-                var list = parmRep.getAutoCompletes();
+                parmViewModel.hasAutocomplete = !!parmRep.autocompleteLink();
 
-                parmViewModel.autoComplete = _.partial(autocomplete, list);
+                if (parmViewModel.hasAutocomplete) {
+                    var list = parmRep.getAutoCompletes();
+                    parmViewModel.autoComplete = _.partial(autocomplete, list);
+                }
 
                 //parmViewModel.autoComplete = function (request): any {
                 //    var list = parmRep.getAutoCompletes();

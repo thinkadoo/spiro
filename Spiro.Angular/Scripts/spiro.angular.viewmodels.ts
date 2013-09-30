@@ -49,7 +49,7 @@ module Spiro.Angular {
         id: string; 
         choices: ChoiceViewModel[];
         hasChoices: boolean;
-        hasAutocomplete; 
+        hasAutocomplete : boolean; 
         type: string;
         reference: string;
         choice: ChoiceViewModel; 

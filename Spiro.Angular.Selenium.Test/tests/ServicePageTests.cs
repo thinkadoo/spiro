@@ -253,7 +253,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
                 wait.Until(d => d.FindElement(By.ClassName("list-view")));
 
                 // select item
-                Click(br.FindElement(By.CssSelector("div.list-item")));
+                Click(br.FindElement(By.CssSelector("div.list-item a")));
 
                 wait.Until(d => br.FindElement(By.ClassName("nested-object")));
             });
@@ -312,7 +312,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             wait.Until(d => d.FindElement(By.ClassName("list-view")));
 
             // select item
-            Click(br.FindElement(By.CssSelector("div.list-item")));
+            Click(br.FindElement(By.CssSelector("div.list-item a")));
 
             wait.Until(d => br.FindElement(By.ClassName("nested-object")));
 

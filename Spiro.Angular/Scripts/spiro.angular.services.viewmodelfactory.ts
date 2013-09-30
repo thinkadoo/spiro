@@ -104,29 +104,12 @@ module Spiro.Angular {
                 parmViewModel.choice = _.find(parmViewModel.choices, (c) => c.name == previousValue);
             }
 
-            var list = parmRep.getAutoCompletes();
+            parmViewModel.hasAutocomplete = !!parmRep.autocompleteLink();
 
-            parmViewModel.autoComplete = <any> _.partial(autocomplete, list); 
-
-            //parmViewModel.autoComplete = function (request): any {
-
-            //    var list = parmRep.getAutoCompletes();
-            //    list.attributes = {}; // kludge todo fix 
-
-            //    list.setSearchTerm(request);
-
-            //    return RepLoader.populate(list).then((l: ListRepresentation) => {
-            //        var delay = $q.defer<ChoiceViewModel[]>();
-
-            //        var cvms = _.map(l.value().models, (ll: Link) => {
-            //            var v = new Value(ll);
-            //            return ChoiceViewModel.create(v);
-            //        });
-
-            //        delay.resolve(cvms);
-            //        return delay.promise;
-            //    });
-            //}
+            if (parmViewModel.hasAutocomplete) {
+                var list = parmRep.getAutoCompletes();
+                parmViewModel.autoComplete = <any> _.partial(autocomplete, list);
+            }
 
             return parmViewModel;
         };
