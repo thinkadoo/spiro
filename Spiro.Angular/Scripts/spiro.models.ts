@@ -45,6 +45,7 @@ module Spiro {
         format: string;
         memberOrder: number;
         isService: boolean;
+        choices: Object;
     }
 
     export interface OptionalCapabilities {

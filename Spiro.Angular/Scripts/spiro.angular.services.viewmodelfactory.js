@@ -75,9 +75,18 @@ var Spiro;
 
                 parmViewModel.reference = "";
 
-                parmViewModel.choices = _.map(parmRep.choices(), function (v) {
-                    return Angular.ChoiceViewModel.create(v);
-                });
+                if (parmRep.extensions().choices) {
+                    parmViewModel.choices = _.map(parmRep.extensions().choices, function (value, name) {
+                        var cvm = new Angular.ChoiceViewModel();
+                        cvm.name = name;
+                        cvm.value = value;
+                        return cvm;
+                    });
+                } else {
+                    parmViewModel.choices = _.map(parmRep.choices(), function (v) {
+                        return Angular.ChoiceViewModel.create(v);
+                    });
+                }
 
                 parmViewModel.hasChoices = parmViewModel.choices.length > 0;
 
@@ -153,7 +162,14 @@ var Spiro;
                 propertyViewModel.hasChoices = propertyRep.hasChoices();
                 propertyViewModel.hasAutocomplete = propertyRep.hasAutoComplete();
 
-                if (propertyDetails && propertyViewModel.hasChoices) {
+                if (propertyDetails && propertyDetails.extensions().choices) {
+                    propertyViewModel.choices = _.map(propertyDetails.extensions().choices, function (value, name) {
+                        var cvm = new Angular.ChoiceViewModel();
+                        cvm.name = name;
+                        cvm.value = value;
+                        return cvm;
+                    });
+                } else if (propertyDetails && propertyViewModel.hasChoices) {
                     propertyViewModel.choices = _.map(propertyDetails.choices(), function (v) {
                         return Angular.ChoiceViewModel.create(v);
                     });

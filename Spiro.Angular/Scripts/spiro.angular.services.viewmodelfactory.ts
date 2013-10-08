@@ -94,9 +94,20 @@ module Spiro.Angular {
 
             parmViewModel.reference = "";
 
-            parmViewModel.choices = _.map(parmRep.choices(), (v) => {
-                return ChoiceViewModel.create(v);
-            });
+            // use custom extension choices by preference 
+            if (parmRep.extensions().choices) {
+                parmViewModel.choices = _.map(parmRep.extensions().choices, (value, name) => {
+                    var cvm = new ChoiceViewModel();
+                    cvm.name = name;
+                    cvm.value = value;
+                    return cvm;
+                });
+            }
+            else {
+                parmViewModel.choices = _.map(parmRep.choices(), (v) => {
+                    return ChoiceViewModel.create(v);
+                });
+            }
 
             parmViewModel.hasChoices = parmViewModel.choices.length > 0;
 
@@ -168,13 +179,22 @@ module Spiro.Angular {
             propertyViewModel.choices = [];
             propertyViewModel.hasChoices = propertyRep.hasChoices();
             propertyViewModel.hasAutocomplete = propertyRep.hasAutoComplete();
-             
 
-            if (propertyDetails && propertyViewModel.hasChoices) {
+            // use custom extension by perference
+            if (propertyDetails && propertyDetails.extensions().choices) {
+                propertyViewModel.choices = _.map(propertyDetails.extensions().choices, (value, name) => {
+                    var cvm = new ChoiceViewModel();
+                    cvm.name = name;
+                    cvm.value = value;
+                    return cvm;
+                });
+            }
+            else if (propertyDetails && propertyViewModel.hasChoices) {
                 propertyViewModel.choices = _.map(propertyDetails.choices(), (v) => {
                     return ChoiceViewModel.create(v);
-                });             
+                });
             }
+       
 
             if (propertyViewModel.hasChoices) {
                 propertyViewModel.choice = _.find(propertyViewModel.choices, (c) => c.name == propertyRep.value().toString());

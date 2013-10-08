@@ -66,11 +66,10 @@ var Spiro;
 
             ValueViewModel.prototype.getValue = function () {
                 if (this.type === "scalar") {
-                    if (this.returnType === "boolean" && !(this.value == null)) {
-                        return new Spiro.Value(this.value);
+                    if (this.value == null) {
+                        return new Spiro.Value("");
                     }
-
-                    return new Spiro.Value(this.value || "");
+                    return new Spiro.Value(this.value);
                 }
 
                 if (this.hasChoices || this.choice) {

@@ -65,11 +65,10 @@ module Spiro.Angular {
         getValue(): Value {
             if (this.type === "scalar") {
 
-                if (this.returnType === "boolean" && !(this.value == null)) {
-                    return new Value(this.value);
+                if (this.value == null) {
+                    return new Value("");
                 }
-
-                return new Value(this.value || "");
+                return new Value(this.value);
             }
 
             if (this.hasChoices || this.choice) {
