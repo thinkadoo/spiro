@@ -37,7 +37,7 @@
                     </div>
 
                     <div ng-switch-default>
-                        <div ng-switch-default class='property-value'>{{property.value}}</div>
+                        <div  class='property-value'>{{property.value}}</div>
                     </div>
                 </div>
                 
@@ -62,7 +62,7 @@
                         
                     </div>    
                             
-                    <select ng-switch-when="true" ng-model="property.value" ng-options="c.value as c.name for c in property.choices"/>
+                    <select ng-switch-when="true" ng-model="property.choice" ng-options="c as c.name for c in property.choices"/>
                     
                     <div class='error'>{{property.message}}</div>
                 </div>

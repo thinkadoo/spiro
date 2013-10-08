@@ -65,25 +65,21 @@ var Spiro;
             };
 
             ValueViewModel.prototype.getValue = function () {
+                if (this.hasChoices || this.hasAutocomplete) {
+                    if (this.type === "scalar") {
+                        return new Spiro.Value(this.choice && this.choice.value != null ? this.choice.value : "");
+                    }
+
+                    // reference
+                    return new Spiro.Value(this.choice && this.choice.value ? { href: this.choice.value, title: this.choice.name } : null);
+                }
+
                 if (this.type === "scalar") {
-                    if (this.value == null) {
-                        return new Spiro.Value("");
-                    }
-                    return new Spiro.Value(this.value);
+                    return new Spiro.Value(this.value == null ? "" : this.value);
                 }
 
-                if (this.hasChoices || this.choice) {
-                    if (this.choice.value) {
-                        return new Spiro.Value({ href: this.choice.value, title: this.choice.name });
-                    }
-                    return new Spiro.Value("");
-                }
-
-                if (this.reference === "") {
-                    return new Spiro.Value("");
-                }
-
-                return new Spiro.Value({ href: this.reference });
+                // reference
+                return new Spiro.Value(this.reference ? { href: this.reference } : null);
             };
             return ValueViewModel;
         })(MessageViewModel);

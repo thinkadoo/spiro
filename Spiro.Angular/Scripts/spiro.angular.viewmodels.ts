@@ -63,26 +63,23 @@ module Spiro.Angular {
         }
 
         getValue(): Value {
+           
+            if (this.hasChoices || this.hasAutocomplete) {
+
+                if (this.type === "scalar") {
+                    return new Value(this.choice && this.choice.value != null ? this.choice.value : "");
+                }
+
+                // reference 
+                return new Value(this.choice && this.choice.value ? { href: this.choice.value, title: this.choice.name } : null );
+            }
+
             if (this.type === "scalar") {
-
-                if (this.value == null) {
-                    return new Value("");
-                }
-                return new Value(this.value);
+                return new Value(this.value == null ? "" : this.value);
             }
 
-            if (this.hasChoices || this.choice) {
-                if (this.choice.value) {
-                    return new Value({ href: this.choice.value, title: this.choice.name });
-                }
-                return new Value("");
-            }
-
-            if (this.reference === "") {
-                return new Value("");
-            }
-
-            return new Value({ href: this.reference });
+            // reference
+            return new Value(this.reference ? { href: this.reference } : null);
         }
 
     }

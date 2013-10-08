@@ -162,6 +162,21 @@ var Spiro;
                 propertyViewModel.hasChoices = propertyRep.hasChoices();
                 propertyViewModel.hasAutocomplete = propertyRep.hasAutoComplete();
 
+                if (propertyRep.extensions().choices) {
+                    // may need to map value
+                    var arr = _.map(propertyRep.extensions().choices, function (value, name) {
+                        return { name: name, value: value };
+                    });
+
+                    var mappedValue = _.find(arr, function (nvp) {
+                        return nvp.value === propertyViewModel.value;
+                    });
+
+                    if (mappedValue) {
+                        propertyViewModel.value = mappedValue.name;
+                    }
+                }
+
                 if (propertyDetails && propertyDetails.extensions().choices) {
                     propertyViewModel.choices = _.map(propertyDetails.extensions().choices, function (value, name) {
                         var cvm = new Angular.ChoiceViewModel();
@@ -177,7 +192,7 @@ var Spiro;
 
                 if (propertyViewModel.hasChoices) {
                     propertyViewModel.choice = _.find(propertyViewModel.choices, function (c) {
-                        return c.name == propertyRep.value().toString();
+                        return c.name == propertyViewModel.value.toString();
                     });
                 } else if (propertyViewModel.type === "ref") {
                     propertyViewModel.choice = Angular.ChoiceViewModel.create(propertyRep.value());

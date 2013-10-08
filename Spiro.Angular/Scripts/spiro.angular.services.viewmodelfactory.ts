@@ -173,14 +173,30 @@ module Spiro.Angular {
             // only set color if has value 
             propertyViewModel.color = propertyViewModel.value ? Color.toColorFromType(propertyRep.extensions().returnType) : "";
 
-
             propertyViewModel.id = id;
             propertyViewModel.isEditable = !propertyRep.disabledReason();
             propertyViewModel.choices = [];
             propertyViewModel.hasChoices = propertyRep.hasChoices();
             propertyViewModel.hasAutocomplete = propertyRep.hasAutoComplete();
 
-            // use custom extension by perference
+            if (propertyRep.extensions().choices) {
+                // may need to map value
+                var arr = _.map(propertyRep.extensions().choices, (value, name) => {
+
+                    return { name: name, value: value };
+                });
+
+                var mappedValue = _.find(arr, (nvp) => {
+                    return nvp.value === propertyViewModel.value;
+                });
+
+                if (mappedValue) {
+                    propertyViewModel.value = mappedValue.name;
+                }
+            }
+
+
+            // use custom extension by preference
             if (propertyDetails && propertyDetails.extensions().choices) {
                 propertyViewModel.choices = _.map(propertyDetails.extensions().choices, (value, name) => {
                     var cvm = new ChoiceViewModel();
@@ -197,7 +213,7 @@ module Spiro.Angular {
        
 
             if (propertyViewModel.hasChoices) {
-                propertyViewModel.choice = _.find(propertyViewModel.choices, (c) => c.name == propertyRep.value().toString());
+                propertyViewModel.choice = _.find(propertyViewModel.choices, (c) => c.name == propertyViewModel.value.toString());
             }
             else if (propertyViewModel.type === "ref") {
                 propertyViewModel.choice = ChoiceViewModel.create(propertyRep.value());
