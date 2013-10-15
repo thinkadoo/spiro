@@ -76,7 +76,32 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             cancelList();
         }
 
-      
+        [TestMethod]
+        public virtual void ChoicesParmKeepsValue() {
+            br.Navigate().GoToUrl(orderServiceUrl);
+
+            wait.Until(d => d.FindElements(By.ClassName("action")).Count == 6);
+
+            // click on action to open dialog 
+            Click(br.FindElements(By.ClassName("action"))[3]); // orders by value
+
+            wait.Until(d => d.FindElement(By.ClassName("action-dialog")));
+            string title = br.FindElement(By.CssSelector("div.action-dialog > div.title")).Text;
+
+            Assert.AreEqual("Orders By Value", title);
+
+            br.FindElement(By.CssSelector(".parameter-value  select")).SendKeys("Ascending");
+
+            Click(br.FindElement(By.ClassName("show")));
+
+            wait.Until(d => d.FindElement(By.ClassName("list-view")));
+
+            string topItem = br.FindElement(By.CssSelector("div.list-item > a")).Text;
+
+            Assert.AreEqual("SO51782", topItem);
+
+            Assert.AreEqual("Ascending", br.FindElement(By.CssSelector("option[selected=selected]")).Text); 
+        } 
     }
 
     #region browsers specific subclasses
