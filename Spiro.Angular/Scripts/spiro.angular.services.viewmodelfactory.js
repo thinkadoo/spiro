@@ -79,7 +79,7 @@ var Spiro;
                     parmViewModel.choices = _.map(parmRep.extensions().choices, function (value, name) {
                         var cvm = new Angular.ChoiceViewModel();
                         cvm.name = name;
-                        cvm.value = value;
+                        cvm.value = value.toString();
                         return cvm;
                     });
                 } else {
@@ -92,7 +92,7 @@ var Spiro;
 
                 if (parmViewModel.hasChoices && previousValue) {
                     parmViewModel.choice = _.find(parmViewModel.choices, function (c) {
-                        return c.name == previousValue;
+                        return c.value === previousValue;
                     });
                 }
 

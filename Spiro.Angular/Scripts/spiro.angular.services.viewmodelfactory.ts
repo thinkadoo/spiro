@@ -99,7 +99,7 @@ module Spiro.Angular {
                 parmViewModel.choices = _.map(parmRep.extensions().choices, (value, name) => {
                     var cvm = new ChoiceViewModel();
                     cvm.name = name;
-                    cvm.value = value;
+                    cvm.value = value.toString();
                     return cvm;
                 });
             }
@@ -112,7 +112,7 @@ module Spiro.Angular {
             parmViewModel.hasChoices = parmViewModel.choices.length > 0;
 
             if (parmViewModel.hasChoices && previousValue) {
-                parmViewModel.choice = _.find(parmViewModel.choices, (c) => c.name == previousValue);
+                parmViewModel.choice = _.find(parmViewModel.choices, (c) => c.value === previousValue);
             }
 
             parmViewModel.hasAutocomplete = !!parmRep.autocompleteLink();
