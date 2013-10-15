@@ -101,7 +101,33 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             Assert.AreEqual("SO51782", topItem);
 
             Assert.AreEqual("Ascending", br.FindElement(By.CssSelector("option[selected=selected]")).Text); 
+        }
+
+        [TestMethod]
+        public virtual void ScalarParmKeepsValue() {
+            br.Navigate().GoToUrl(customerServiceUrl);
+
+            wait.Until(d => d.FindElements(By.ClassName("action")).Count == 11);
+
+            // click on action to open dialog 
+            Click(br.FindElements(By.ClassName("action"))[0]); // find customer by account number
+
+            wait.Until(d => d.FindElement(By.ClassName("action-dialog")));
+            string title = br.FindElement(By.CssSelector("div.action-dialog > div.title")).Text;
+
+            Assert.AreEqual("Find Customer By Account Number", title);
+
+            br.FindElement(By.CssSelector("div.parameter-value input")).SendKeys("00000042");
+
+            Click(br.FindElement(By.ClassName("show")));
+
+            wait.Until(d => d.FindElement(By.ClassName("nested-object")));
+
+            Assert.AreEqual("AW00000042", br.FindElement(By.CssSelector("div.parameter-value input")).GetAttribute("value"));
         } 
+
+
+
     }
 
     #region browsers specific subclasses
