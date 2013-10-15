@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 
@@ -124,9 +125,37 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             wait.Until(d => d.FindElement(By.ClassName("nested-object")));
 
             Assert.AreEqual("AW00000042", br.FindElement(By.CssSelector("div.parameter-value input")).GetAttribute("value"));
+        }
+
+        [TestMethod]
+        public virtual void DateTimeParmKeepsValue() {
+            br.Navigate().GoToUrl(store555Url);
+
+            wait.Until(d => d.FindElements(By.ClassName("action")).Count == 8);
+
+
+            // click on action to open dialog 
+            Click(br.FindElements(By.CssSelector("div.action-button a"))[4]); // Search for orders
+
+            wait.Until(d => d.FindElement(By.ClassName("action-dialog")));
+            string title = br.FindElement(By.CssSelector("div.action-dialog > div.title")).Text;
+
+            Assert.AreEqual("Search For Orders", title);
+
+            br.FindElements(By.CssSelector(".parameter-value input"))[0].SendKeys("1 Jan 2003");
+            br.FindElements(By.CssSelector(".parameter-value input"))[1].SendKeys("1 Dec 2003" + Keys.Escape);
+
+            Thread.Sleep(2000); // need to wait for datepicker :-(
+
+            wait.Until(d => br.FindElement(By.ClassName("show")));
+
+            Click(br.FindElement(By.ClassName("show")));
+
+            wait.Until(d => d.FindElement(By.ClassName("list-view")));
+
+            Assert.AreEqual("1 Jan 2003", br.FindElements(By.CssSelector(".parameter-value input"))[0].GetAttribute("value"));
+            Assert.AreEqual("1 Dec 2003", br.FindElements(By.CssSelector(".parameter-value input"))[1].GetAttribute("value"));
         } 
-
-
 
     }
 
