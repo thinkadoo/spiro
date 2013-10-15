@@ -123,6 +123,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="tests\DialogTests.cs" />
     <Compile Include="tests\MenuBarTests.cs" />
     <Compile Include="tests\ObjectPageTests.cs" />
     <Compile Include="tests\ServicePageTests.cs" />
