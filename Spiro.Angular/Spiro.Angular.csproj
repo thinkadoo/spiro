@@ -259,10 +259,6 @@
       <DependentUpon>spiro.angular.directives.ts</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-2.0.3.intellisense.js" />
-    <Content Include="Scripts\jasmine-samples\Player.js" />
-    <Content Include="Scripts\jasmine-samples\PlayerSpec.js" />
-    <Content Include="Scripts\jasmine-samples\Song.js" />
-    <Content Include="Scripts\jasmine-samples\SpecHelper.js" />
     <Content Include="Scripts\jquery-2.0.3.js" />
     <Content Include="Scripts\jquery-2.0.3.min.js" />
     <Content Include="Scripts\spiro.angular.app.js.map">

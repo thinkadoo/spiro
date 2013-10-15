@@ -119,7 +119,6 @@
                     };
 
                     optionsObj.focus = function (event, ui) {
-                        updateModel(ui.item.value);
                         return false;
                     };
 

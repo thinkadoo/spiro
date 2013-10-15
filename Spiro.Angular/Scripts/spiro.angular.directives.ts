@@ -120,7 +120,6 @@ module Spiro.Angular {
                 };
 
                 optionsObj.focus = (event, ui) => {
-                    updateModel(ui.item.value);
                     return false;
                 };
 
