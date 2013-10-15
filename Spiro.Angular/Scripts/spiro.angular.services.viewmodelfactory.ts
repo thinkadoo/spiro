@@ -112,7 +112,12 @@ module Spiro.Angular {
             parmViewModel.hasChoices = parmViewModel.choices.length > 0;
 
             if (parmViewModel.hasChoices && previousValue) {
-                parmViewModel.choice = _.find(parmViewModel.choices, (c) => c.value === previousValue);
+                if (parmViewModel.type == "scalar") {
+                    parmViewModel.choice = _.find(parmViewModel.choices, (c) => c.value === previousValue);
+                }
+                else {
+                    parmViewModel.choice = _.find(parmViewModel.choices, (c) => c.name === previousValue);
+                }
             }
 
             parmViewModel.hasAutocomplete = !!parmRep.autocompleteLink();

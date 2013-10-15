@@ -91,9 +91,15 @@ var Spiro;
                 parmViewModel.hasChoices = parmViewModel.choices.length > 0;
 
                 if (parmViewModel.hasChoices && previousValue) {
-                    parmViewModel.choice = _.find(parmViewModel.choices, function (c) {
-                        return c.value === previousValue;
-                    });
+                    if (parmViewModel.type == "scalar") {
+                        parmViewModel.choice = _.find(parmViewModel.choices, function (c) {
+                            return c.value === previousValue;
+                        });
+                    } else {
+                        parmViewModel.choice = _.find(parmViewModel.choices, function (c) {
+                            return c.name === previousValue;
+                        });
+                    }
                 }
 
                 parmViewModel.hasAutocomplete = !!parmRep.autocompleteLink();

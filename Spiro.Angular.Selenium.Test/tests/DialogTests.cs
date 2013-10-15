@@ -78,7 +78,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
         }
 
         [TestMethod]
-        public virtual void ChoicesParmKeepsValue() {
+        public virtual void ScalarChoicesParmKeepsValue() {
             br.Navigate().GoToUrl(orderServiceUrl);
 
             wait.Until(d => d.FindElements(By.ClassName("action")).Count == 6);
@@ -155,7 +155,35 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
             Assert.AreEqual("1 Jan 2003", br.FindElements(By.CssSelector(".parameter-value input"))[0].GetAttribute("value"));
             Assert.AreEqual("1 Dec 2003", br.FindElements(By.CssSelector(".parameter-value input"))[1].GetAttribute("value"));
-        } 
+        }
+
+        [TestMethod]
+        public virtual void RefChoicesParmKeepsValue() {
+            br.Navigate().GoToUrl(productServiceUrl);
+
+            wait.Until(d => d.FindElements(By.ClassName("action")).Count == 8);
+
+            // click on action to open dialog 
+            Click(br.FindElements(By.ClassName("action"))[2]); // list products by sub cat
+
+            wait.Until(d => d.FindElement(By.ClassName("action-dialog")));
+            string title = br.FindElement(By.CssSelector("div.action-dialog > div.title")).Text;
+
+            Assert.AreEqual("List Products By Sub Category", title);
+
+            br.FindElement(By.CssSelector(".parameter-value  select")).SendKeys("Forks");
+
+            Click(br.FindElement(By.ClassName("show")));
+
+            wait.Until(d => d.FindElement(By.ClassName("list-view")));
+
+            string topItem = br.FindElement(By.CssSelector("div.list-item > a")).Text;
+
+            Assert.AreEqual("HL Fork", topItem);
+
+            Assert.AreEqual("Forks", br.FindElement(By.CssSelector("option[selected=selected]")).Text);
+        }
+
 
     }
 

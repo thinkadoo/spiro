@@ -66,6 +66,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
         protected const string customerServiceUrl = url + "#/services/AdventureWorksModel.CustomerRepository";
         protected const string orderServiceUrl = url + "#/services/AdventureWorksModel.OrderRepository";
+        protected const string productServiceUrl = url + "#/services/AdventureWorksModel.ProductRepository";
 
 
         protected const string store555Url = url + "#/objects/AdventureWorksModel.Store/555";
