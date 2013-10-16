@@ -131,11 +131,11 @@
                         var value = $(this).val();
 
                         if (value.length == 0) {
-                            ngModel.$setViewValue("");
+                            updateModel(Angular.ChoiceViewModel.create(new Spiro.Value(""), ""));
                         }
                     };
 
-                    element.keydown(clearHandler);
+                    element.keyup(clearHandler);
                     element.autocomplete(optionsObj);
                 }
             };
