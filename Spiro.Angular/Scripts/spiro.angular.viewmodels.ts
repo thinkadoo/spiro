@@ -6,14 +6,18 @@ module Spiro.Angular {
 
 
     export class ChoiceViewModel {
+        id: string; 
         name: string;
         value: string;
+        search: string; 
 
-        static create(value: Value) {
+        static create(value: Value, id : string, searchTerm? : string) {
             var choiceViewModel = new ChoiceViewModel();
 
+            choiceViewModel.id = id;
             choiceViewModel.name = value.toString(); 
             choiceViewModel.value = value.isReference() ? value.link().href() : value.toValueString();
+            choiceViewModel.search = searchTerm || ""; 
             return choiceViewModel;
         } 
     }
@@ -60,6 +64,10 @@ module Spiro.Angular {
 
         autoComplete(searchTerm: string): ng.IPromise<ChoiceViewModel[]> {
             return null;
+        }
+
+        getMemento(): string {
+            return (this.choice && this.choice.search) ? this.choice.search : this.getValue.toString();
         }
 
         getValue(): Value {

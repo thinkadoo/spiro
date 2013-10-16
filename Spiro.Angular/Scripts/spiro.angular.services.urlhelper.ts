@@ -30,7 +30,7 @@ module Spiro.Angular {
 
         helper.action = function (dvm?: DialogViewModel) {
 
-            var pps = dvm && dvm.parameters.length > 0 ? _.reduce(dvm.parameters, (memo, parm) => { return memo + "/" + parm.getValue().toString(); }, "") : "";
+            var pps = dvm && dvm.parameters.length > 0 ? _.reduce(dvm.parameters, (memo, parm) => { return memo + "/" + parm.getMemento(); }, "") : "";
 
             return _.first($routeParams.action.split("/")) + encodeURIComponent(pps);
         }

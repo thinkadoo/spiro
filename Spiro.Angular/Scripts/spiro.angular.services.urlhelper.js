@@ -11,7 +11,7 @@ var Spiro;
 
             helper.action = function (dvm) {
                 var pps = dvm && dvm.parameters.length > 0 ? _.reduce(dvm.parameters, function (memo, parm) {
-                    return memo + "/" + parm.getValue().toString();
+                    return memo + "/" + parm.getMemento();
                 }, "") : "";
 
                 return _.first($routeParams.action.split("/")) + encodeURIComponent(pps);

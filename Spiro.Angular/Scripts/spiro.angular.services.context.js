@@ -165,6 +165,21 @@ var Spiro;
             context.setPreviousUrl = function (url) {
                 previousUrl = url;
             };
+
+            var selectedChoice = null;
+
+            context.getSelectedChoice = function (parm, search) {
+                return selectedChoice ? selectedChoice[parm + ":" + search] : null;
+            };
+
+            context.setSelectedChoice = function (parm, search, cvm) {
+                selectedChoice = selectedChoice || {};
+                selectedChoice[parm + ":" + search] = cvm;
+            };
+
+            context.clearSelectedChoice = function () {
+                return selectedChoice = null;
+            };
         });
     })(Spiro.Angular || (Spiro.Angular = {}));
     var Angular = Spiro.Angular;

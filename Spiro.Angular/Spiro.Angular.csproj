@@ -218,6 +218,7 @@
     <Content Include="Content\partials\viewProperties.html" />
     <Content Include="fonts\iconFont.svg" />
     <Content Include="fonts\license.txt" />
+    <Content Include="Scripts\spiro.angular.services.logging.js.map" />
     <TypeScriptCompile Include="Scripts\spiro.angular.services.color.ts" />
     <Content Include="Scripts\spiro.angular.services.color.js">
       <DependentUpon>spiro.angular.services.color.ts</DependentUpon>
@@ -239,6 +240,8 @@
     <Content Include="Scripts\spiro.angular.services.handlers.js">
       <DependentUpon>spiro.angular.services.handlers.ts</DependentUpon>
     </Content>
+    <TypeScriptCompile Include="Scripts\spiro.angular.services.logging.ts" />
+    <Content Include="Scripts\spiro.angular.services.logging.js" />
     <Content Include="Scripts\spiro.angular.services.representationloader.js.map">
       <DependentUpon>spiro.angular.services.representationloader.ts</DependentUpon>
     </Content>

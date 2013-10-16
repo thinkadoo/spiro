@@ -21,7 +21,11 @@ module Spiro.Angular {
         getTransientObject: () => ng.IPromise<DomainObjectRepresentation>;
         setTransientObject: (object: DomainObjectRepresentation) => void;
         getPreviousUrl: () => string;
-        setPreviousUrl: (url : string) => void;
+        setPreviousUrl: (url: string) => void;
+
+        getSelectedChoice: (parm : string, search : string) => ChoiceViewModel;
+        clearSelectedChoice: () => void;
+        setSelectedChoice: (parm: string, search : string, cvm : ChoiceViewModel) => void;
     }
 
     interface IContextInternal extends  IContext{
@@ -199,6 +203,20 @@ module Spiro.Angular {
             previousUrl = url;
         }
 
+        var selectedChoice: { [index: string]: ChoiceViewModel } = null;
+
+        context.getSelectedChoice = function (parm : string, search : string) {
+            return selectedChoice ? selectedChoice[parm + ":" + search] : null;
+        }
+
+        context.setSelectedChoice = function (parm: string, search: string, cvm: ChoiceViewModel) {
+            selectedChoice = selectedChoice || {};
+            selectedChoice[parm + ":" + search] = cvm; 
+        }
+
+        context.clearSelectedChoice = function () {
+            return selectedChoice = null; 
+        }
     });
 
 }

@@ -6,11 +6,11 @@ var Spiro;
     /// <reference path="spiro.angular.viewmodels.ts" />
     /// <reference path="spiro.angular.app.ts" />
     (function (Angular) {
-        Angular.app.service('ViewModelFactory', function ($q, $location, UrlHelper, RepLoader, Color) {
+        Angular.app.service('ViewModelFactory', function ($q, $location, UrlHelper, RepLoader, Color, Context) {
             var viewModelFactory = this;
 
             // TODO move to handlers ? + other functions in here
-            function autocomplete(list, searchTerm) {
+            function autocomplete(list, id, searchTerm) {
                 list.attributes = {};
 
                 list.setSearchTerm(searchTerm);
@@ -20,7 +20,7 @@ var Spiro;
 
                     var cvms = _.map(l.value().models, function (ll) {
                         var v = new Spiro.Value(ll);
-                        return Angular.ChoiceViewModel.create(v);
+                        return Angular.ChoiceViewModel.create(v, id, searchTerm);
                     });
 
                     delay.resolve(cvms);
@@ -78,13 +78,16 @@ var Spiro;
                 if (parmRep.extensions().choices) {
                     parmViewModel.choices = _.map(parmRep.extensions().choices, function (value, name) {
                         var cvm = new Angular.ChoiceViewModel();
+
+                        // TODO fix this to use create !
                         cvm.name = name;
                         cvm.value = value.toString();
+                        cvm.id = id;
                         return cvm;
                     });
                 } else {
                     parmViewModel.choices = _.map(parmRep.choices(), function (v) {
-                        return Angular.ChoiceViewModel.create(v);
+                        return Angular.ChoiceViewModel.create(v, id);
                     });
                 }
 
@@ -92,6 +95,7 @@ var Spiro;
 
                 if (parmViewModel.hasChoices && previousValue) {
                     if (parmViewModel.type == "scalar") {
+                        // TODO fix so this works same way for both scalar and ref !
                         parmViewModel.choice = _.find(parmViewModel.choices, function (c) {
                             return c.value === previousValue;
                         });
@@ -106,7 +110,14 @@ var Spiro;
 
                 if (parmViewModel.hasAutocomplete) {
                     var list = parmRep.getAutoCompletes();
-                    parmViewModel.autoComplete = _.partial(autocomplete, list);
+                    parmViewModel.autoComplete = _.partial(autocomplete, list, id);
+
+                    if (previousValue) {
+                        parmViewModel.choice = Context.getSelectedChoice(id, previousValue);
+                    } else {
+                        // clear any previous
+                        Context.clearSelectedChoice();
+                    }
                 }
 
                 return parmViewModel;
@@ -186,13 +197,16 @@ var Spiro;
                 if (propertyDetails && propertyDetails.extensions().choices) {
                     propertyViewModel.choices = _.map(propertyDetails.extensions().choices, function (value, name) {
                         var cvm = new Angular.ChoiceViewModel();
+
+                        // todo fix this to use create
                         cvm.name = name;
                         cvm.value = value;
+                        cvm.id = id;
                         return cvm;
                     });
                 } else if (propertyDetails && propertyViewModel.hasChoices) {
                     propertyViewModel.choices = _.map(propertyDetails.choices(), function (v) {
-                        return Angular.ChoiceViewModel.create(v);
+                        return Angular.ChoiceViewModel.create(v, id);
                     });
                 }
 
@@ -201,14 +215,14 @@ var Spiro;
                         return c.name == propertyViewModel.value.toString();
                     });
                 } else if (propertyViewModel.type === "ref") {
-                    propertyViewModel.choice = Angular.ChoiceViewModel.create(propertyRep.value());
+                    propertyViewModel.choice = Angular.ChoiceViewModel.create(propertyRep.value(), id);
                 } else {
                     propertyViewModel.choice = null;
                 }
 
                 if (propertyViewModel.hasAutocomplete && propertyDetails) {
                     var list = propertyDetails.getAutoCompletes();
-                    propertyViewModel.autoComplete = _.partial(autocomplete, list);
+                    propertyViewModel.autoComplete = _.partial(autocomplete, list, id);
                 } else {
                     propertyViewModel.autoComplete = function (st) {
                         return $q.when([]);

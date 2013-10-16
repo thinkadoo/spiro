@@ -22,12 +22,12 @@ module Spiro.Angular {
         domainObjectViewModel(objectRep: DomainObjectRepresentation, details?: PropertyRepresentation[], save?: (ovm: DomainObjectViewModel) => void, previousUrl? : string): DomainObjectViewModel;
     }
 
-    app.service('ViewModelFactory', function ($q : ng.IQService, $location : ng.ILocationService, UrlHelper: IUrlHelper, RepLoader: IRepLoader, Color : IColor) {
+    app.service('ViewModelFactory', function ($q : ng.IQService, $location : ng.ILocationService, UrlHelper: IUrlHelper, RepLoader: IRepLoader, Color : IColor, Context : IContext) {
 
         var viewModelFactory = <IViewModelFactory>this;
 
         // TODO move to handlers ? + other functions in here 
-        function autocomplete(list : ListRepresentation, searchTerm : string) : ng.IPromise<ChoiceViewModel[]> {
+        function autocomplete(list : ListRepresentation, id : string, searchTerm : string) : ng.IPromise<ChoiceViewModel[]> {
            
             list.attributes = {}; // kludge todo fix 
 
@@ -38,7 +38,7 @@ module Spiro.Angular {
 
                 var cvms = _.map(l.value().models, (ll: Link) => {
                     var v = new Value(ll);
-                    return ChoiceViewModel.create(v);
+                    return ChoiceViewModel.create(v, id, searchTerm);
                 });
 
                 delay.resolve(cvms);
@@ -98,14 +98,16 @@ module Spiro.Angular {
             if (parmRep.extensions().choices) {
                 parmViewModel.choices = _.map(parmRep.extensions().choices, (value, name) => {
                     var cvm = new ChoiceViewModel();
+                    // TODO fix this to use create !
                     cvm.name = name;
                     cvm.value = value.toString();
+                    cvm.id = id; 
                     return cvm;
                 });
             }
             else {
                 parmViewModel.choices = _.map(parmRep.choices(), (v) => {
-                    return ChoiceViewModel.create(v);
+                    return ChoiceViewModel.create(v, id);
                 });
             }
 
@@ -113,6 +115,7 @@ module Spiro.Angular {
 
             if (parmViewModel.hasChoices && previousValue) {
                 if (parmViewModel.type == "scalar") {
+                    // TODO fix so this works same way for both scalar and ref !
                     parmViewModel.choice = _.find(parmViewModel.choices, (c) => c.value === previousValue);
                 }
                 else {
@@ -124,7 +127,16 @@ module Spiro.Angular {
 
             if (parmViewModel.hasAutocomplete) {
                 var list = parmRep.getAutoCompletes();
-                parmViewModel.autoComplete = <(st : string) => ng.IPromise<ChoiceViewModel[]>> _.partial(autocomplete, list);
+                parmViewModel.autoComplete = <(st: string) => ng.IPromise<ChoiceViewModel[]>> _.partial(autocomplete, list, id);
+
+                // TODO and at least investigate if we can do all choices/autocomplete caching the same way !!
+                if (previousValue) {
+                    parmViewModel.choice = Context.getSelectedChoice(id, previousValue);
+                }
+                else {
+                    // clear any previous 
+                    Context.clearSelectedChoice();
+                }
             }
 
             return parmViewModel;
@@ -205,14 +217,16 @@ module Spiro.Angular {
             if (propertyDetails && propertyDetails.extensions().choices) {
                 propertyViewModel.choices = _.map(propertyDetails.extensions().choices, (value, name) => {
                     var cvm = new ChoiceViewModel();
+                    // todo fix this to use create 
                     cvm.name = name;
                     cvm.value = value;
+                    cvm.id = id;
                     return cvm;
                 });
             }
             else if (propertyDetails && propertyViewModel.hasChoices) {
                 propertyViewModel.choices = _.map(propertyDetails.choices(), (v) => {
-                    return ChoiceViewModel.create(v);
+                    return ChoiceViewModel.create(v, id);
                 });
             }
        
@@ -221,7 +235,7 @@ module Spiro.Angular {
                 propertyViewModel.choice = _.find(propertyViewModel.choices, (c) => c.name == propertyViewModel.value.toString());
             }
             else if (propertyViewModel.type === "ref") {
-                propertyViewModel.choice = ChoiceViewModel.create(propertyRep.value());
+                propertyViewModel.choice = ChoiceViewModel.create(propertyRep.value(), id);
             }
             else {
                 propertyViewModel.choice = null;
@@ -229,7 +243,7 @@ module Spiro.Angular {
 
             if (propertyViewModel.hasAutocomplete && propertyDetails) {
                 var list = propertyDetails.getAutoCompletes();
-                propertyViewModel.autoComplete = <(st: string) => ng.IPromise<ChoiceViewModel[]>> _.partial(autocomplete, list);
+                propertyViewModel.autoComplete = <(st: string) => ng.IPromise<ChoiceViewModel[]>> _.partial(autocomplete, list, id);
             }
             else {
                 propertyViewModel.autoComplete = (st: string) => {

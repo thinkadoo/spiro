@@ -184,7 +184,32 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             Assert.AreEqual("Forks", br.FindElement(By.CssSelector("option[selected=selected]")).Text);
         }
 
+        [TestMethod]
+        public virtual void AutoCompleteParmKeepsValue() {
+            br.Navigate().GoToUrl(salesServiceUrl);
 
+            wait.Until(d => d.FindElements(By.ClassName("action")).Count == 5);
+
+            // click on action to open dialog 
+            Click(br.FindElements(By.ClassName("action"))[2]); // list accounts for sales person 
+
+            wait.Until(d => d.FindElement(By.ClassName("action-dialog")));
+            string title = br.FindElement(By.CssSelector("div.action-dialog > div.title")).Text;
+
+            Assert.AreEqual("List Accounts For Sales Person", title);
+
+            br.FindElement(By.CssSelector(".parameter-value input[type='text']")).SendKeys("Valdez");
+
+            wait.Until(d => d.FindElement(By.ClassName("ui-menu-item")));
+
+            Click(br.FindElement(By.CssSelector(".ui-menu-item a")));
+
+            Click(br.FindElement(By.ClassName("show")));
+
+            wait.Until(d => d.FindElement(By.ClassName("list-view")));
+
+            Assert.AreEqual("Rachel Valdez", br.FindElement(By.CssSelector(".parameter-value input[type='text']")).Text);
+        }
     }
 
     #region browsers specific subclasses

@@ -57,7 +57,7 @@
             };
         });
 
-        Angular.app.directive('nogAutocomplete', function ($filter, $parse) {
+        Angular.app.directive('nogAutocomplete', function ($filter, $parse, Context) {
             return {
                 // Enforce the angularJS default of restricting the directive to
                 // attributes only
@@ -90,6 +90,8 @@
                     };
 
                     var updateModel = function (cvm) {
+                        Context.setSelectedChoice(cvm.id, cvm.search, cvm);
+
                         scope.$apply(function () {
                             ngModel.$parsers.push(function (val) {
                                 return cvm;
@@ -125,6 +127,15 @@
                     optionsObj.autoFocus = true;
                     optionsObj.minLength = 1;
 
+                    var clearHandler = function () {
+                        var value = $(this).val();
+
+                        if (value.length == 0) {
+                            ngModel.$setViewValue("");
+                        }
+                    };
+
+                    element.keydown(clearHandler);
                     element.autocomplete(optionsObj);
                 }
             };

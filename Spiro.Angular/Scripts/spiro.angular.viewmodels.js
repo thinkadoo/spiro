@@ -13,11 +13,13 @@ var Spiro;
         var ChoiceViewModel = (function () {
             function ChoiceViewModel() {
             }
-            ChoiceViewModel.create = function (value) {
+            ChoiceViewModel.create = function (value, id, searchTerm) {
                 var choiceViewModel = new ChoiceViewModel();
 
+                choiceViewModel.id = id;
                 choiceViewModel.name = value.toString();
                 choiceViewModel.value = value.isReference() ? value.link().href() : value.toValueString();
+                choiceViewModel.search = searchTerm || "";
                 return choiceViewModel;
             };
             return ChoiceViewModel;
@@ -62,6 +64,10 @@ var Spiro;
             }
             ValueViewModel.prototype.autoComplete = function (searchTerm) {
                 return null;
+            };
+
+            ValueViewModel.prototype.getMemento = function () {
+                return (this.choice && this.choice.search) ? this.choice.search : this.getValue.toString();
             };
 
             ValueViewModel.prototype.getValue = function () {

@@ -60,7 +60,7 @@ module Spiro.Angular {
             };
         });
 
-    app.directive('nogAutocomplete', function ($filter: ng.IFilterService, $parse): ng.IDirective {
+    app.directive('nogAutocomplete', function ($filter: ng.IFilterService, $parse, Context: Spiro.Angular.IContext): ng.IDirective {
         return {
             // Enforce the angularJS default of restricting the directive to
             // attributes only
@@ -74,14 +74,13 @@ module Spiro.Angular {
             },
             link: function (scope: ISelectScope, element, attrs, ngModel: ng.INgModelController) {
                 if (!ngModel) return;
-
-             
+        
                 var optionsObj: { autoFocus?: boolean; minLength?: number; source?: Function; select?: Function; focus?: Function} = {};
 
                 var model = $parse(attrs.nogAutocomplete); 
 
                 ngModel.$render = function () {
-                    var cvm = ngModel.$modelValue; 
+                    var cvm = ngModel.$modelValue;
 
                     if (cvm) {
                         ngModel.$parsers.push((val) => { return cvm; });
@@ -91,6 +90,9 @@ module Spiro.Angular {
                 };
              
                 var updateModel = function (cvm: ChoiceViewModel) {
+
+                    Context.setSelectedChoice(cvm.id, cvm.search, cvm);
+
                     scope.$apply(function () {
 
                         ngModel.$parsers.push((val) => { return cvm; });
@@ -126,6 +128,15 @@ module Spiro.Angular {
                 optionsObj.autoFocus = true;
                 optionsObj.minLength = 1; 
 
+                var clearHandler = function () {
+                    var value = $(this).val();
+
+                    if (value.length == 0) {
+                        ngModel.$setViewValue("");
+                    }
+                };
+
+                element.keydown(clearHandler); 
                 element.autocomplete(optionsObj);
             }
         };
