@@ -33,7 +33,6 @@ module Spiro.Angular {
         saveObject($scope, object: DomainObjectRepresentation, ovm: DomainObjectViewModel);
     }
 
-    // TODO rename 
     app.service("Handlers", function ($routeParams: ISpiroRouteParams, $location: ng.ILocationService, $q: ng.IQService, $cacheFactory: ng.ICacheFactoryService, RepLoader: IRepLoader, Context: IContext, ViewModelFactory: IViewModelFactory, UrlHelper: IUrlHelper, Color : IColor) {
 
         var handlers = <IHandlersInternal>this;
@@ -217,6 +216,11 @@ module Spiro.Angular {
 
             $scope.appBar.goBack = function () {
                 parent.history.back();
+
+                if ($routeParams.resultObject || $routeParams.resultCollection) {
+                    // looking at an action result = so go back two 
+                    parent.history.back();
+                }
             };
 
             $scope.appBar.goForward = function () {
@@ -332,7 +336,7 @@ module Spiro.Angular {
         // expose for testing 
 
         handlers.setResult = function (result: ActionResultRepresentation, dvm?: DialogViewModel) {
-            if (result.result().isNull()) {
+            if (result.result().isNull() && result.resultType() !== "void") {
                 if (dvm) {
                     dvm.message = "no result found";
                 }

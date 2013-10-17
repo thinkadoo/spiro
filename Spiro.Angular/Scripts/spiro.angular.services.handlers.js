@@ -6,7 +6,6 @@ var Spiro;
     /// <reference path="spiro.angular.viewmodels.ts" />
     /// <reference path="spiro.angular.app.ts" />
     (function (Angular) {
-        // TODO rename
         Angular.app.service("Handlers", function ($routeParams, $location, $q, $cacheFactory, RepLoader, Context, ViewModelFactory, UrlHelper, Color) {
             var handlers = this;
 
@@ -167,6 +166,11 @@ var Spiro;
 
                 $scope.appBar.goBack = function () {
                     parent.history.back();
+
+                    if ($routeParams.resultObject || $routeParams.resultCollection) {
+                        // looking at an action result = so go back two
+                        parent.history.back();
+                    }
                 };
 
                 $scope.appBar.goForward = function () {
@@ -260,7 +264,7 @@ var Spiro;
 
             // expose for testing
             handlers.setResult = function (result, dvm) {
-                if (result.result().isNull()) {
+                if (result.result().isNull() && result.resultType() !== "void") {
                     if (dvm) {
                         dvm.message = "no result found";
                     }
