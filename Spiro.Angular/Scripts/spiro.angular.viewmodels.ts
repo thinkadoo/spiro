@@ -67,7 +67,7 @@ module Spiro.Angular {
         }
 
         getMemento(): string {
-            return (this.choice && this.choice.search) ? this.choice.search : this.getValue.toString();
+            return (this.choice && this.choice.search) ? this.choice.search : this.getValue().toString();
         }
 
         getValue(): Value {

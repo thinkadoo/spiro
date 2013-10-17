@@ -67,7 +67,7 @@ var Spiro;
             };
 
             ValueViewModel.prototype.getMemento = function () {
-                return (this.choice && this.choice.search) ? this.choice.search : this.getValue.toString();
+                return (this.choice && this.choice.search) ? this.choice.search : this.getValue().toString();
             };
 
             ValueViewModel.prototype.getValue = function () {
