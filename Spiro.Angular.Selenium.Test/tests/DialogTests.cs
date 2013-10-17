@@ -208,7 +208,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
 
             wait.Until(d => d.FindElement(By.ClassName("list-view")));
 
-            Assert.AreEqual("Rachel Valdez", br.FindElement(By.CssSelector(".parameter-value input[type='text']")).Text);
+            Assert.AreEqual("Rachel Valdez", br.FindElement(By.CssSelector(".parameter-value input[type='text']")).GetAttribute("value"));
         }
     }
 

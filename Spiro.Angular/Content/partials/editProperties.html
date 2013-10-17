@@ -8,10 +8,10 @@
 
             <div ng-switch-when="ref" ng-switch="property.isEditable">
                
-                <div ng-switch-when="false" class="property-reference clickable-area" ng-class="property.color">
-                    <a href="{{property.href}}"><span></span>{{property.value}}</a>
+                <div ng-switch-when="false" class="property-value" ng-class="property.color">
+                    <span></span>{{property.value}}
                 </div>
-
+                
                 <div ng-switch-when="true" class='property-value input-control text' ng-switch="property.hasChoices">
                     <input type='hidden' value='{{property.reference}}' ng-model="property.reference" />
                     
@@ -72,8 +72,8 @@
         <div class="property" ng-repeat="collection in object.collections">
 
             <div class='property-name'>{{collection.title}}:</div>
-            <div class='property-collection clickable-area'>
-                <a href='{{collection.href}}'><span></span><i class='icon-plus' />{{collection.size}}-{{collection.pluralName}}</a>
+            <div class='property-collection'>
+                <span></span>{{collection.size}}-{{collection.pluralName}}
             </div>
         </div>
 
