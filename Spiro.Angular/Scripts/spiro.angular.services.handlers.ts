@@ -25,7 +25,7 @@ module Spiro.Angular {
         handleAppBar($scope): void;
     }
 
-    interface IHandlersInternal extends IHandlers {
+    export interface IHandlersInternal extends IHandlers {
         setResult(result: ActionResultRepresentation, dvm?: DialogViewModel);
         setInvokeUpdateError($scope, error: any, vms: ValueViewModel[], vm: MessageViewModel);
         invokeAction($scope, action: Spiro.ActionRepresentation, dvm: DialogViewModel);

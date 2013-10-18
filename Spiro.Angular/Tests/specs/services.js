@@ -1,7 +1,7 @@
 /// <reference path="../../Scripts/typings/jasmine/jasmine.d.ts" />
 /// <reference path="../../Scripts/typings/angularjs/angular.d.ts" />
 /// <reference path="../../Scripts/typings/angularjs/angular-mocks.d.ts" />
-/// <reference path="../../Scripts/spiro.angular.app.ts" />
+/// <reference path="../../Scripts/spiro.angular.services.handlers.ts" />
 describe('Services', function () {
     // helpers
     function spyOnPromise(tgt, func, mock) {
@@ -927,11 +927,12 @@ describe('Services', function () {
 
                 beforeEach(inject(function (Handlers) {
                     spyOn(testActionResult, 'result').andReturn(testResult);
-                    (Handlers).setResult(testActionResult, testViewModel);
+                    spyOn(testActionResult, 'resultType').andReturn("void");
+                    Handlers.setResult(testActionResult, testViewModel);
                 }));
 
-                it('should set view model error', function () {
-                    expect(testViewModel.message).toBe("no result found");
+                it('should not set view model error', function () {
+                    expect(testViewModel.message).toBeUndefined();
                     expect(location.search()).toEqual({});
                 });
             });
@@ -959,7 +960,7 @@ describe('Services', function () {
                         testViewModel.parameters = [];
                         testViewModel.show = true;
 
-                        (Handlers).setResult(testActionResult, testViewModel);
+                        Handlers.setResult(testActionResult, testViewModel);
                     }));
 
                     it('should set nested object and search', function () {
@@ -970,7 +971,7 @@ describe('Services', function () {
 
                 describe('without show flag', function () {
                     beforeEach(inject(function (Handlers) {
-                        (Handlers).setResult(testActionResult);
+                        Handlers.setResult(testActionResult);
                     }));
 
                     it('should set nested object and search', function () {
@@ -983,10 +984,10 @@ describe('Services', function () {
             describe('result is list', function () {
                 var testList = new Spiro.ListRepresentation();
                 var testResult = new Spiro.Result([], 'list');
+                var testNullResult = new Spiro.Result(null, 'list');
                 var setCollection;
 
                 beforeEach(inject(function ($routeParams, Context) {
-                    spyOn(testActionResult, 'result').andReturn(testResult);
                     spyOn(testActionResult, 'resultType').andReturn('list');
                     spyOn(testResult, 'list').andReturn(testList);
                     setCollection = spyOn(Context, 'setCollection');
@@ -1002,9 +1003,10 @@ describe('Services', function () {
                     testParameters[1].value = "2";
 
                     beforeEach(inject(function (Handlers) {
+                        spyOn(testActionResult, 'result').andReturn(testResult);
                         testViewModel.parameters = testParameters;
 
-                        (Handlers).setResult(testActionResult, testViewModel, true);
+                        Handlers.setResult(testActionResult, testViewModel);
                     }));
 
                     it('should set collection and search', function () {
@@ -1015,12 +1017,25 @@ describe('Services', function () {
 
                 describe('without show flag', function () {
                     beforeEach(inject(function (Handlers) {
-                        (Handlers).setResult(testActionResult);
+                        spyOn(testActionResult, 'result').andReturn(testResult);
+                        Handlers.setResult(testActionResult);
                     }));
 
                     it('should set collection and search', function () {
                         expect(setCollection).toHaveBeenCalledWith(testList);
                         expect(location.search()).toEqual({ resultCollection: 'anAction' });
+                    });
+                });
+
+                describe('result is null', function () {
+                    beforeEach(inject(function (Handlers) {
+                        spyOn(testActionResult, 'result').andReturn(testNullResult);
+                        Handlers.setResult(testActionResult, testViewModel);
+                    }));
+
+                    it('should set view model error', function () {
+                        expect(testViewModel.message).toBe("no result found");
+                        expect(location.search()).toEqual({});
                     });
                 });
             });
@@ -1060,7 +1075,7 @@ describe('Services', function () {
                     testViewModel.parameters = testParameters;
                     testViewModel.show = true;
 
-                    (Handlers).invokeAction($scope, testAction, testViewModel);
+                    Handlers.invokeAction($scope, testAction, testViewModel);
                 }));
 
                 it('should set result', function () {
@@ -1086,7 +1101,7 @@ describe('Services', function () {
                 beforeEach(inject(function ($rootScope, $routeParams, Handlers, RepLoader, Context) {
                     populate = spyOnPromiseFail(RepLoader, 'populate', testObject);
                     setInvokeUpdateError = spyOn(Handlers, 'setInvokeUpdateError');
-                    (Handlers).invokeAction($scope, testAction, testViewModel, false);
+                    Handlers.invokeAction($scope, testAction, testViewModel);
                 }));
 
                 it('should set the error', function () {
@@ -1160,7 +1175,7 @@ describe('Services', function () {
 
                     testUpdatedObject.hateoasUrl = "testUrl";
 
-                    (Handlers).updateObject($scope, testObject, testViewModel);
+                    Handlers.updateObject($scope, testObject, testViewModel);
                 }));
 
                 it('should set result', function () {
@@ -1190,7 +1205,7 @@ describe('Services', function () {
                 beforeEach(inject(function ($rootScope, $routeParams, Handlers, RepLoader) {
                     populate = spyOnPromiseFail(RepLoader, 'populate', testError);
                     setInvokeUpdateError = spyOn(Handlers, 'setInvokeUpdateError');
-                    (Handlers).updateObject($scope, testObject, testViewModel);
+                    Handlers.updateObject($scope, testObject, testViewModel);
                 }));
 
                 it('should set the error', function () {
@@ -1200,7 +1215,8 @@ describe('Services', function () {
         });
 
         describe('setInvokeUpdateError helper', function () {
-            var testViewModel = { message: "" };
+            var testViewModel = new Spiro.Angular.MessageViewModel();
+            testViewModel.message = "";
 
             beforeEach(inject(function ($rootScope) {
                 $scope = $rootScope.$new();
@@ -1210,10 +1226,17 @@ describe('Services', function () {
                 var error = { "one": { "value": "1", "invalidReason": "a reason" }, "two": { "value": "2" }, "x-ro-invalid-reason": "another reason" };
 
                 var errorMap = new Spiro.ErrorMap(error, "status", "a warning message");
-                var vms = [{ id: "one", value: null, message: null }, { id: "two", value: null, message: null }];
+
+                var vm1 = new Spiro.Angular.ValueViewModel();
+                var vm2 = new Spiro.Angular.ValueViewModel();
+
+                vm1.id = "one";
+                vm2.id = "two";
+
+                var vms = [vm1, vm2];
 
                 beforeEach(inject(function (Handlers) {
-                    (Handlers).setInvokeUpdateError($scope, errorMap, vms, testViewModel);
+                    Handlers.setInvokeUpdateError($scope, errorMap, vms, testViewModel);
                 }));
 
                 it('should set the parameters and error', function () {
@@ -1233,7 +1256,7 @@ describe('Services', function () {
 
                 beforeEach(inject(function (Handlers, ViewModelFactory) {
                     errorViewModel = spyOn(ViewModelFactory, 'errorViewModel').andReturn(testErrorViewModel);
-                    (Handlers).setInvokeUpdateError($scope, testError, [], testViewModel);
+                    Handlers.setInvokeUpdateError($scope, testError, [], testViewModel);
                 }));
 
                 it('should set the scope ', function () {
@@ -1247,7 +1270,7 @@ describe('Services', function () {
                 var errorMessage = 'an error message';
 
                 beforeEach(inject(function ($rootScope, $routeParams, Handlers) {
-                    (Handlers).setInvokeUpdateError($scope, errorMessage, [], testViewModel);
+                    Handlers.setInvokeUpdateError($scope, errorMessage, [], testViewModel);
                 }));
 
                 it('should set the scope ', function () {
