@@ -813,6 +813,10 @@ module Spiro {
             super.update(newValue);
         }
 
+        attachmentLink(): Link {
+            return this.links().linkByRel("urn:org.restfulobjects:rels/attachment");
+        }
+
         getDetails(): PropertyRepresentation {
             return <PropertyRepresentation> this.detailsLink().getTarget();
         }

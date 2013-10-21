@@ -757,6 +757,10 @@ var Spiro;
             _super.prototype.update.call(this, newValue);
         };
 
+        PropertyMember.prototype.attachmentLink = function () {
+            return this.links().linkByRel("urn:org.restfulobjects:rels/attachment");
+        };
+
         PropertyMember.prototype.getDetails = function () {
             return this.detailsLink().getTarget();
         };
