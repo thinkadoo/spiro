@@ -5,6 +5,20 @@
 module Spiro.Angular {
 
 
+    export class AttachmentViewModel {
+        href: string;
+        mimeType: string;
+
+        static create(href : string, mimeType : string) {
+            var attachmentViewModel = new AttachmentViewModel();
+
+            attachmentViewModel.href = href;
+            attachmentViewModel.mimeType = mimeType;
+
+            return attachmentViewModel;
+        }
+    }
+
     export class ChoiceViewModel {
         id: string; 
         name: string;
@@ -127,6 +141,7 @@ module Spiro.Angular {
         target: string;
         color: string;       
         isEditable: boolean;    
+        attachment: AttachmentViewModel;
     } 
 
     export class CollectionViewModel {

@@ -77,7 +77,7 @@ module Spiro.Angular {
         
                 var optionsObj: { autoFocus?: boolean; minLength?: number; source?: Function; select?: Function; focus?: Function} = {};
 
-                var model = $parse(attrs.nogAutocomplete); 
+               // var model = $parse(attrs.nogAutocomplete); 
 
                 ngModel.$render = function () {
                     var cvm = ngModel.$modelValue;
@@ -142,5 +142,79 @@ module Spiro.Angular {
         };
     });
 
+    app.directive('nogAttachment', function ($filter: ng.IFilterService, $window : ng.IWindowService): ng.IDirective {
+        return {
+            // Enforce the angularJS default of restricting the directive to
+            // attributes only
+            restrict: 'A',
+            // Always use along with an ng-model
+            require: '?ngModel',
+            link: function (scope: ISelectScope, element, attrs, ngModel: ng.INgModelController) {
+                if (!ngModel) return;
 
+                function downloadFile(url, mt, success) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', url, true);
+                    xhr.responseType = "blob";
+                    xhr.setRequestHeader("Accept", mt); 
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState == 4) {
+                            if (success) success(xhr.response);
+                        }
+                    };
+                    xhr.send(null);
+                }
+
+                function displayInline(mt: string) {
+
+                    if (mt === "image/jpeg" ||
+                        mt === "image/gif" ||
+                        mt === "application/octet-stream") {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                var clickHandler = function () {
+                    var attachment: AttachmentViewModel = ngModel.$modelValue;
+
+                    var url = attachment.href;
+                    var mt = attachment.mimeType;
+
+                    downloadFile(url, mt, (resp) => {
+                        var reader = new FileReader();
+                        reader.onloadend = function () {
+                            $window.location.href = reader.result; 
+                        }
+                        reader.readAsDataURL(resp);
+                    });
+                    return false; 
+                }
+
+                ngModel.$render = function () {
+                    var attachment: AttachmentViewModel = ngModel.$modelValue;
+
+                    var url = attachment.href;
+                    var mt = attachment.mimeType;
+
+                    if (displayInline(mt)) {
+
+                        downloadFile(url, mt, (resp) => {
+                            var reader = new FileReader();
+                            reader.onloadend = function () {
+                                element.append("<img src='" + reader.result + "'/>");
+                            }
+                            reader.readAsDataURL(resp);
+                        });
+                    }
+                    else {
+                        var link = "<a href='" + url + "'><span></span>fileToDownload</a>";
+                        element.append(link);
+                        element.find("a").on('click', clickHandler);
+                    }
+                };
+            }
+        };
+    });
 }

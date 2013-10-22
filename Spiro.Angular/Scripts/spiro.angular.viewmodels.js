@@ -10,6 +10,21 @@ var Spiro;
     /// <reference path="spiro.models.ts" />
     /// <reference path="spiro.angular.app.ts" />
     (function (Angular) {
+        var AttachmentViewModel = (function () {
+            function AttachmentViewModel() {
+            }
+            AttachmentViewModel.create = function (href, mimeType) {
+                var attachmentViewModel = new AttachmentViewModel();
+
+                attachmentViewModel.href = href;
+                attachmentViewModel.mimeType = mimeType;
+
+                return attachmentViewModel;
+            };
+            return AttachmentViewModel;
+        })();
+        Angular.AttachmentViewModel = AttachmentViewModel;
+
         var ChoiceViewModel = (function () {
             function ChoiceViewModel() {
             }

@@ -187,6 +187,10 @@ module Spiro.Angular {
             propertyViewModel.target = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : UrlHelper.toAppUrl(propertyRep.value().link().href());
             propertyViewModel.reference = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : propertyRep.value().link().href();
 
+            if (propertyRep.attachmentLink() != null) {
+                propertyViewModel.attachment = AttachmentViewModel.create(propertyRep.attachmentLink().href(), propertyRep.attachmentLink().type().asString); 
+            }
+
             // only set color if has value 
             propertyViewModel.color = propertyViewModel.value ? Color.toColorFromType(propertyRep.extensions().returnType) : "";
 
