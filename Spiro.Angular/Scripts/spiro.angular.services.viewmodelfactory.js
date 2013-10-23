@@ -171,7 +171,7 @@ var Spiro;
                 propertyViewModel.reference = propertyRep.isScalar() || propertyRep.value().isNull() ? "" : propertyRep.value().link().href();
 
                 if (propertyRep.attachmentLink() != null) {
-                    propertyViewModel.attachment = Angular.AttachmentViewModel.create(propertyRep.attachmentLink().href(), propertyRep.attachmentLink().type().asString);
+                    propertyViewModel.attachment = Angular.AttachmentViewModel.create(propertyRep.attachmentLink().href(), propertyRep.attachmentLink().type().asString, propertyRep.attachmentLink().title());
                 }
 
                 // only set color if has value

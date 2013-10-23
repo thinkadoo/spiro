@@ -77,8 +77,6 @@ module Spiro.Angular {
         
                 var optionsObj: { autoFocus?: boolean; minLength?: number; source?: Function; select?: Function; focus?: Function} = {};
 
-               // var model = $parse(attrs.nogAutocomplete); 
-
                 ngModel.$render = function () {
                     var cvm = ngModel.$modelValue;
 
@@ -142,7 +140,7 @@ module Spiro.Angular {
         };
     });
 
-    app.directive('nogAttachment', function ($filter: ng.IFilterService, $window : ng.IWindowService): ng.IDirective {
+    app.directive('nogAttachment', function ($window : ng.IWindowService): ng.IDirective {
         return {
             // Enforce the angularJS default of restricting the directive to
             // attributes only
@@ -150,16 +148,18 @@ module Spiro.Angular {
             // Always use along with an ng-model
             require: '?ngModel',
             link: function (scope: ISelectScope, element, attrs, ngModel: ng.INgModelController) {
-                if (!ngModel) return;
+                if (!ngModel) {
+                    return;
+                }
 
-                function downloadFile(url, mt, success) {
+                function downloadFile(url : string, mt : string, success : (resp : Blob) => void ) {
                     var xhr = new XMLHttpRequest();
                     xhr.open('GET', url, true);
                     xhr.responseType = "blob";
                     xhr.setRequestHeader("Accept", mt); 
                     xhr.onreadystatechange = function () {
                         if (xhr.readyState == 4) {
-                            if (success) success(xhr.response);
+                            success(<Blob>xhr.response);
                         }
                     };
                     xhr.send(null);
@@ -182,12 +182,9 @@ module Spiro.Angular {
                     var url = attachment.href;
                     var mt = attachment.mimeType;
 
-                    downloadFile(url, mt, (resp) => {
-                        var reader = new FileReader();
-                        reader.onloadend = function () {
-                            $window.location.href = reader.result; 
-                        }
-                        reader.readAsDataURL(resp);
+                    downloadFile(url, mt, (resp : Blob) => {
+                        var burl = URL.createObjectURL(resp); 
+                        $window.location.href = burl;                    
                     });
                     return false; 
                 }
@@ -197,22 +194,28 @@ module Spiro.Angular {
 
                     var url = attachment.href;
                     var mt = attachment.mimeType;
+                    var title = attachment.title;
+
+                    var link = "<a href='" + url + "'><span></span></a>";
+                    element.append(link);
+
+                    var anchor = element.find("a")
 
                     if (displayInline(mt)) {
 
-                        downloadFile(url, mt, (resp) => {
+                        downloadFile(url, mt, (resp: Blob) => {
                             var reader = new FileReader();
                             reader.onloadend = function () {
-                                element.append("<img src='" + reader.result + "'/>");
+                                anchor.html("<img src='" + reader.result + "' alt='" + title + "' />");
                             }
                             reader.readAsDataURL(resp);
                         });
                     }
                     else {
-                        var link = "<a href='" + url + "'><span></span>fileToDownload</a>";
-                        element.append(link);
-                        element.find("a").on('click', clickHandler);
+                        anchor.html(title); 
                     }
+                  
+                    anchor.on('click', clickHandler);                 
                 };
             }
         };

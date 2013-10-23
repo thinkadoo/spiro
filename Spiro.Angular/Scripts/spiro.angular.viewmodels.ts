@@ -8,12 +8,14 @@ module Spiro.Angular {
     export class AttachmentViewModel {
         href: string;
         mimeType: string;
+        title: string;
 
-        static create(href : string, mimeType : string) {
+        static create(href : string, mimeType : string, title : string) {
             var attachmentViewModel = new AttachmentViewModel();
 
             attachmentViewModel.href = href;
             attachmentViewModel.mimeType = mimeType;
+            attachmentViewModel.title = title || "UnknownFile";
 
             return attachmentViewModel;
         }

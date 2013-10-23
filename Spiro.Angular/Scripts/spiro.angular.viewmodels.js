@@ -13,11 +13,12 @@ var Spiro;
         var AttachmentViewModel = (function () {
             function AttachmentViewModel() {
             }
-            AttachmentViewModel.create = function (href, mimeType) {
+            AttachmentViewModel.create = function (href, mimeType, title) {
                 var attachmentViewModel = new AttachmentViewModel();
 
                 attachmentViewModel.href = href;
                 attachmentViewModel.mimeType = mimeType;
+                attachmentViewModel.title = title || "UnknownFile";
 
                 return attachmentViewModel;
             };

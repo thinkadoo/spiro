@@ -75,7 +75,6 @@
 
                     var optionsObj = {};
 
-                    // var model = $parse(attrs.nogAutocomplete);
                     ngModel.$render = function () {
                         var cvm = ngModel.$modelValue;
 
@@ -140,21 +139,17 @@
             };
         });
 
-        Angular.app.directive('nogAttachment', function ($filter, $window) {
+        Angular.app.directive('nogAttachment', function ($window) {
             return {
                 // Enforce the angularJS default of restricting the directive to
                 // attributes only
                 restrict: 'A',
                 // Always use along with an ng-model
                 require: '?ngModel',
-                // This method needs to be defined and passed in from the
-                // passed in to the directive from the view controller
-                //scope: {
-                //    select: '&'        // Bind the select function we refer to the right scope
-                //},
                 link: function (scope, element, attrs, ngModel) {
-                    if (!ngModel)
+                    if (!ngModel) {
                         return;
+                    }
 
                     function downloadFile(url, mt, success) {
                         var xhr = new XMLHttpRequest();
@@ -163,15 +158,10 @@
                         xhr.setRequestHeader("Accept", mt);
                         xhr.onreadystatechange = function () {
                             if (xhr.readyState == 4) {
-                                if (success)
-                                    success(xhr.response);
+                                success(xhr.response);
                             }
                         };
                         xhr.send(null);
-                    }
-
-                    function onInitFs(fs) {
-                        console.log('Opened file system: ' + fs.name);
                     }
 
                     function displayInline(mt) {
@@ -189,11 +179,8 @@
                         var mt = attachment.mimeType;
 
                         downloadFile(url, mt, function (resp) {
-                            var reader = new FileReader();
-                            reader.onloadend = function () {
-                                $window.location.href = reader.result;
-                            };
-                            reader.readAsDataURL(resp);
+                            var burl = URL.createObjectURL(resp);
+                            $window.location.href = burl;
                         });
                         return false;
                     };
@@ -203,20 +190,26 @@
 
                         var url = attachment.href;
                         var mt = attachment.mimeType;
+                        var title = attachment.title;
+
+                        var link = "<a href='" + url + "'><span></span></a>";
+                        element.append(link);
+
+                        var anchor = element.find("a");
 
                         if (displayInline(mt)) {
                             downloadFile(url, mt, function (resp) {
                                 var reader = new FileReader();
                                 reader.onloadend = function () {
-                                    element.append("<img src='" + reader.result + "'/>");
+                                    anchor.html("<img src='" + reader.result + "' alt='" + title + "' />");
                                 };
                                 reader.readAsDataURL(resp);
                             });
                         } else {
-                            var link = "<a href='" + url + "'><span></span>fileToDownload</a>";
-                            element.append(link);
-                            element.find("a").on('click', clickHandler);
+                            anchor.html(title);
                         }
+
+                        anchor.on('click', clickHandler);
                     };
                 }
             };
