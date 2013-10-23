@@ -216,7 +216,7 @@ var Spiro;
 
                 if (propertyViewModel.hasChoices) {
                     propertyViewModel.choice = _.find(propertyViewModel.choices, function (c) {
-                        return c.name == propertyViewModel.value.toString();
+                        return c.name === (propertyViewModel.value ? propertyViewModel.value.toString() : "");
                     });
                 } else if (propertyViewModel.type === "ref") {
                     propertyViewModel.choice = Angular.ChoiceViewModel.create(propertyRep.value(), id);

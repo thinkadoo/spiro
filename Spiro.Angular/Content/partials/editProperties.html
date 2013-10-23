@@ -29,6 +29,7 @@
 
                     <div ng-switch-when="string" ng-switch="property.format">
                         <div ng-switch-when="date-time" class='property-value'>{{property.value | date:'d MMM yyyy' }}</div>
+                        <div ng-switch-when="blob" class='property-reference clickable-area' ng-model="$parent.property.attachment" nog-attachment></div>
                         <div ng-switch-default class='property-value'>{{property.value}}</div>
                     </div>
 
@@ -49,6 +50,7 @@
                             <div ng-switch-when="date-time">
                                 <input  type='text'  ng-model="$parent.property.value" nog-datepicker/>
                             </div>
+                            <div ng-switch-when="blob" class='property-reference clickable-area' ng-model="$parent.property.attachment" nog-attachment></div>
                             <input ng-switch-default type='text' placeholder='{{property.value}}' ng-model="property.value" />
                         </div>
 
