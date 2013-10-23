@@ -70,6 +70,7 @@ namespace NakedObjects.Web.UnitTests.Selenium {
         protected const string salesServiceUrl = url + "#/services/AdventureWorksModel.SalesRepository";
 
         protected const string store555Url = url + "#/objects/AdventureWorksModel.Store/555";
+        protected const string product968Url = url + "#/objects/AdventureWorksModel.Product/968";
 
         //protected const string url = "http://localhost:53103/";
         //protected const string server = @".\SQLEXPRESS";

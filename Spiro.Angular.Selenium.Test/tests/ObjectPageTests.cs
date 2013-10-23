@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
@@ -94,6 +95,16 @@ namespace NakedObjects.Web.UnitTests.Selenium {
             Click(br.FindElement(By.CssSelector("div.list-view .cancel")));
 
             WaitUntilGone(d => d.FindElement(By.ClassName("list-view")));
+        }
+
+        [TestMethod]
+        public virtual void AttachmentProperty() {
+            br.Navigate().GoToUrl(product968Url);
+
+            wait.Until(d => d.FindElements(By.ClassName("property")).Count == 25);
+            wait.Until(d => d.FindElements(By.CssSelector("div.property  a > img")).Count == 1);
+
+            Assert.AreEqual(25053, br.FindElements(By.CssSelector("div.property  a > img")).Single().GetAttribute("src").Length, "expect data in data uri"); 
         }
 
 
