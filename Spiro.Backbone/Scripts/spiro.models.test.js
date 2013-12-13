@@ -187,12 +187,12 @@ var SpiroModelTests;
         expect(11);
 
         test.doTest = function () {
-            equal(version.specVersion(), "1.0", "specVersion");
-            equal(version.implVersion(), "1.3.0", "implVersion");
+            equal(version.specVersion(), "1.1", "specVersion");
+            equal(version.implVersion(), "1.4.0", "implVersion");
 
             var oc = version.optionalCapabilities();
 
-            equal(oc.blobsClobs, "no", "blobsClobs");
+            equal(oc.blobsClobs, "attachments", "blobsClobs");
             equal(oc.deleteObjects, "no", "deleteObjects");
             equal(oc.domainModel, "selectable", "domainModel");
             equal(oc.protoPersistentObjects, "yes", "protoPersistentObjects");
